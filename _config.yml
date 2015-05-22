@@ -21,8 +21,8 @@ description: "»Feeling Responsive« is a responsive theme for Jekyll based on t
 
 # This URL is the main adresse. Don't include a slash at the end.
 #
-url: "http://telaxus.github.io"
-baseurl: "EPESI"
+url: "http://telaxus.github.io/EPESI"
+baseurl: ""
 
 # This is for the editing function in _/includes/improve_content.html
 # Leave it empty if your site is not on GitHub/GitHub Pages
