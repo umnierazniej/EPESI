@@ -14,42 +14,37 @@
 defined("_VALID_ACCESS") || die('Direct access forbidden');
 
 class Base_ActionBarCommon extends ModuleCommon {
+	const FIRST = 0;
+	const LAST = 1;
 	private static $icons = array();
     public static $quick_access_shortcuts = false;
 
-	public static $available_icons = array(
-			'home'		=> 0,
-			'back'		=> 1,
-			'report'	=> 2,
-			'history'	=> 3,
-			'all'		=> 4,
-			'favorites'	=> 5,
-			'calendar'	=> 6,
-			'search'	=> 7,
-			'folder'	=> 8,
-			'edit'		=> 9,
-			'view'		=> 10,
-			'add'		=> 11,
-			'delete'	=> 12,
-			'save'		=> 13,
-			'print'		=> 14,
-			'clone'		=> 15,
-			'settings'	=> 16,
-			'scan'		=> 17,
-			'filter'	=> 18,
-			'retry'		=> 19,
-			'send'		=> 20,
-			'new-mail'	=> 21,
-			'attach'	=> 22,
-			'reply'		=> 23,
-			'forward'	=> 24);
-
-	public static function add($type, $text, $action, $description=null, $position = 0) {
+	/**
+	 * @param string $icon Font awesome icon name (without fa- prefix)
+	 * @param string $label Label for action
+	 * @param string $action Action href
+	 * @param string $description Description will be showed in tooltip
+	 * @param int $position Position of button ({@see Base_ActionBarCommon::FIRST}, {@see Base_ActionBarCommon::LAST})
+	 * @throws Exception
+     */
+	public static function add($icon, $label, $action, $description=null, $position = self::LAST) {
 //		if(!array_key_exists($type,self::$available_icons)) trigger_error('Invalid action '.$type,E_USER_ERROR);
-		foreach (self::$icons as $k=>$v) {
-			if ($v['icon']==$type && $v['label']==$text) unset(self::$icons[$k]);
+		foreach (self::$icons as $k=>$v) { //QUESTION: Po co to robimy?
+			if ($v['icon']==$icon && $v['label']==$label) unset(self::$icons[$k]);
 		}
-		self::$icons[] = array('icon'=>$type,'label'=>$text,'action'=>$action,'description'=>$description,'position'=>$position);
+
+		//todo: Throw exception if icon does not exist
+		$icon_arr = array('icon'=>$icon,'label'=>$label,'action'=>$action,'description'=>$description,'position'=>$position);
+		switch($position) {
+			case self::FIRST:
+				array_push(self::$icons, $icon_arr);
+				break;
+			case self::LAST:
+				array_unshift(self::$icons, $icon_arr);
+				break;
+			default:
+				throw new Exception('Invalid icon position');
+		}
 	}
 
 	public static function get() {

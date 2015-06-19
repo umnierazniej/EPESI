@@ -1,0 +1,12 @@
+{% for icon in icons %}
+        <a {{ icon.action|raw }}>
+                <button type="button" class="btn btn-default navbar-btn epe-btn" data-toggle="tooltip" data-placement="bottom" title="{{ icon.description }}">
+                        <i class="fa fa-{{ icon.icon }}"></i>
+                        &nbsp;{{ icon.label }}
+                </button>
+        </a>
+{% endfor %}
+
+{% for icon in launcher %}
+        <a {{ icon.action|raw }}><button type="button" class="btn btn-default navbar-btn epe-btn pull-right"><i class="fa fa-{{ icon.icon }}">&nbsp;{{ icon.label }}</i></button></a>
+{% endfor %}
