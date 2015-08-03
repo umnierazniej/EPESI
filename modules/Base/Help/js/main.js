@@ -21,7 +21,7 @@ Base_Help = function(){
 	this.init_help = function() {
 		this.check_compatibility();
 		Helper.timed_update();
-		Event.observe(document, "mousemove", Helper.update);
+		jQuery(document).mousemove(Helper.update)
 	}
 
 	this.check_compatibility = function() {

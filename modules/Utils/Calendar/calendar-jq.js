@@ -346,7 +346,10 @@ activate_dnd:function(ids_in,new_ev,mpath,ecid) {
 			f = f.replace('__TIMELESS__','0');
 		}
 		
-		Event.observe(cell_id,'dblclick',function(e){eval(f)});
+		jQuery('#' + cell_id).dblclick(function (e) {
+			eval(f)
+		});
+
 		Event.observe(cell_id,'touchend',function(e){
 		    var now = new Date().getTime();
 		    var lastTouch = $(this).readAttribute('lastTouch') || 0;
