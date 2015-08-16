@@ -29,7 +29,6 @@ class Base_MenuInstall extends ModuleInstall {
 	}
 	public function requires($v) {
 		return array(
-//			array('name'=>Base_Menu_QuickAccessInstall::getName(),'version'=>0),
 			array('name'=>Base_LangInstall::module_name(),'version'=>0),
 			array('name'=>Base_ThemeInstall::module_name(),'version'=>0),
 			array('name'=>Utils_MenuInstall::module_name(),'version'=>0)
