@@ -73,7 +73,7 @@ class Utils_Tray extends Module {
 	
 	public function body() {
 		if(!Base_AclCommon::check_permission('Dashboard')) return;
-		Base_ActionBarCommon::add('settings',__('Settings'), $this->create_callback_href(array($this, 'push_settings'), array('Tray settings')), __('Click to edit tray settings'));
+		Base_ActionBarCommon::add('cog',__('Settings'), $this->create_callback_href(array($this, 'push_settings'), array('Tray settings')), __('Click to edit tray settings'));
 
 		$this->output();
 	}
@@ -207,7 +207,7 @@ class Utils_Tray extends Module {
 		}
 
 		if (isset($_REQUEST['tray_slot'])) {
-			Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+			Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 			$this->set_module_variable('tray_slot', $_REQUEST['tray_slot']);
 		}
 

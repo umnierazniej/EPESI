@@ -104,7 +104,7 @@ class Utils_Messenger extends Module {
 		}
 		
 		Base_ActionBarCommon::add('save',__('Save'),$f->get_submit_form_href());
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		$f->display_as_column();
 	}
 	
@@ -139,7 +139,7 @@ class Utils_Messenger extends Module {
 		}
 		$this->display_module($gb);
 		
-		Base_ActionBarCommon::add('add',__('New alert'),$this->create_callback_href(array($this,'push_box0'),array('edit',array(false),array($this->real_id,$this->callback_method,$this->callback_args,$this->def_date,$this->users))));	
+		Base_ActionBarCommon::add('plus-square',__('New alert'),$this->create_callback_href(array($this,'push_box0'),array('edit',array(false),array($this->real_id,$this->callback_method,$this->callback_args,$this->def_date,$this->users))));
 	}
 
 	public function purge_old() {
@@ -180,7 +180,7 @@ class Utils_Messenger extends Module {
 
 		$this->display_module($gb);
 		
-		Base_ActionBarCommon::add('delete',__('Purge old alerts'),$this->create_confirm_callback_href(__('Purge all done alerts?'),array($this,'purge_old')));	
+		Base_ActionBarCommon::add('trash',__('Purge old alerts'),$this->create_confirm_callback_href(__('Purge all done alerts?'),array($this,'purge_old')));
 	}
 
 	/////////////////////////////////////////////////////////////

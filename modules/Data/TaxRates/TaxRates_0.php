@@ -20,7 +20,7 @@ class Data_TaxRates extends Module {
 				location(array());
 			return;
 		}
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
 		$this->rb = $this->init_module(Utils_RecordBrowser::module_name(),'data_tax_rates','data_tax_rates_module');
 		$this->display_module($this->rb);

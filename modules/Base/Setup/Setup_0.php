@@ -62,7 +62,7 @@ class Base_Setup extends Module {
 		$simple = Base_SetupCommon::is_simple_setup();
 
 		Base_ActionBarCommon::add('scan',__('Rebuild modules database'),$this->create_confirm_callback_href(__('Parsing for additional modules may take up to several minutes, do you wish to continue?'),array('Base_Setup','parse_modules_folder_refresh')));
-		if (!$store) Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		if (!$store) Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		
 		if ($simple)
 			$this->simple_setup();
@@ -191,11 +191,11 @@ class Base_Setup extends Module {
 		}
 		$form->display();
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
-		if (!$store) Base_ActionBarCommon::add('settings', __('Simple view'),$this->create_callback_href(array($this,'switch_simple'),true));
+		if (!$store) Base_ActionBarCommon::add('cog', __('Simple view'),$this->create_callback_href(array($this,'switch_simple'),true));
 	}
 
 	public function simple_setup() {
-		Base_ActionBarCommon::add('settings', __('Advanced view'),$this->create_confirm_callback_href(__('Switch to advanced view?'),array($this,'switch_simple'),false));
+		Base_ActionBarCommon::add('cog', __('Advanced view'),$this->create_confirm_callback_href(__('Switch to advanced view?'),array($this,'switch_simple'),false));
 
 		$module_dirs = $this->get_module_dirs();
 		$is_required = ModuleManager::required_modules(true);

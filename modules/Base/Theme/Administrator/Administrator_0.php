@@ -45,10 +45,10 @@ class Base_Theme_Administrator extends Module implements Base_AdminInterface{
 			
 			if(class_exists('ZipArchive')) {
 				$this->pack_module(Utils_FileUpload::module_name(),array(array($this,'upload_template'),__('Upload template')));
-//				Base_ActionBarCommon::add('edit',__('Manage templates'),$this->create_callback_href(array($this,'download_template')));
+//				Base_ActionBarCommon::add('pencil',__('Manage templates'),$this->create_callback_href(array($this,'download_template')));
 			}
 		}
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
 
 	}
@@ -76,7 +76,7 @@ class Base_Theme_Administrator extends Module implements Base_AdminInterface{
 		$ld = $this->get_data_dir().'list/';
 		if(!file_exists($ld)) return $this->download_templates_list();
 		if($this->is_back()) return false;
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		Base_ActionBarCommon::add('search',__('Update templates list'),$this->create_callback_href(array($this,'download_templates_list')));
 		
 		$m = $this->init_module(Utils_GenericBrowser::module_name(),null,'new_templates');

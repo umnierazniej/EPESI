@@ -71,10 +71,10 @@ class Base_Admin extends Module {
 			$mod_ok[$name] = $caption;
 		}
 		if (Base_AclCommon::i_am_sa()) {
-			Base_ActionBarCommon::add('settings', __('Admin Panel Access'), $this->create_callback_href(array($this, 'set_module'), array('Base_Admin')));
+			Base_ActionBarCommon::add('cog', __('Admin Panel Access'), $this->create_callback_href(array($this, 'set_module'), array('Base_Admin')));
             if (!DEMO_MODE && !HOSTING_MODE) {
        			$admin_tools_url = rtrim(get_epesi_url(), '/') . '/admin/';
-	    		Base_ActionBarCommon::add('settings', __('Admin Tools'), 'href="'.htmlspecialchars($admin_tools_url).'" target="_blank"');
+	    		Base_ActionBarCommon::add('cog', __('Admin Tools'), 'href="'.htmlspecialchars($admin_tools_url).'" target="_blank"');
             }
         }
                                 
@@ -115,7 +115,7 @@ class Base_Admin extends Module {
 			$this->parent->reset();
 			return;
 		}
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		
 		$cmr = ModuleManager::call_common_methods('admin_caption');
 		foreach($cmr as $name=>$caption) {

@@ -47,7 +47,7 @@ class CRM_Fax extends Module {
 		$this->display_module($tb);
 		$tb->tag();
 		
-		Base_ActionBarCommon::add('send',__('Send file'),$this->create_callback_href(array($this,'send_file_tab')));
+		Base_ActionBarCommon::add('paper-plane”',__('Send file'),$this->create_callback_href(array($this,'send_file_tab')));
 	}
 	
 	public function received_tab($count_f,$get_f) {
@@ -363,8 +363,8 @@ class CRM_Fax extends Module {
 		}
 		$qf->display();
 		
-		Base_ActionBarCommon::add('send',__('Send'),$qf->get_submit_form_href());
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('paper-plane”',__('Send'),$qf->get_submit_form_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 	}
 	
 	public function check_numbers($arg) {

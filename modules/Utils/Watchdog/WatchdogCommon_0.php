@@ -302,13 +302,11 @@ class Utils_WatchdogCommon extends ModuleCommon {
 		$href = self::get_change_subscr_href($category_name, $id);
 		$subscribed = self::check_if_user_subscribes(Acl::get_user(), $category_id, $id);
 		if ($subscribed) {
-			$icon = Base_ThemeCommon::get_template_file('Utils_Watchdog','unwatch_big.png');
-			$label = __('Stop Watching');
+			Base_ActionBarCommon::add('eye-slash',__('Stop Watching'),$href);;
 		} else {
-			$icon = Base_ThemeCommon::get_template_file('Utils_Watchdog','watch_big.png');
-			$label = __('Watch');
+			Base_ActionBarCommon::add('eye',__('Watch'),$href);
 		}
-		Base_ActionBarCommon::add($icon,$label,$href);
+
 	}
 	public static function display_events($category_name, $changes, $id, $for_email = false) {
 		if (!is_array($changes)) return '';

@@ -18,7 +18,7 @@ class Base_Print extends Module
             $this->parent->reset();
             return;
         }
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
         $form = $this->init_module(Libs_QuickForm::module_name());
         foreach (Base_PrintCommon::get_registered_printers_translated()

@@ -50,7 +50,7 @@ class Utils_RecordBrowser_RecordPickerFS extends Module {
 
 		$this->display_module($rb, array($crits, $cols, $order, $filters, $path), 'recordpicker_fs');
 	        Base_ActionBarCommon::add('save', __('Commit Selection'), $this->create_callback_href(array($this,'back')));
-	        Base_ActionBarCommon::add('back', __('Cancel'), $this->create_callback_href(array($this,'cancel')));
+	        Base_ActionBarCommon::add('caret-left', __('Cancel'), $this->create_callback_href(array($this,'cancel')));
 	}
 
 	public function create_open_link($label,$form = null,$select = null) {

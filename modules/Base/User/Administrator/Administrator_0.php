@@ -49,7 +49,7 @@ class Base_User_Administrator extends Module implements Base_AdminInterface {
         $form->addRule('old_pass', __('Field required'), 'required');
 
 		if (Base_AclCommon::check_permission('Advanced User Settings'))
-			Base_ActionBarCommon::add('back',__('Back'),$this->create_main_href('Base_User_Settings'));
+			Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_main_href('Base_User_Settings'));
         Base_ActionBarCommon::add('save',__('Save'),$form->get_submit_form_href());
         #$form->addElement('submit', 'submit_button', __('OK'));
 
@@ -115,7 +115,7 @@ class Base_User_Administrator extends Module implements Base_AdminInterface {
 			return false;
 		}
 
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
 		
 		$emailHeader = Variable::get('add_user_email_header','');
@@ -139,8 +139,8 @@ class Base_User_Administrator extends Module implements Base_AdminInterface {
 				location(array());
 			return;
 		}
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
-		Base_ActionBarCommon::add('edit',__('E-mail header'),$this->create_callback_href(array($this,'change_email_header')));
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('pencil',__('E-mail header'),$this->create_callback_href(array($this,'change_email_header')));
 
         $gb = $this->init_module(Utils_GenericBrowser::module_name(),null,'user_list');
         //$gb->set_module_variable('adv_search',false);
@@ -195,7 +195,7 @@ class Base_User_Administrator extends Module implements Base_AdminInterface {
 
         $this->banning_form();
 
-        Base_ActionBarCommon::add('add',__('New user'),$this->create_callback_href(array($this,'edit_user_form'), array(-1)));
+        Base_ActionBarCommon::add('plus-square',__('New user'),$this->create_callback_href(array($this,'edit_user_form'), array(-1)));
     }
     
     private function banning_form() {
@@ -288,10 +288,10 @@ class Base_User_Administrator extends Module implements Base_AdminInterface {
 			}
         } else $form->display();
 
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
         Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
 		if(Base_AclCommon::i_am_sa() && $edit_id>=0)
-			Base_ActionBarCommon::add('settings', __('Log as user'), $this->create_callback_href(array($this,'log_as_user'),$edit_id));
+			Base_ActionBarCommon::add('cog', __('Log as user'), $this->create_callback_href(array($this,'log_as_user'),$edit_id));
 			
 		return true;
     }

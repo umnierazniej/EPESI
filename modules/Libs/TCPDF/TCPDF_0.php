@@ -126,7 +126,7 @@ class Libs_TCPDF extends Module {
 		$form->add_upload_element();
 		$form->addElement('button',null,__('Upload'),$form->get_submit_form_href());
 		$this->display_module($form, array( array($this,'upload_logo') ));
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 	}
 
 	public function upload_logo($file,$oryg,$data) {

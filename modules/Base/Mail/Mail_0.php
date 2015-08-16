@@ -72,7 +72,7 @@ class Base_Mail extends Module implements Base_AdminInterface {
 			}
 		}
 		
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
 		if (ModuleManager::is_installed('CRM_Contacts')>=0) {
 			$me = CRM_ContactsCommon::get_my_record();

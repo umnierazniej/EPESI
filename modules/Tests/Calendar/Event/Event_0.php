@@ -15,13 +15,13 @@ class Tests_Calendar_Event extends Utils_Calendar_Event {
 	public function view($id) {
 		if($this->is_back()) $this->back_to_calendar();
 		print('view...');
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 	}
 
 	public function edit($id) {
 		if($this->is_back()) $this->back_to_calendar();
 		print('edit...');
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 	}
 
 	public function add($def_date,$timeless=false) {
@@ -42,7 +42,7 @@ class Tests_Calendar_Event extends Utils_Calendar_Event {
 			$this->back_to_calendar();
 		} else {
 			$qf->display();
-			Base_ActionBarCommon::add('back',__('Cancel'),$this->create_back_href());
+			Base_ActionBarCommon::add('caret-left',__('Cancel'),$this->create_back_href());
 			Base_ActionBarCommon::add('save',__('Save'),$qf->get_submit_form_href());
 		}
 	}

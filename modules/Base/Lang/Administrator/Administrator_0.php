@@ -20,7 +20,7 @@ class Base_Lang_Administrator extends Module implements Base_AdminInterface {
 		if($this->is_back()) {
 			$this->parent->reset();
 		}
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		
 		$tb = $this->init_module(Utils_TabbedBrowser::module_name());
 		$tb->set_tab('Translations', array($this, 'translations'));
@@ -104,11 +104,11 @@ class Base_Lang_Administrator extends Module implements Base_AdminInterface {
 			if (!$r['contact_email']) $r['contact_email'] = $me['email'];
 			$form->setDefaults(array('allow'=>$r['allow'], 'first_name'=>$r['first_name'], 'last_name'=>$r['last_name'], 'contact_email'=>$r['contact_email'], 'credits_website'=>$r['credits_website'], 'include_credits'=>$r['credits']));
 		}
-		Base_ActionBarCommon::add('settings', __('Translations Contributions'), $lp->get_href());
+		Base_ActionBarCommon::add('cog', __('Translations Contributions'), $lp->get_href());
 		$this->display_module($lp, array(__('Translations Contributions settings')));
 
 		if (Base_AdminCommon::get_access('Base_Lang_Administrator', 'new_langpack'))
-			Base_ActionBarCommon::add('add',__('New langpack'),$this->create_callback_href(array($this,'new_lang_pack')));
+			Base_ActionBarCommon::add('plus-square',__('New langpack'),$this->create_callback_href(array($this,'new_lang_pack')));
 		if (Base_AdminCommon::get_access('Base_Lang_Administrator', 'select_language'))
 			Base_ActionBarCommon::add('refresh',__('Refresh languages'),$this->create_callback_href(array('Base_LangCommon','refresh_cache')));
 
@@ -227,7 +227,7 @@ class Base_Lang_Administrator extends Module implements Base_AdminInterface {
 			return false;
 		}
 
-		Base_ActionBarCommon::add('back',__('Cancel'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Cancel'),$this->create_back_href());
 		Base_ActionBarCommon::add('save',__('Save'),$form->get_submit_form_href());
 
 		$form->display();

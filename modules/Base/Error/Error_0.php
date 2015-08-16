@@ -24,7 +24,7 @@ class Base_Error extends Module implements Base_AdminInterface {
 		$form->addRule('mail', __('Invalid e-mail address'),'email');
 		$form->addElement('static', '', '',__('Leave empty to disable bug reports.'));
 		
-		Base_ActionBarCommon::add('back',__('Cancel'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Cancel'),$this->create_back_href());
 		Base_ActionBarCommon::add('save',__('Save'),$form->get_submit_form_href());
 		
 		$form->setDefaults(array('mail'=>Variable::get('error_mail')));

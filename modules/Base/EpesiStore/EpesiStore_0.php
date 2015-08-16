@@ -43,7 +43,7 @@ class Base_EpesiStore extends Module {
                 $button_label,
                 $this->create_callback_href(array($this,'display_registration_form')));
 
-		Base_ActionBarCommon::add('view', __('Invoices'), $this->create_callback_href(array($this,'display_invoices')));
+		Base_ActionBarCommon::add('file-o', __('Invoices'), $this->create_callback_href(array($this,'display_invoices')));
 
         $setup = $this->init_module('Base_Setup');
         $setup->set_inline_display();
@@ -56,7 +56,7 @@ class Base_EpesiStore extends Module {
             return;
         }
 
-        Base_ActionBarCommon::add('settings', __('Simple view'), $this->create_callback_href(array($this, 'switch_simple'), true));
+        Base_ActionBarCommon::add('cog', __('Simple view'), $this->create_callback_href(array($this, 'switch_simple'), true));
         $tb = $this->init_module('Utils_TabbedBrowser');
         $tb->set_tab('Modules Setup', array($this, 'setup_admin'), array($setup));
 		$tb->set_tab('Epesi Store', array($this, 'form_main_store'), array());
@@ -67,7 +67,7 @@ class Base_EpesiStore extends Module {
 	public function display_invoices() {
         if ($this->is_back())
             return false;
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
         $action_url = Base_EssClientCommon::get_invoices_url();
 		$params = array('key'=>Base_EssClientCommon::get_license_key(), 'noheader'=>1);
@@ -117,7 +117,7 @@ class Base_EpesiStore extends Module {
     }
 
     private function navigation_button_orders() {
-        Base_ActionBarCommon::add('view', __('Orders'), $this->href_navigate('form_orders'), __('Here you can pay for ordered modules'));
+        Base_ActionBarCommon::add('file-o', __('Orders'), $this->href_navigate('form_orders'), __('Here you can pay for ordered modules'));
     }
 
     private function navigation_button_your_modules() {
@@ -189,7 +189,7 @@ class Base_EpesiStore extends Module {
         $this->_module_licenses_add_module_versions($module_licenses);
         $to_download = $this->_modules_to_download_and_update($module_licenses);
         if ($to_download)
-            Base_ActionBarCommon::add('favorites', __('Download newer'), $this->create_callback_href(array($this, 'download_modules'), array($to_download)));
+            Base_ActionBarCommon::add('star', __('Download newer'), $this->create_callback_href(array($this, 'download_modules'), array($to_download)));
         $gb = $this->init_module(Utils_GenericBrowser::module_name(), null, 'mymoduleslist');
         $gb = $this->GB_module_licenses($gb, $module_licenses, array($this, 'GB_row_additional_actions_your_modules'));
         $this->display_module($gb);
@@ -240,7 +240,7 @@ class Base_EpesiStore extends Module {
     }
 
     private function display_cart_items($items) {
-        Base_ActionBarCommon::add('delete', __('Clear cart'), $this->create_callback_href(array('Base_EpesiStoreCommon', 'empty_cart')));
+        Base_ActionBarCommon::add('trash', __('Clear cart'), $this->create_callback_href(array('Base_EpesiStoreCommon', 'empty_cart')));
         $gb = $this->init_module(Utils_GenericBrowser::module_name(), null, 'cartlist');
         $gb = $this->GB_module($gb, $items, array($this, 'GB_row_additional_actions_cart'));
         $this->display_module($gb);
@@ -413,7 +413,7 @@ class Base_EpesiStore extends Module {
             print(__('No items'));
             return;
         }
-        Base_ActionBarCommon::add('delete', __('Clear list'), $this->create_callback_href(array('Base_EpesiStoreCommon', 'empty_download_queue')));
+        Base_ActionBarCommon::add('trash', __('Clear list'), $this->create_callback_href(array('Base_EpesiStoreCommon', 'empty_download_queue')));
         $gb = $this->init_module(Utils_GenericBrowser::module_name(), null, 'downloadslist');
         $gb = $this->GB_module_licenses($gb, $download_items, array($this, 'GB_row_additional_actions_downloads'));
         $this->display_module($gb);
@@ -539,7 +539,7 @@ class Base_EpesiStore extends Module {
 
     private function payments_data_button() {
         $href = $this->create_callback_href(array($this, 'navigate'), array('payments_show_user_settings'));
-        Base_ActionBarCommon::add('settings', __('Payment data'), $href, __('Here you can edit your default credentials used to payments'));
+        Base_ActionBarCommon::add('cog', __('Payment data'), $href, __('Here you can edit your default credentials used to payments'));
     }
 
     public function payments_show_user_settings() {
@@ -772,7 +772,7 @@ class Base_EpesiStore extends Module {
             $x++;
         if ($x > 0)
             return $this->pop_main($x);
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href($i));
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href($i));
     }
 
 }

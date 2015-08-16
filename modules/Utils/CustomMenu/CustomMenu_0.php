@@ -73,7 +73,7 @@ class Utils_CustomMenu extends Module {
 		}
 		$this->display_module($gb);
 		
-		Base_ActionBarCommon::add('add',__('New menu entry'),$this->create_unique_href(array('edit'=>false)));
+		Base_ActionBarCommon::add('plus-square',__('New menu entry'),$this->create_unique_href(array('edit'=>false)));
 	}
 	
 	///////////////////////////////////////////////////////////////

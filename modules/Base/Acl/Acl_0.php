@@ -27,7 +27,7 @@ class Base_Acl extends Module {
         if ($this->is_back()) {
             Base_BoxCommon::pop_main();
         }
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
 		Base_ThemeCommon::load_css('Base_Acl', 'edit_permissions');
 
@@ -45,7 +45,7 @@ class Base_Acl extends Module {
         }
         $sql .= ' ORDER BY name ASC';
         $perms = DB::GetAssoc($sql, $args);
-		Base_ActionBarCommon::add('add', __('Add rule'), $this->create_callback_href(array($this, 'edit_rule'), array(null, $perm_id)));
+		Base_ActionBarCommon::add('plus-square', __('Add rule'), $this->create_callback_href(array($this, 'edit_rule'), array(null, $perm_id)));
 		foreach ($perms as $p_id=>$p_name) {
 			$gb_row = $gb->get_new_row();
 			$gb_row->add_data(
@@ -141,7 +141,7 @@ class Base_Acl extends Module {
 		eval_js('base_acl__initialized = true;');
 
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
-		Base_ActionBarCommon::add('delete', __('Cancel'), $this->create_back_href());
+		Base_ActionBarCommon::add('trash', __('Cancel'), $this->create_back_href());
 
 		return true;
 	}

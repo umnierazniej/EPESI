@@ -35,7 +35,7 @@ class Base_User_Settings extends Module {
 				return;
 			}
 			if($this->parent->get_type()=='Base_Admin')
-				Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+				Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		}
         $this->set_module_variable('settings_branch',$branch);
 
@@ -71,9 +71,9 @@ class Base_User_Settings extends Module {
                 }    
         }
 
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
         Base_ActionBarCommon::add('save', __('Save'), $f->get_submit_form_href());
-        Base_ActionBarCommon::add('settings',__('Restore Defaults'),'href="javascript:void(0)" onClick="'.$this->set_default_js.'"');
+        Base_ActionBarCommon::add('cog',__('Restore Defaults'),'href="javascript:void(0)" onClick="'.$this->set_default_js.'"');
 
         if($f->validate()) {
             $this->submit_settings($f->exportValues());

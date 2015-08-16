@@ -233,7 +233,7 @@ class CRM_RoundcubeCommon extends Base_AdminModuleCommon {
 	}
 	Base_ActionBarCommon::add('reply',__('Reply'), Module::create_href(array('rc_reply'=>$rb_obj->record['id'])));
 	Base_ActionBarCommon::add('reply',__('Reply All'), Module::create_href(array('rc_replyall'=>$rb_obj->record['id'])));
-	Base_ActionBarCommon::add('forward',__('Forward'), Module::create_href(array('rc_forward'=>$rb_obj->record['id'])));
+	Base_ActionBarCommon::add('caret-right',__('Forward'), Module::create_href(array('rc_forward'=>$rb_obj->record['id'])));
     }
 
     public static function display_attachments($record, $nolink, $desc) {

@@ -16,9 +16,9 @@ class Apps_Shoutbox extends Module {
 		// to allow delete by admin uncomment below lines
 		// if i am admin add "clear shoutbox" actionbar button
 		if(Base_AclCommon::i_am_admin())
-			Base_ActionBarCommon::add('delete',__('Clear shoutbox'),$this->create_callback_href(array($this,'delete_all')));
+			Base_ActionBarCommon::add('trash',__('Clear shoutbox'),$this->create_callback_href(array($this,'delete_all')));
 		*/
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		if ($this->is_back()) {
 			$x = ModuleManager::get_instance('/Base_Box|0');
 			if (!$x)

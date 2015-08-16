@@ -55,8 +55,8 @@ class Utils_CurrencyField extends Module {
 				));
 			$gb_row->add_action($this->create_callback_href(array($this, 'edit_currency'),array($row['id'])),'edit');
 		}
-		Base_ActionBarCommon::add('add', __('New'), $this->create_callback_href(array($this, 'edit_currency'), array(null)));
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('plus-square', __('New'), $this->create_callback_href(array($this, 'edit_currency'), array(null)));
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		$this->display_module($gb);
 	}
 	
@@ -137,7 +137,7 @@ class Utils_CurrencyField extends Module {
 			return false;
 		}
 		$form->display();
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
 		return true;
 	}

@@ -83,7 +83,7 @@ class CRM_Contacts extends Module {
 			return;
 		}
 		if (!Base_AclCommon::i_am_admin()) return false;
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
 		$this->rb = $this->init_module(Utils_RecordBrowser::module_name(),'contact','contact');
 		$logins = DB::GetAll('SELECT * FROM user_login');
@@ -114,7 +114,7 @@ class CRM_Contacts extends Module {
 		$this->rb->disable_export();
 		$this->display_module($this->rb, array(array(), array('!login'=>''), array('work_phone'=>false, 'admin'=>true, 'mobile_phone'=>false, 'city'=>false, 'zone'=>false, 'login'=>true, 'access'=>true, 'email'=>true), array('username'=>true, 'admin'=>true, 'access'=>true, 'related_companies'=>false)));
 
-		Base_ActionBarCommon::add('edit',__('E-mail header'),$this->create_callback_href(array('Base_BoxCommon', 'push_module'), array($this->get_type(), 'change_email_header')),__('Edit the header of the message that is sent to each newly created user'));
+		Base_ActionBarCommon::add('pencil',__('E-mail header'),$this->create_callback_href(array('Base_BoxCommon', 'push_module'), array($this->get_type(), 'change_email_header')),__('Edit the header of the message that is sent to each newly created user'));
 	}
 
     public function change_email_header() {
@@ -171,7 +171,7 @@ class CRM_Contacts extends Module {
 		$rb = $this->init_module(Utils_RecordBrowser::module_name(),'contact','contact_addon');
 		$rb->set_additional_actions_method(array($this, 'contacts_actions'));
 		if(Utils_RecordBrowserCommon::get_access('contact','add'))
-			Base_ActionBarCommon::add('add',__('Add contact'), $this->create_callback_href(array($this, 'company_addon_new_contact'), array($arg['id'])));
+			Base_ActionBarCommon::add('plus-square',__('Add contact'), $this->create_callback_href(array($this, 'company_addon_new_contact'), array($arg['id'])));
 		$rb->set_button($this->create_callback_href(array($this, 'company_addon_new_contact'), array($arg['id'])));
 		$rb->set_defaults(array('company_name'=>$arg['id']));
 		$this->display_module($rb, array(array('(company_name'=>$arg['id'],'|related_companies'=>array($arg['id'])), array('company_name'=>false), array('last_name'=>'ASC','first_name'=>'ASC')), 'show_data');
@@ -180,7 +180,7 @@ class CRM_Contacts extends Module {
             $prompt_id = "contacts_address_fix";
             $content = $this->update_contacts_address_prompt($arg, $prompt_id);
             Libs_LeightboxCommon::display($prompt_id, $content, __('Update Contacts'));
-            Base_ActionBarCommon::add('all', __('Update Contacts'), Libs_LeightboxCommon::get_open_href($prompt_id));
+            Base_ActionBarCommon::add('refresh', __('Update Contacts'), Libs_LeightboxCommon::get_open_href($prompt_id));
         }
     }
 

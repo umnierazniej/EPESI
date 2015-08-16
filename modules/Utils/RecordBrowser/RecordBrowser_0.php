@@ -271,13 +271,13 @@ class Utils_RecordBrowser extends Module {
         if ($this->get_access('add',$this->custom_defaults)!==false && $this->add_button!==false) {
             if (!$this->multiple_defaults) {
                 if ($this->add_button===null) {
-                    Base_ActionBarCommon::add('add',__('New'), $this->create_callback_href(array($this,'navigate'),array('view_entry', 'add', null, $this->custom_defaults)));
+                    Base_ActionBarCommon::add('plus-square',__('New'), $this->create_callback_href(array($this,'navigate'),array('view_entry', 'add', null, $this->custom_defaults)));
                     Utils_ShortcutCommon::add(array('Ctrl','N'), 'function(){'.$this->create_callback_href_js(array($this,'navigate'),array('view_entry', 'add', null, $this->custom_defaults)).'}');
                 } elseif($this->add_button!=='') {
-                    Base_ActionBarCommon::add('add',__('New'), $this->add_button);
+                    Base_ActionBarCommon::add('plus-square',__('New'), $this->add_button);
                 }
             } else {
-                Base_ActionBarCommon::add('add',__('New'), Utils_RecordBrowserCommon::create_new_record_href($this->tab,$this->custom_defaults,'multi',true,true));
+                Base_ActionBarCommon::add('plus-square',__('New'), Utils_RecordBrowserCommon::create_new_record_href($this->tab,$this->custom_defaults,'multi',true,true));
             }
         }
 
@@ -1247,7 +1247,7 @@ class Utils_RecordBrowser extends Module {
             } else {
                 print(__('You don\'t have permission to view this record.'));
                 if ($show_actions===true || (is_array($show_actions) && (!isset($show_actions['back']) || $show_actions['back']))) {
-                    Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+                    Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
                     //Utils_ShortcutCommon::add(array('esc'), 'function(){'.$this->create_back_href_js().'}');
                 }
                 return true;
@@ -1256,7 +1256,7 @@ class Utils_RecordBrowser extends Module {
         if ($mode=='add' && !$access) {
 			print(__('You don\'t have permission to perform this action.'));
 			if ($show_actions===true || (is_array($show_actions) && (!isset($show_actions['back']) || $show_actions['back']))) {
-				Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+				Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 				//Utils_ShortcutCommon::add(array('esc'), 'function(){'.$this->create_back_href_js().'}');
 			}
 			return true;
@@ -1346,11 +1346,11 @@ class Utils_RecordBrowser extends Module {
         if ($show_actions!==false) {
             if ($mode=='view') {
                 if ($this->get_access('edit',$this->record)) {
-                    Base_ActionBarCommon::add('edit', __('Edit'), $this->create_callback_href(array($this,'navigate'), array('view_entry','edit',$id)));
+                    Base_ActionBarCommon::add('pencil', __('Edit'), $this->create_callback_href(array($this,'navigate'), array('view_entry','edit',$id)));
                     Utils_ShortcutCommon::add(array('Ctrl','E'), 'function(){'.$this->create_callback_href_js(array($this,'navigate'), array('view_entry','edit',$id)).'}');
                 }
                 if ($this->get_access('delete',$this->record)) {
-                    Base_ActionBarCommon::add('delete', __('Delete'), $this->create_confirm_callback_href(__('Are you sure you want to delete this record?'),array($this,'delete_record'),array($id)));
+                    Base_ActionBarCommon::add('trash', __('Delete'), $this->create_confirm_callback_href(__('Are you sure you want to delete this record?'),array($this,'delete_record'),array($id)));
                 }
                 if ($this->get_access('add',$this->record)) {
                     Base_ActionBarCommon::add('clone',__('Clone'), $this->create_confirm_callback_href(__('You are about to create a copy of this record. Do you want to continue?'),array($this,'clone_record'),array($id)));
@@ -1363,10 +1363,10 @@ class Utils_RecordBrowser extends Module {
                     }
                 }
                 if ($show_actions===true || (is_array($show_actions) && (!isset($show_actions['back']) || $show_actions['back'])))
-                    Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+                    Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
             } elseif($mode!='history') {
                 Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
-                Base_ActionBarCommon::add('delete', __('Cancel'), $this->create_back_href());
+                Base_ActionBarCommon::add('trash', __('Cancel'), $this->create_back_href());
             }
             //Utils_ShortcutCommon::add(array('esc'), 'function(){'.$this->create_back_href_js().'}');
         }
@@ -1865,7 +1865,7 @@ class Utils_RecordBrowser extends Module {
             return false;
         }
         $form->display();
-		Base_ActionBarCommon::add('back',__('Cancel'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Cancel'),$this->create_back_href());
 		Base_ActionBarCommon::add('save',__('Save'),$form->get_submit_form_href());
 
         return true;
@@ -1911,8 +1911,8 @@ class Utils_RecordBrowser extends Module {
 		$full_access = Base_AdminCommon::get_access('Utils_RecordBrowser', 'fields')==2;
 
 		if ($full_access) {
-			Base_ActionBarCommon::add('add',__('New field'),$this->create_callback_href(array($this, 'view_field')));
-			Base_ActionBarCommon::add('add',__('New page'),$this->create_callback_href(array($this, 'new_page')));
+			Base_ActionBarCommon::add('plus-square',__('New field'),$this->create_callback_href(array($this, 'view_field')));
+			Base_ActionBarCommon::add('plus-square',__('New page'),$this->create_callback_href(array($this, 'new_page')));
 		}
         $gb = $this->init_module(Utils_GenericBrowser::module_name(), null, 'fields');
         $gb->set_table_columns(array(
@@ -2408,7 +2408,7 @@ class Utils_RecordBrowser extends Module {
 		eval_js('RB_advanced_settings();');
 
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
-		Base_ActionBarCommon::add('back', __('Cancel'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Cancel'), $this->create_back_href());
 		
         return true;
     }
@@ -2638,7 +2638,7 @@ class Utils_RecordBrowser extends Module {
 
 		
 		$this->display_module($tb);
-        Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+        Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
         return true;
     }
 	
@@ -2749,7 +2749,7 @@ class Utils_RecordBrowser extends Module {
 				location(array());
 			return;
 		}
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 
         $form = $this->init_module(Libs_QuickForm::module_name());
         $opts = Utils_RecordBrowserCommon::list_installed_recordsets('%caption (%tab)');
@@ -2770,7 +2770,7 @@ class Utils_RecordBrowser extends Module {
         $custom_recordsets_module = 'Utils/RecordBrowser/CustomRecordsets';
         if (ModuleManager::is_installed($custom_recordsets_module) >= 0) {
             $href = $this->create_callback_href(array('Base_BoxCommon', 'push_module'), array($custom_recordsets_module, 'admin'));
-            Base_ActionBarCommon::add('settings', __('Custom Recordsets'), $href);
+            Base_ActionBarCommon::add('cog', __('Custom Recordsets'), $href);
         }
     }
     public function record_management($table){
@@ -2983,7 +2983,7 @@ class Utils_RecordBrowser extends Module {
 				}
 		}
 		if (Base_AdminCommon::get_access('Utils_RecordBrowser', 'permissions')==2) 
-			Base_ActionBarCommon::add('add',__('Add new rule'), $this->create_callback_href(array($this, 'edit_permissions_rule'), array(null)));
+			Base_ActionBarCommon::add('plus-square',__('Add new rule'), $this->create_callback_href(array($this, 'edit_permissions_rule'), array(null)));
 		Base_ThemeCommon::load_css('Utils_RecordBrowser', 'edit_permissions');
 		$this->display_module($gb);
 		eval_js('utils_recordbrowser__crits_initialized = false;');
@@ -3211,7 +3211,7 @@ class Utils_RecordBrowser extends Module {
 		
 		$theme->display('edit_permissions');
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
-		Base_ActionBarCommon::add('delete', __('Cancel'), $this->create_back_href());
+		Base_ActionBarCommon::add('trash', __('Cancel'), $this->create_back_href());
 		return true;
 	}
 	

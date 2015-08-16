@@ -50,7 +50,7 @@ class Utils_Attachment extends Module {
 		if ($this->is_back()) {
 			$this->parent->reset();
 		}
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
 		$google_login = Variable::get('utils_attachments_google_user', false);
 		$google_pass = Variable::get('utils_attachments_google_pass', false);
@@ -89,7 +89,7 @@ class Utils_Attachment extends Module {
 
 		$form->assign_theme('form', $theme);
 
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
 		
 		Base_ThemeCommon::load_css('Utils_RecordBrowser','View_entry');
@@ -204,7 +204,7 @@ class Utils_Attachment extends Module {
             return $x->pop_main();
         }
 
-        Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+        Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 
         $id = $attachment['id'];
 

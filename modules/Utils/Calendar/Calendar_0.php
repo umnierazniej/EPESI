@@ -283,7 +283,7 @@ class Utils_Calendar extends Module {
 			$jshref = $this->create_unique_href_js(array('action'=>'add','time'=>$this->date+time()-strtotime(date('Y-m-d'))));
 		if ($jshref!==false) {
 			$href = ' href="javascript:void(0)" onClick="'.str_replace('"','\'',$jshref).'" '; // TODO: regular escape didn't work
-			Base_ActionBarCommon::add('add',__('Add event'),$href);
+			Base_ActionBarCommon::add('plus-square',__('Add event'),$href);
 			Utils_ShortcutCommon::add(array('Ctrl','N'), 'function(){'.$jshref.'}');
 		}
 	}

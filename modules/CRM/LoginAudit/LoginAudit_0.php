@@ -32,7 +32,7 @@ class CRM_LoginAudit extends Module {
 				location(array());
 			return;
 		}
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 
         $user = $this->get_module_variable('filter_user','');
         $form = $this->init_module(Libs_QuickForm::module_name(),null,'filter');
@@ -111,7 +111,7 @@ class CRM_LoginAudit extends Module {
 		$this->display_module($gb);
 
 	if(!DEMO_MODE)
-	        Base_ActionBarCommon::add('settings',__('Maintenance'),$this->create_callback_href(array($this, 'purge_log')));
+	        Base_ActionBarCommon::add('cog',__('Maintenance'),$this->create_callback_href(array($this, 'purge_log')));
         return true;
 	}
 
@@ -143,8 +143,8 @@ class CRM_LoginAudit extends Module {
             }
         }
 
-        Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
-        Base_ActionBarCommon::add('delete',__('Purge Log File'),'href="javascript:void(0)" onClick="if(confirm(\''.Epesi::escapeJS(__('Log will be purged!')).'\')){'.$form->get_submit_form_js().'}"');
+        Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
+        Base_ActionBarCommon::add('trash',__('Purge Log File'),'href="javascript:void(0)" onClick="if(confirm(\''.Epesi::escapeJS(__('Log will be purged!')).'\')){'.$form->get_submit_form_js().'}"');
         return true;
     }
 }

@@ -17,7 +17,7 @@ class Base_Cron extends Module {
 		if ($this->is_back()) {
 			$this->parent->reset();
 		}
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
         $theme = $this->init_module(Base_Theme::module_name());
 

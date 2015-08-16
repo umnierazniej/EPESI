@@ -75,7 +75,7 @@ class Utils_Comment extends Module{
 				}
 				$form->assign_theme('form', $theme);
 			} else {
-				Base_ActionBarCommon::add('add',__('Reply'),$this->create_unique_href(array('action'=>'post_reply')));
+				Base_ActionBarCommon::add('plus-square',__('Reply'),$this->create_unique_href(array('action'=>'post_reply')));
 			}
 
 		$recordSet = DB::Execute('SELECT COUNT(*) FROM comment WHERE topic=%s AND parent <= -1',array($this->key))->FetchRow();

@@ -635,7 +635,7 @@ class CRM_ContactsCommon extends ModuleCommon {
                     'zone.selectedIndex = k;'.
                     '\',900);'.
                     'document.getElementsByName(\'web_address\')[0].value=\''.$comp['web_address'].'\';';
-                Base_ActionBarCommon::add('add', __('Paste Company Info'), 'href="javascript:void(0);" onclick="'.$paste_company_info.'"');
+                Base_ActionBarCommon::add('plus-square', __('Paste Company Info'), 'href="javascript:void(0);" onclick="'.$paste_company_info.'"');
             }
         }
         $comp = array();
@@ -840,7 +840,7 @@ class CRM_ContactsCommon extends ModuleCommon {
         if ($mode=='view') {
 			if (!$default) return;
 			if(Base_AclCommon::i_am_sa()) {
-				Base_ActionBarCommon::add('settings', __('Log as user'), Module::create_href(array('log_as_user'=>$default)));
+				Base_ActionBarCommon::add('cog', __('Log as user'), Module::create_href(array('log_as_user'=>$default)));
 				if (isset($_REQUEST['log_as_user']) && $_REQUEST['log_as_user']==$default) {
 					Acl::set_user($default, true); //tag who is logged
 					Epesi::redirect();
@@ -1153,7 +1153,7 @@ class CRM_ContactsCommon extends ModuleCommon {
          * we should come back to initial state - do not print LB.
          */
         if( ! (isset($_REQUEST['UCD']) || Module::static_get_module_variable(CRM_Contacts::module_name(), 'UCD', 0)) ) {
-            if(isset($values['company_name']) && $values['company_name']) Base_ActionBarCommon::add('edit', __('Copy company data'), Module::create_href(array('UCD'=>true)));
+            if(isset($values['company_name']) && $values['company_name']) Base_ActionBarCommon::add('pencil', __('Copy company data'), Module::create_href(array('UCD'=>true)));
         }
         if(isset($_REQUEST['UCD']) || Module::static_get_module_variable(CRM_Contacts::module_name(), 'UCD', 0)) {
             $ucd = Module::static_get_module_variable(CRM_Contacts::module_name(), 'UCD', 0);
@@ -1223,7 +1223,7 @@ class CRM_ContactsCommon extends ModuleCommon {
             $html = $form->toHtml();
 
             Libs_LeightboxCommon::display($lid, $html);
-            Base_ActionBarCommon::add('edit', __('Copy company data'), Libs_LeightboxCommon::get_open_href($lid));
+            Base_ActionBarCommon::add('pencil', __('Copy company data'), Libs_LeightboxCommon::get_open_href($lid));
             if (isset($_REQUEST['UCD'])) eval_js('leightbox_activate(\''.$lid.'\')');
 			unset($_REQUEST['UCD']);
         }

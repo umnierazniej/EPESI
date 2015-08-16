@@ -93,8 +93,8 @@ class Base_MainModuleIndicator extends Module {
 
         $this->display_module($form, array( array($this,'submit_logo') ));
 
-        Base_ActionBarCommon::add('delete',__('Delete logo'),$this->create_callback_href(array($this,'delete_logo')));
-        Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+        Base_ActionBarCommon::add('trash',__('Delete logo'),$this->create_callback_href(array($this,'delete_logo')));
+        Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
     }
 	
 	public function delete_logo() {

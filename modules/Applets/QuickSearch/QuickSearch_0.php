@@ -56,7 +56,7 @@ class Applets_QuickSearch extends Module{
 				location(array());
 			return;
 		}
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		$this->rb = $this->init_module(Utils_RecordBrowser::module_name(),'quick_search','quick_searach');
 		$this->display_module($this->rb);
 		return true;

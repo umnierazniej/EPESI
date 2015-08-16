@@ -364,7 +364,7 @@ class Base_EpesiStoreCommon extends Base_AdminModuleCommon {
                     break;
                 $return = self::_display_payments_for_order($response['order_id']);
                 if ($return === true) {
-                    Base_ActionBarCommon::add('back', __('Back'), Base_BoxCommon::main_module_instance()->create_back_href());
+                    Base_ActionBarCommon::add('caret-left', __('Back'), Base_BoxCommon::main_module_instance()->create_back_href());
                     return true;
                 }
                 break;

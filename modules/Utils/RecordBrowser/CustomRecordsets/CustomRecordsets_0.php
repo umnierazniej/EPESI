@@ -32,7 +32,7 @@ class Utils_RecordBrowser_CustomRecordsets extends Module
             }
             return;
         }
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
         $gb = $this->init_module(Utils_GenericBrowser::module_name(), null, 'rb_custom');
         $gb->set_table_columns(array(
             array('name' => __('Table')),
@@ -49,7 +49,7 @@ class Utils_RecordBrowser_CustomRecordsets extends Module
             $table_href = $this->create_callback_href(array($this, 'manage_recordset'), array($table_name));
             $gbr->add_data("<a $table_href>$table_name</a>", Utils_RecordBrowserCommon::get_caption($t['tab']), str_replace(Utils_RecordBrowser_CustomRecordsetsCommon::$sep, ' -> ', $t['menu']));
         }
-        Base_ActionBarCommon::add('new', __('Create new'), $this->create_callback_href(array($this, 'edit_rset')));
+        Base_ActionBarCommon::add('file', __('Create new'), $this->create_callback_href(array($this, 'edit_rset')));
         $this->display_module($gb);
     }
 
@@ -58,7 +58,7 @@ class Utils_RecordBrowser_CustomRecordsets extends Module
         if ($this->is_back()) {
             return false;
         }
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
         $this->pack_module(Utils_RecordBrowser::module_name(), $recordset, 'record_management');
         return true;
     }
@@ -125,7 +125,7 @@ class Utils_RecordBrowser_CustomRecordsets extends Module
         }
 
         $form->display_as_column();
-        Base_ActionBarCommon::add('back', __('Cancel'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Cancel'), $this->create_back_href());
         Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
         return true;
     }

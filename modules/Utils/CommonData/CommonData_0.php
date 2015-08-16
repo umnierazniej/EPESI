@@ -21,7 +21,7 @@ class Utils_CommonData extends Module {
 				location(array());
 			return;
 		}
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 
 		$this->browse();
 	}
@@ -72,7 +72,7 @@ class Utils_CommonData extends Module {
 			return false;
 		}
 		Base_ActionBarCommon::add('save',__('Save'),$f->get_submit_form_href());
-		Base_ActionBarCommon::add('back',__('Cancel'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Cancel'),$this->create_back_href());
 		$f->display();
 		return true;
 	}
@@ -130,10 +130,10 @@ class Utils_CommonData extends Module {
 		$table_md5 = md5($gb->get_path());
 		eval_js("utils_commondata_sort_nodes_init(\"$table_md5\")");
 		
-		Base_ActionBarCommon::add('settings',__('Reset Order By Key'),$this->create_callback_href(array('Utils_CommonDataCommon','reset_array_positions'),$name));
-		Base_ActionBarCommon::add('add',__('Add array'),$this->create_callback_href(array($this,'edit'),$name));
+		Base_ActionBarCommon::add('cog',__('Reset Order By Key'),$this->create_callback_href(array('Utils_CommonDataCommon','reset_array_positions'),$name));
+		Base_ActionBarCommon::add('plus-square',__('Add array'),$this->create_callback_href(array($this,'edit'),$name));
 		if(!$root)
-			Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+			Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		return true;
 	}
 

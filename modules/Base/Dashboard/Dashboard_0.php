@@ -36,9 +36,9 @@ class Base_Dashboard extends Module {
 		$config_mode = $this->get_module_variable('config_mode', false);
 		if ($default_dash || Base_DashboardCommon::has_permission_to_manage_applets()) {
 			if ($config_mode) {
-				Base_ActionBarCommon::add('back',__('Done'),$this->create_callback_href(array($this,'switch_config_mode')));
+				Base_ActionBarCommon::add('caret-left',__('Done'),$this->create_callback_href(array($this,'switch_config_mode')));
 			} else {
-				Base_ActionBarCommon::add('settings',__('Config'),$this->create_callback_href(array($this,'switch_config_mode')));
+				Base_ActionBarCommon::add('cog',__('Config'),$this->create_callback_href(array($this,'switch_config_mode')));
 			}
 		}
 
@@ -151,7 +151,7 @@ class Base_Dashboard extends Module {
 	}
 
 	public function display_dashboard($tab_id) {
-//		Base_ActionBarCommon::add('add',__('Add applet'),$this->create_callback_href(array($this,'applets_list'),$tab_id));
+//		Base_ActionBarCommon::add('plus-square',__('Add applet'),$this->create_callback_href(array($this,'applets_list'),$tab_id));
 
 		$default_dash = $this->get_module_variable('default');
 		$colors = Base_DashboardCommon::get_available_colors();
@@ -395,9 +395,9 @@ class Base_Dashboard extends Module {
 		$ok=null;
 		$f->display();
 
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		Base_ActionBarCommon::add('save',__('Save'),$f->get_submit_form_href());
-		Base_ActionBarCommon::add('settings',__('Restore Defaults'),'onClick="'.$this->set_default_js.'" href="javascript:void(0)"');
+		Base_ActionBarCommon::add('cog',__('Restore Defaults'),'onClick="'.$this->set_default_js.'" href="javascript:void(0)"');
 
 		return true;
 
@@ -482,7 +482,7 @@ class Base_Dashboard extends Module {
 				location(array());
 			return;
 		}
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		
 		$this->set_module_variable('default',true);
 		$this->dashboard();

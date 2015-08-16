@@ -111,7 +111,7 @@ class CRM_Meeting extends Module {
         }
         $rb = $this->init_module(Utils_RecordBrowser::module_name(), 'crm_meeting_related', 'crm_meeting_related');
         $this->display_module($rb);
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
     }
 
 }

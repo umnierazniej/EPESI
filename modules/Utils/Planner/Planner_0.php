@@ -232,7 +232,7 @@ class Utils_Planner extends Module {
 		$this->form->assign_theme('form', $theme);
 		$theme->display();
 		Base_ActionBarCommon::add('save',__('Save'),$this->form->get_submit_form_href());
-		Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+		Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
 		
 		$time_frames = explode(';',$values['grid_selected_frames']);
 		if (!empty($time_frames) && $time_frames[0]) {

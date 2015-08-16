@@ -28,9 +28,9 @@ class Base_EssClient extends Module {
             $this->parent->reset();
             return;
         }
-        if(!$store) Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        if(!$store) Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
         if (Base_EssClientCommon::is_no_ssl_allowed())
-            Base_ActionBarCommon::add('settings', __('SSL settings'), $this->create_callback_href(array('Base_BoxCommon', 'push_module'), array('Base_EssClient', 'no_ssl_settings')));
+            Base_ActionBarCommon::add('cog', __('SSL settings'), $this->create_callback_href(array('Base_BoxCommon', 'push_module'), array('Base_EssClient', 'no_ssl_settings')));
 
         if (Base_EssClientCommon::has_license_key() == false) {
             $this->terms_and_conditions();
@@ -60,16 +60,16 @@ class Base_EssClient extends Module {
                             '</span>' . $status_description . '</div>');
                     print('<div style="margin: 5px">' . $verbose_description . '</div>');
                     print('</div>');
-                    Base_ActionBarCommon::add('edit', __('Edit company details'), $this->create_callback_href(array($this, 'register_form'), array($data)));
+                    Base_ActionBarCommon::add('pencil', __('Edit company details'), $this->create_callback_href(array($this, 'register_form'), array($data)));
                 } else {
                     $email = Base_EssClientCommon::get_support_email();
 
                     print('<div class="important_notice">' . __('Your EPESI ID is not recognized by EPESI Store Server. Please contact EPESI team at %s.', array($email)) . '</div>');
-                    Base_ActionBarCommon::add('delete', __('Revoke license key'), $this->create_confirm_callback_href(__('Are you sure you want to revoke your EPESI License Key?'), array('Base_EssClientCommon', 'clear_license_key')));
+                    Base_ActionBarCommon::add('trash', __('Revoke license key'), $this->create_confirm_callback_href(__('Are you sure you want to revoke your EPESI License Key?'), array('Base_EssClientCommon', 'clear_license_key')));
                 }
                 $url = get_epesi_url() . '/modules/Base/EssClient/tos/tos.php';
                 Base_ActionBarCommon::add('search', __('Terms & Conditions'), 'target="_blank" href="' . $url . '"');
-                Base_ActionBarCommon::add('settings', __('Edit license key'), $this->create_callback_href(array($this, 'license_key_form')));
+                Base_ActionBarCommon::add('cog', __('Edit license key'), $this->create_callback_href(array($this, 'license_key_form')));
             }
         } catch (Exception $e) {
             print('<div class="important_notice">' . __('There was an error while trying to connect to Epesi Store Server. Please try again later.') . '<br>');
@@ -148,7 +148,7 @@ class Base_EssClient extends Module {
         if ($this->is_back()) {
             return false;
         }
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
         $f = $this->init_module(Libs_QuickForm::module_name());
 
@@ -267,7 +267,7 @@ class Base_EssClient extends Module {
         if ($this->is_back()) {
             return false;
         }
-        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 
         $f = $this->init_module(Libs_QuickForm::module_name());
 
@@ -290,7 +290,7 @@ class Base_EssClient extends Module {
     public function no_ssl_settings() {
         $f = $this->init_module("Libs/QuickForm");
         $f->addElement('checkbox', 'allow', 'Allow unsecure connection');
-        Base_ActionBarCommon::add('back', __('Back'), Base_BoxCommon::pop_main_href());
+        Base_ActionBarCommon::add('caret-left', __('Back'), Base_BoxCommon::pop_main_href());
         Base_ActionBarCommon::add('save', __('Save'), $f->get_submit_form_href());
         if ($f->validate()) {
             $x = $f->exportValues();

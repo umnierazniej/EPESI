@@ -95,9 +95,9 @@ class CRM_Filters extends Module {
 
 	public function edit($user_settings_nav=true) {
 		if ($user_settings_nav)
-			Base_ActionBarCommon::add('back',__('Back'),$this->create_main_href('Base_User_Settings'));
+			Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_main_href('Base_User_Settings'));
 
-		Base_ActionBarCommon::add('add',__('Add preset'),$this->create_callback_href(array($this,'edit_group')));
+		Base_ActionBarCommon::add('plus-square',__('Add preset'),$this->create_callback_href(array($this,'edit_group')));
 
 		$gb = $this->init_module(Utils_GenericBrowser::module_name(),null,'edit');
 
@@ -176,7 +176,7 @@ class CRM_Filters extends Module {
 			return false;
 		} else {
 			Base_ActionBarCommon::add('save',__('Save'),$form->get_submit_form_href());
-			Base_ActionBarCommon::add('back',__('Cancel'),$this->create_back_href());
+			Base_ActionBarCommon::add('caret-left',__('Cancel'),$this->create_back_href());
 
 			$form->display_as_column();
 		}

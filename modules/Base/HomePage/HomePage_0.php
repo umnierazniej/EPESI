@@ -31,8 +31,8 @@ class Base_HomePage extends Module {
 		if ($this->is_back()) {
 			$this->parent->reset();
 		}
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
-		Base_ActionBarCommon::add('add', __('Add Home Page'), $this->create_callback_href(array($this, 'edit_home_page')));
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('plus-square', __('Add Home Page'), $this->create_callback_href(array($this, 'edit_home_page')));
 
 		$gb = $this->init_module(Utils_GenericBrowser::module_name(), null, 'home_page_admin');
 		$gb->set_table_columns(array(
@@ -147,7 +147,7 @@ class Base_HomePage extends Module {
 		eval_js('base_home_page__initialized = true;');
 
 		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
-		Base_ActionBarCommon::add('delete', __('Cancel'), $this->create_back_href());
+		Base_ActionBarCommon::add('trash', __('Cancel'), $this->create_back_href());
 
 		return true;
 	}

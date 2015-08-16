@@ -30,7 +30,7 @@ class CRM_Roundcube extends Module {
             }
         }
         foreach($accounts as $a) {
-            Base_ActionBarCommon::add('add',($a==$def?'<b><u>'.$a['account_name'].'</u></b>':$a['account_name']), $this->create_callback_href(array($this,'account'),$a['id']),$a['email'],$a==$user_def?-1:0);
+            Base_ActionBarCommon::add('plus-square',($a==$def?'<b><u>'.$a['account_name'].'</u></b>':$a['account_name']), $this->create_callback_href(array($this,'account'),$a['id']),$a['email'],$a==$user_def?-1:0);
         }
         if($def===null) {
 			print('<h1><a '.$this->create_callback_href(array($this,'push_settings'),array(__('E-mail Accounts'))).'>Please set your e-mail account</a></h1>');
@@ -54,7 +54,7 @@ class CRM_Roundcube extends Module {
 			return;
 		}
 
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+		Base_ActionBarCommon::add('caret-left', __('Back'), $this->create_back_href());
 		
         $tb = $this->init_module(Utils_TabbedBrowser::module_name());
         $tb->set_tab(__('Global Signature'),array($this,'admin_signature'));
@@ -364,9 +364,9 @@ class CRM_Roundcube extends Module {
                 Base_BoxCommon::pop_main();
                 return;
             }
-            Base_ActionBarCommon::add('back',__('Back'),$this->create_back_href());
+            Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_back_href());
         } else {
-            Base_ActionBarCommon::add('back',__('Back'),$this->create_main_href('Base_User_Settings'));
+            Base_ActionBarCommon::add('caret-left',__('Back'),$this->create_main_href('Base_User_Settings'));
         }
 
         $this->rb = $this->init_module(Utils_RecordBrowser::module_name(),'rc_accounts','rc_accounts');

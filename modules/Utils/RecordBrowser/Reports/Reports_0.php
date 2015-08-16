@@ -1079,7 +1079,7 @@ class Utils_RecordBrowser_Reports extends Module {
 			$this->pdf_ob->prepare_header();
 			$this->pdf_ob->AddPage();
 		} elseif (!$this->charts && !$this->csv) {
-			Base_ActionBarCommon::add('report',__('Charts'),$this->create_callback_href(array($this, 'body'), array(false,true)));
+			Base_ActionBarCommon::add('line-chart',__('Charts'),$this->create_callback_href(array($this, 'body'), array(false,true)));
 		}
 
 		if($this->charts)
@@ -1091,7 +1091,7 @@ class Utils_RecordBrowser_Reports extends Module {
 		}
 
 		if($charts) {
-			Base_ActionBarCommon::add('report',__('Table'),$this->create_back_href());
+			Base_ActionBarCommon::add('line-chart',__('Table'),$this->create_back_href());
 			return true;
 		} else {
 			if(!$this->csv) {
