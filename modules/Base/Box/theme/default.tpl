@@ -64,11 +64,12 @@
 						</div>
 					</td>
 					<td id="launchpad_button_section_spacing" style="empty-cells: hide; width: 6px; display:none;"></td>
-					<td class="icons_launchpad" id="launchpad_button_section" style="display:none;">
-						<div class="shadow_css3_icons_launchpad_border"> 
-							{$launchpad}
+					<td class="icons_launchpad" id="launchpad_button_section">
+						<div class="shadow_css3_icons_launchpad_border">
+							<button type='button' data-toggle='modal' data-target='#launchpadModal' class="btn btn-default"><i class="fa fa-cubes fa-3x"></i><div>Launchpad</div></button>
 						</div>
 					</td>
+
 					<td style="empty-cells: hide; width: 6px;"></td>
 					<td id="login-search-td">
 						<div class="shadow_css3_login-search-td_border">
@@ -89,6 +90,7 @@
 			<center>{$main}</center>
 		</div>
 	</div>
+	{$launchpad}
 
 {$status}
 
