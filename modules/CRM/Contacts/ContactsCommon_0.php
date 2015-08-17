@@ -17,10 +17,6 @@ class CRM_ContactsCommon extends ModuleCommon {
 	static $rset = null;
 	static $rid = null;
 	
-	public static function help() {
-		return Base_HelpCommon::retrieve_help_from_file(self::Instance()->get_type());
-	}
-
 	public static function home_page() {
         return array(_M('My Contact') => array(CRM_Contacts::module_name(), 'body', array('my_contact')),
             _M('Main Company') => array(CRM_Contacts::module_name(), 'body', array('main_company')));

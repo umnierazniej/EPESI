@@ -250,7 +250,6 @@ class Utils_RecordBrowser extends Module {
 	}
     // BODY //////////////////////////////////////////////////////////////////////////////////////////////////////
     public function body($def_order=array(), $crits=array(), $cols=array(), $filters_set=array()) {
-		Base_HelpCommon::screen_name('browse_'.$this->tab);
         unset($_SESSION['client']['recordbrowser']['admin_access']);
         if ($this->check_for_jump()) return;
         $this->fullscreen_table=true;
@@ -1187,7 +1186,6 @@ class Utils_RecordBrowser extends Module {
         return $this->view_entry($mode, $id, $defaults, $show_actions);
     }
     public function view_entry($mode='view', $id = null, $defaults = array(), $show_actions=true) {
-		Base_HelpCommon::screen_name('rb_'.$mode.'_'.$this->tab);
         if (isset($_SESSION['client']['recordbrowser']['admin_access'])) Utils_RecordBrowserCommon::$admin_access = true;
         self::$mode = $mode;
         if ($this->navigation_executed) {
