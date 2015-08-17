@@ -76,13 +76,6 @@ dashboard_activate = function(tabs, default_dash,allowed_management) {
             }});
     }
 
-  //applet toggle buttons
-  jq('#dashboard .applet').each(function(i,a) {
-        var aa = jq(a);
-        aa.find('a.toggle').click(function(b) {
-            aa.find('.content').toggle('blind');
-        });
-  });
 }
 
 remove_applet = function(id, default_dash) {

@@ -17,11 +17,6 @@
 					<button class="btn btn-default btn-xs"><i class="fa fa-arrows-alt"></i></button>
 					{$__link.href.close}
 				{/if}
-				{if isset($toggle)}
-					{$__link.toggle.open}
-					<button class="btn btn-default btn-xs"><i class="fa fa-caret-square-o-down"></i></button>
-					{$__link.toggle.close}
-				{/if}
 				{if isset($configure)}
 					{$__link.configure.open}
 					<button class="btn btn-default btn-xs"><i class="fa fa-cog"></i></button>

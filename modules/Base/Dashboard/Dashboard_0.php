@@ -179,7 +179,6 @@ class Base_Dashboard extends Module {
 
 				$opts = array();
 				$opts['title'] = $cap;
-				$opts['toggle'] = true;
 				$opts['href'] = null;
 				$opts['go'] = false;
 				$opts['go_function'] = 'body';
@@ -198,9 +197,6 @@ class Base_Dashboard extends Module {
 				$th->assign('handle_class','handle');
 				$th->assign('fixed', !($default_dash || Base_DashboardCommon::has_permission_to_manage_applets()));
 
-				if($opts['toggle'] && !$config_mode)
-					$th->assign('toggle','<a class="toggle" '.Utils_TooltipCommon::open_tag_attrs(__('Toggle')).'>=</a>');
-					
 				foreach ($opts['actions'] as $k=>$v)
 					if (!$v) unset($opts['actions'][$k]);
 
