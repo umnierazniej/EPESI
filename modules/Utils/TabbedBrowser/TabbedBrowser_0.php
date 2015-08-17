@@ -81,14 +81,15 @@ class Utils_TabbedBrowser extends Module {
 				$body .= $this->display_contents($val, $i);
 			$i++;
 		}
-		
+
+		//todo-pj: Review all submenus (how it works?)
 		$captions_subs = array();
 		foreach ($submenus as $group=>$captions) {
-			$selected = ' class="tabbed_browser_unselected"';
+			$selected = false;
 			$subs = array();
 			foreach ($captions as $caption=>$val) {
 				if($this->page==$i) {
-					$selected = ' class="tabbed_browser_selected"';
+					$selected = true;
 					$group = $group.': '.$caption;
 				}
 				if($this->page==$i || $val['js'])
@@ -139,16 +140,21 @@ class Utils_TabbedBrowser extends Module {
 		if ($parent===null) $parent = '';
 		else $parent = ' parent_menu="'.$parent.'"';
 		$path = escapeJS($this->get_path());
-		if($this->page==$i) $selected = ' class="tabbed_browser_selected"';
-			else $selected = ' class="tabbed_browser_unselected"';
-		$icon = '<img class="tab_icon" id="'.$this->get_tab_id($caption).'_icon" src="" style="display:none;">';
+
 		if (isset($val['href']) && $val['href'])
-			$link = '<span id="'.$this->get_tab_id($caption).'"'.$parent.' '.$val['href'].'>'.$caption.$icon.'</span>';
+			$href = $val['href'];
 		elseif ($val['js'])
-			$link = '<span id="'.$this->get_tab_id($caption).'"'.$parent.' href="javascript:void(0)" onClick="tabbed_browser_switch('.$i.','.$this->max.',this,\''.$path.'\')"'.$selected.'>'.$caption.$icon.'</span>';
+			$href = 'href="javascript:void(0)" onClick="tabbed_browser_switch('.$i.','.$this->max.',this,\''.$path.'\')"';
 		else
-			$link = '<span id="'.$this->get_tab_id($caption).'"'.$parent.' href="javascript:void(0)" onClick="tabbed_browser_switch('.$i.','.$this->max.',this,\''.$path.'\')"'.$selected.' original_action="'.$this->create_unique_href_js(array('page'=>$i)).'">'.$caption.$icon.'</span>';
-		return $link;
+			$href = 'href="javascript:void(0)" onClick="tabbed_browser_switch('.$i.','.$this->max.',this,\''.$path.'\')" original_action="'.$this->create_unique_href_js(array('page'=>$i)).'"';
+
+		return array(
+			'id' => $this->get_tab_id($caption),
+			'selected' => ($this->page == $i),
+			'caption' => $caption,
+			'parent' => $parent,
+			'href' => $href
+		);
 	}
 	
 	/**
