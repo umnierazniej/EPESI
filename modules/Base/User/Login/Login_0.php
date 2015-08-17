@@ -18,6 +18,19 @@ class Base_User_Login extends Module {
 
 	public function construct() {
 		$this->theme = $this->pack_module(Base_Theme::module_name());
+
+		$this->theme->assign('is_logged_in', Acl::is_user());
+		$this->theme->assign('is_demo', DEMO_MODE);
+		if (SUGGEST_DONATION) {
+			$this->theme->assign('donation_note', __('If you find our software useful, please support us by making a %s.', array('<a href="http://epe.si/cost" target="_blank">'.__('donation').'</a>')).'<br>'.__('Your funding will help to ensure continued development of this project.'));
+		}
+
+		if(Acl::is_user()) {
+			if ($this->get_unique_href_variable('logout')) {
+				Base_User_LoginCommon::logout();
+				eval_js('document.location=\'index.php\';', false);
+			}
+		}
 	}
 
 	private function autologin() {
@@ -28,7 +41,35 @@ class Base_User_Login extends Module {
 		return false;
 	}
 
-	public function body($tpl=null) {
+	public function indicator()
+	{
+		$indicator = array(
+			'label' => Base_UserCommon::get_my_user_label(),
+			'login' => Base_UserCommon::get_my_user_login()
+		);
+
+
+		$logout = array(
+			'href' => $this->create_unique_href(array('logout'=>1)),
+			'text' => __('Logout')
+		);
+
+		//todo-pj: Add in_use class to template
+		$perspective = array(
+			'in_use' => isset($_REQUEST['__location']) ? (CRM_FiltersCommon::$in_use===$_REQUEST['__location']) : CRM_FiltersCommon::$in_use,
+			'desc' => $_SESSION['client']['filter_' . Acl::get_user()]['desc'],
+			'name' => __('Perspective')
+		);
+
+		return $this->render('indicator.twig', array(
+				'indicator' => $indicator,
+				'logout' => $logout,
+				'perspective' => $perspective
+			)
+		);
+	}
+
+	public function login($tpl=null) {
 		//check bans
         if (!Acl::is_user() && Base_User_LoginCommon::is_banned()) {
             print __('You have exceeded the number of allowed login attempts.').'<br>';
@@ -36,23 +77,6 @@ class Base_User_Login extends Module {
             return;
 		}
 
-		//if logged
-		$this->theme->assign('is_logged_in', Acl::is_user());
-		$this->theme->assign('is_demo', DEMO_MODE);
-		if (SUGGEST_DONATION) {
-			$this->theme->assign('donation_note', __('If you find our software useful, please support us by making a %s.', array('<a href="http://epe.si/cost" target="_blank">'.__('donation').'</a>')).'<br>'.__('Your funding will help to ensure continued development of this project.'));
-		}
-		if(Acl::is_user()) {
-			if($this->get_unique_href_variable('logout')) {
-			        Base_User_LoginCommon::logout();
-				eval_js('document.location=\'index.php\';',false);
-			} else {
-				$this->theme->assign('logged_as', '<div class="logged_as">'.__('Logged as %s',array('</br><b class="green">'.Base_UserCommon::get_my_user_login().'</b>')).'</div>');
-				$this->theme->assign('logout', '<div class="logout_css3_box"><a class="logout_icon" '.$this->create_unique_href(array('logout'=>1)).'>'.__('Logout').'<div class="logout_icon_img"></div></a></div>');
-				$this->theme->display();
-			}
-			return;
-		}
 
 		if($this->is_back())
 		    $this->unset_module_variable('mail_recover_pass');
@@ -125,14 +149,14 @@ class Base_User_Login extends Module {
 			ob_start();
 			if (!$tpl) {
 			        $this->theme->set_inline_display();
-				$this->theme->display();
+				$this->theme->display('login_form');
 				eval_js("focus_by_id('username')");
 			} else
 				Base_ThemeCommon::display_smarty($this->theme->get_smarty(),$tpl[0],$tpl[1]);
 			$ret = ob_get_clean();
-			if(stripos($ret,'<a href="http://www.telaxus.com">Telaxus LLC</a>')===false ||
-			    stripos($ret,'<a href="http://epe.si/"><img src="images/epesi-powered.png" alt="EPESI powered" /></a>')===false
-			    ) trigger_error('Epesi terms of use have been violated',E_USER_ERROR);
+//			if(stripos($ret,'<a href="http://www.telaxus.com">Telaxus LLC</a>')===false ||
+//			    stripos($ret,'<a href="http://epe.si/"><img src="images/epesi-powered.png" alt="EPESI powered" /></a>')===false
+//			    ) trigger_error('Epesi terms of use have been violated',E_USER_ERROR);
 			print($ret);
 		}
 	}
@@ -167,7 +191,7 @@ class Base_User_Login extends Module {
 			eval_js("focus_by_id('username')");
 		}
 
-		$this->theme->display();
+		$this->theme->display('login_form');
 	}
 
 	public static function check_username_mail_valid($username, $form) {

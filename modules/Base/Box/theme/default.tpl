@@ -2,7 +2,7 @@
 
 <div id="Base_Box__login">
 	<div class="status">{$status}</div>
-	<div class="entry">{$login}</div>
+	<div class="entry">{$login_form}</div>
 </div>
 
 {else}
@@ -21,6 +21,7 @@
 			<tr>
 				<td style="empty-cells: hide; width: 8px;"></td>
 				<td class="menu-bar">{$menu}</td>
+				<td>{$login}</td>
 				<td style=" empty-cells: hide; width: 7px;"></td>
 				<td class="home-bar" {$home.href}>
 					<div id="home-bar1">
