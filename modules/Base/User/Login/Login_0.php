@@ -43,6 +43,7 @@ class Base_User_Login extends Module {
 
 	public function indicator()
 	{
+		//todo-pj: Add profile link
 		$indicator = array(
 			'label' => Base_UserCommon::get_my_user_label(),
 			'login' => Base_UserCommon::get_my_user_login()

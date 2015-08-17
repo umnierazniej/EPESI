@@ -74,9 +74,8 @@
 					<td style="empty-cells: hide; width: 6px;"></td>
 					<td id="login-search-td">
 						<div class="shadow_css3_login-search-td_border">
-								<div class="login">{$login}</div>
+								<div class="login"></div>
 								<div class="search" id="search_box">{$search}</div>
-								<div class="filter" id="filter_box">{$filter_button}</div>
 						</div>
 					</td>
 					<td style="empty-cells: hide; width: 8px;"></td>

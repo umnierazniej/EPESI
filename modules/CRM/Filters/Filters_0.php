@@ -101,21 +101,6 @@ class CRM_Filters extends Module {
 		if(!isset($_SESSION['client']['filter_'.Acl::get_user()]['desc'])) CRM_FiltersCommon::set_profile('my');
 	}
 
-	public function button()
-	{
-		$th = $this->init_module(Base_Theme::module_name());
-
-		$in_use = isset($_REQUEST['__location']) ? (CRM_FiltersCommon::$in_use===$_REQUEST['__location']) : CRM_FiltersCommon::$in_use;
-		$perspective_desc = $_SESSION['client']['filter_' . Acl::get_user()]['desc'];
-
-		//todo-pj: Add in_use class to template
-		$th->assign('in_use', $in_use);
-		$th->assign('name', __('Perspective'));
-		$th->assign('desc', $perspective_desc);
-		$th->display('button');
-	}
-
-
 	public function manage_filters() {
 		$x = ModuleManager::get_instance('/Base_Box|0');
 		if(!$x) trigger_error('There is no base box module instance',E_USER_ERROR);
