@@ -1,0 +1,74 @@
+<div id="perspectiveModal" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" data-dismiss="modal" aria-hidden="true" class="close">×</button>
+                <h4 class="modal-title">Perspective</h4>
+            </div>
+            <div class="modal-body">
+
+                <a {{ my.href | raw }} data-dismiss="modal" class="btn btn-default">
+                    <i class="fa fa-user fa-5x"></i>
+                    <div>{{ my.text }}</div>
+                </a>
+
+                <a href="#" data-dismiss="modal" class="btn btn-default">
+                    <i class="fa fa-bed fa-5x"></i>
+                    <div>Custom Perspective</div>
+                </a>
+
+                <a {{ manage.href | raw }} data-dismiss="modal" class="btn btn-default">
+                    <i class="fa fa-cogs fa-5x"></i>
+                    <div>{{ manage.text }}</div>
+                </a>
+
+                {{ contacts | raw }}
+{#
+                <div style="margin-top: 10px;" class="form-horizontal">
+                    <div class="form-group"><label class="control-label col-sm-4">Records of</label>
+
+                        <div class="input-group col-sm-7">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <select type="select" data-live-search="true" class="selectpicker form-control bs-select-hidden">
+                                <option>Janusz Tylek</option>
+                                <option>Paweł Jedwabny</option>
+                                <option>Adam Bukowski</option>
+                            </select>
+                            <div class="btn-group bootstrap-select input-group-btn form-control">
+                                <button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" title="Janusz Tylek">
+                                    <span class="filter-option pull-left">Janusz Tylek</span>&nbsp;<span class="caret"></span>
+                                </button>
+                                <div class="dropdown-menu open">
+                                    <div class="bs-searchbox">
+                                        <input type="text" class="form-control" autocomplete="off">
+                                    </div>
+                                    <ul class="dropdown-menu inner" role="menu">
+                                        <li data-original-index="0" class="selected">
+                                            <a tabindex="0" class="" style="" data-tokens="null"><span class="text">Janusz Tylek</span><span class="glyphicon glyphicon-ok check-mark"></span></a>
+                                        </li>
+                                        <li data-original-index="1">
+                                            <a tabindex="0" class="" style="" data-tokens="null"><span class="text">Paweł Jedwabny</span><span class="glyphicon glyphicon-ok check-mark"></span></a>
+                                        </li>
+                                        <li data-original-index="2">
+                                            <a tabindex="0" class="" style="" data-tokens="null"><span class="text">Adam Bukowski</span><span class="glyphicon glyphicon-ok check-mark"></span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+#}
+                <div>
+                    <h3>{{ saved_filters }}:</h3>
+                    {% for filter in filters %}
+                        <a {{ filter.href | raw }} data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="{{ filter.description }}" class="btn btn-default">{{ filter.title }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

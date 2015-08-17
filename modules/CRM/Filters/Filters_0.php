@@ -12,69 +12,109 @@ defined("_VALID_ACCESS") || die('Direct access forbidden');
 class CRM_Filters extends Module {
 	private $contacts_select;
 
-	public function body() {
+	public function modal() {
 		if (!Acl::is_user()) return;
-		$th = $this->init_module(Base_Theme::module_name());
-
 		eval_js_once('crm_filters_deactivate = function(){leightbox_deactivate(\'crm_filters\');}');
-
-		$th->assign('my','<a '.$this->create_callback_href(array('CRM_FiltersCommon','set_profile'),'my').' id="crm_filters_my">'.__('My records').'</a>');
-		eval_js('Event.observe(\'crm_filters_my\',\'click\', crm_filters_deactivate)');
 
 		/*$th->assign('all','<a '.$this->create_callback_href(array('CRM_FiltersCommon','set_profile'),'all').' id="crm_filters_all">'.__('All records').'</a>');
 		eval_js('Event.observe(\'crm_filters_all\',\'click\', crm_filters_deactivate)');*/
 
-		$th->assign('manage','<a '.$this->create_callback_href(array($this,'manage_filters')).' id="crm_filters_manage">'.__('Manage presets').'</a>');
-		eval_js('Event.observe(\'crm_filters_manage\',\'click\', crm_filters_deactivate)');
-
+		//todo-pj: add icon support
 		$ret = DB::Execute('SELECT id,name,description FROM crm_filters_group WHERE user_login_id=%d',array(Acl::get_user()));
 		$filters = array();
 		while($row = $ret->FetchRow()) {
-			$filters[] = array('title'=>$row['name'],'description'=>'','open'=>'<a '.Utils_TooltipCommon::open_tag_attrs($row['description'],false).' '.$this->create_callback_href(array('CRM_FiltersCommon','set_profile'),$row['id']).' id="crm_filters_'.$row['id'].'">','close'=>'</a>');
-			eval_js('Event.observe(\'crm_filters_'.$row['id'].'\',\'click\', crm_filters_deactivate)');
+			$filters[] = array(
+				'title'=>$row['name'],
+				'description'=>$row['description'],
+				'href' => $this->create_callback_href(array('CRM_FiltersCommon','set_profile'),$row['id'])
+			);
 		}
-		$th->assign('filters',$filters);
 
 		$qf = $this->init_module(Libs_QuickForm::module_name());
-		$fcallback = array('CRM_ContactsCommon', 'contact_format_no_company');
 		$recent_crits = array();
-		if (!Base_User_SettingsCommon::get('CRM_Contacts','show_all_contacts_in_filters')) $recent_crits = array('(company_name'=>CRM_ContactsCommon::get_main_company(),'|related_companies'=>array(CRM_ContactsCommon::get_main_company()));
-        if (Base_User_SettingsCommon::get('CRM_Contacts','show_only_users_in_filters')) $recent_crits['!login'] = '';
+
+		if (!Base_User_SettingsCommon::get('CRM_Contacts','show_all_contacts_in_filters'))
+			$recent_crits = array(
+				'(company_name' => CRM_ContactsCommon::get_main_company(),
+				'|related_companies' => array(
+					CRM_ContactsCommon::get_main_company()
+				)
+			);
+
+		if (Base_User_SettingsCommon::get('CRM_Contacts','show_only_users_in_filters'))
+			$recent_crits['!login'] = '';
+
 		$contacts = CRM_ContactsCommon::get_contacts($recent_crits,array(),array(),15);
+
+		$fcallback = array('CRM_ContactsCommon', 'contact_format_no_company');
 		$cont = array();
 		foreach ($contacts as $v) { 
 			$cont[$v['id']] = call_user_func($fcallback, $v, true);
 		}
 		asort($cont);
+
 		$crits = array();
-		if (!Base_User_SettingsCommon::get('CRM_Contacts','show_all_contacts_in_filters')) $crits = array('(company_name'=>CRM_ContactsCommon::get_main_company(),'|related_companies'=>array(CRM_ContactsCommon::get_main_company()));
-		$qf->addElement('autoselect','crm_filter_contact',__('Records of'),$cont,array(array('CRM_ContactsCommon','autoselect_contact_suggestbox'), array($crits, $fcallback, false)), $fcallback);
+		if (!Base_User_SettingsCommon::get('CRM_Contacts','show_all_contacts_in_filters'))
+			$crits = array(
+				'(company_name'=>CRM_ContactsCommon::get_main_company(),
+				'|related_companies'=>array(
+					CRM_ContactsCommon::get_main_company()
+				)
+			);
+
+		$qf->addElement('autoselect','crm_filter_contact',__('Records of'),$cont,array(
+			array('CRM_ContactsCommon','autoselect_contact_suggestbox'),
+			array($crits, $fcallback, false)
+		), $fcallback);
+
 		if(isset($_SESSION['client']['filter_'.Acl::get_user()]['value'])) {
 			$qf->setDefaults(array('crm_filter_contact'=>explode(',',$_SESSION['client']['filter_'.Acl::get_user()]['value'])));
 		}
+
 		$qf->addElement('submit','submit',__('Show'), array('onclick'=>'crm_filters_deactivate()'));
+
 		if($qf->validate()) {
 			$c = $qf->exportValue('crm_filter_contact');
 			CRM_FiltersCommon::set_profile('c'.$c);
 			location(array());
 		}
-		$th->assign('saved_filters',__('Saved Presets'));
-		$qf->assign_theme('contacts', $th);
-		//$th->assign('contacts',$qf->toHtml());
 
-		ob_start();
-		$th->display();
-		$profiles_out = ob_get_clean();
+		$my = array(
+			'href' => $this->create_callback_href(array('CRM_FiltersCommon', 'set_profile'), 'my'),
+			'text' => __('My records')
+		);
 
-		Libs_LeightboxCommon::display('crm_filters',$profiles_out,__('Perspective'),true);
-		if(!isset($_SESSION['client']['filter_'.Acl::get_user()]['desc']))
-			CRM_FiltersCommon::set_profile('my');
-		    
-		//Base_ActionBarCommon::add('folder',__('Filters'),'class="lbOn" rel="crm_filters"',$this->get_module_variable('profile_desc',__('My records')));
-		if (isset($_REQUEST['__location'])) $in_use = (CRM_FiltersCommon::$in_use===$_REQUEST['__location']);
-		else $in_use = CRM_FiltersCommon::$in_use;
-		print('<a class="lbOn'.($in_use?'':' disabled').' button" rel="crm_filters">'.__('Perspective').': '.'<b>'.$_SESSION['client']['filter_'.Acl::get_user()]['desc'].'</b><div class="filter_icon_img"></div></a>');
+		$manage = array(
+			'href' => $this->create_callback_href(array($this, 'manage_filters')),
+			'text' => __('Manage presets')
+		);
+
+		$this->display('modal.twig', array(
+				'my' => $my,
+				'manage' => $manage,
+				'filters' => $filters,
+				'contacts' => $qf->toHtml(),
+				'saved_filters' => __('Saved Presets')
+			)
+		);
+
+		if(!isset($_SESSION['client']['filter_'.Acl::get_user()]['desc'])) CRM_FiltersCommon::set_profile('my');
 	}
+
+	public function button()
+	{
+		$th = $this->init_module(Base_Theme::module_name());
+
+		$in_use = isset($_REQUEST['__location']) ? (CRM_FiltersCommon::$in_use===$_REQUEST['__location']) : CRM_FiltersCommon::$in_use;
+		$perspective_desc = $_SESSION['client']['filter_' . Acl::get_user()]['desc'];
+
+		//todo-pj: Add in_use class to template
+		$th->assign('in_use', $in_use);
+		$th->assign('name', __('Perspective'));
+		$th->assign('desc', $perspective_desc);
+		$th->display('button');
+	}
+
 
 	public function manage_filters() {
 		$x = ModuleManager::get_instance('/Base_Box|0');

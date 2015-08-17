@@ -43,7 +43,7 @@
 				{/if}
 				<td style="empty-cells: hide; width: 6px;"></td>
 				<td class="top_bar_black top_bar_help">{$help}</td>
-				<td style="empty-cells: hide; width: 6px;"></td>				
+				<td style="empty-cells: hide; width: 6px;"></td>
 				<td class="top_bar_black module-indicator"><div id="module-indicator">{if $moduleindicator}{$moduleindicator}{else}&nbsp;{/if}</div></td>
 				<td style="empty-cells: hide; width: 8px;"></td>
 			</tr>
@@ -75,8 +75,8 @@
 						<div class="shadow_css3_login-search-td_border">
 								<div class="login">{$login}</div>
 								<div class="search" id="search_box">{$search}</div>
-								<div class="filter" id="filter_box">{$filter}</div>
-						</div>	
+								<div class="filter" id="filter_box">{$filter_button}</div>
+						</div>
 					</td>
 					<td style="empty-cells: hide; width: 8px;"></td>
 				</tr>
@@ -91,6 +91,7 @@
 		</div>
 	</div>
 	{$launchpad}
+	{$filter}
 
 {$status}
 
