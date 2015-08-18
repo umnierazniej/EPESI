@@ -1526,8 +1526,6 @@ class Utils_RecordBrowser extends Module {
 					break;
 				}
 			}
-			if ($highlight)
-				$tb->tab_icon($label, Base_ThemeCommon::get_template_file('Utils_RecordBrowser','notify_error.png'));
 		}
 		
         if ($this->switch_to_addon) {

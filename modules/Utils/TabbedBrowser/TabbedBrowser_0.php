@@ -38,10 +38,9 @@ class Utils_TabbedBrowser extends Module {
 	 * @param string template file that will be used
 	 */
 	
-	public function body($template=null) {
+	public function body() {
 		if (empty($this->tabs)) return;
-		$theme = $this->init_module(Base_Theme::module_name());
-		
+
 		load_js($this->get_module_dir().'tb_.js');
 				
 		$i = 0;
@@ -101,11 +100,13 @@ class Utils_TabbedBrowser extends Module {
 			$captions_subs[$group] = $subs;
 		}
 		$this->tag = md5($body.$this->page); 
-		$theme->assign('selected', $this->page);
-		$theme->assign('captions', $final_captions);
-		$theme->assign('captions_submenus', $captions_subs);
-		$theme->assign('body', $body);
-		$theme->display($template);
+
+		$this->display('default.twig', array(
+			'selected' => $this->page,
+			'captions' => $final_captions,
+			'captions_submenus' => $captions_subs,
+			'body' => $body
+		));
 	}
 	
 	private function display_contents($val, $i) {
@@ -122,15 +123,7 @@ class Utils_TabbedBrowser extends Module {
 		$body .= '</div>';
 		return $body;
 	}
-	
-	public function tab_icon($caption, $icon=false) {
-		$id = $this->get_tab_id($caption).'_icon';
-		if ($icon)
-			eval_js('var img=$("'.$id.'");img.src="'.$icon.'";img.style.display="";');
-		else
-			eval_js('var img=$("'.$id.'");img.style.display="none";');
-	}
-	
+
 	public function get_tab_id($caption) {
 		if (!isset($this->tabs[$caption])) return null;
 		return escapeJS($this->get_path(),true,false).'_c'.$this->tabs[$caption]['id'];
