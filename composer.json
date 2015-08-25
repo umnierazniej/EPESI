@@ -1,5 +1,6 @@
 {
     "require": {
-        "anahkiasen/underscore-php": "^2.0"
+        "anahkiasen/underscore-php": "^2.0",
+        "pimple/pimple": "^3.0"
     }
 }
