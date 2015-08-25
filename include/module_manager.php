@@ -6,6 +6,10 @@
  * @license SPL
  * @package epesi-base
  */
+use Symfony\Bridge\Twig\Extension\FormExtension;
+use Symfony\Bridge\Twig\Form\TwigRenderer;
+use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+
 defined("_VALID_ACCESS") || die('Direct access forbidden');
 
 require_once 'autoloader.php';
@@ -25,6 +29,33 @@ class ModuleManager {
 	public static $root = array();
 	private static $processing = array();
 	private static $processed_modules = array('install'=>array(),'downgrade'=>array(),'upgrade'=>array(),'uninstall'=>array());
+
+	/**
+	 * Returns DI container
+	 * @todo Move services definitions to separate providers
+	 * @return \Pimple\Container
+     */
+	public static function get_container()
+	{
+		static $container;
+		if (!$container) {
+			$container = new Pimple\Container();
+			$container['twig'] = function ($c) {
+				$loader = new Twig_Loader_Filesystem(EPESI_LOCAL_DIR);
+				$loader->addPath(EPESI_LOCAL_DIR . '/vendor/symfony/twig-bridge/Resources/views/Form');
+
+				$twig = new Twig_Environment($loader, array('translation_domain' => false));
+
+				$formEngine = new TwigRendererEngine(array('bootstrap_3_layout.html.twig'));
+				$formEngine->setEnvironment($twig);
+
+				$twig->addExtension(new FormExtension(new TwigRenderer($formEngine)));
+				$twig->addExtension(new Twig_Extensions_Extension_I18n());
+				return $twig;
+			};
+		}
+		return $container;
+	}
 
 	/**
 	 * Includes file with module installation class.
@@ -723,7 +754,7 @@ class ModuleManager {
 		if (!in_array('Module', class_parents($class))) {
 			trigger_error("Class $mod is not a subclass of Module", E_USER_ERROR);
 		}
-		$m = new $class($mod,$parent,$name,$clear_vars);
+		$m = new $class($mod,$parent,$name,$clear_vars, self::get_container());
 		return $m;
 	}
 
