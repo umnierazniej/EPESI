@@ -1,3 +1,8 @@
+<div>
+    {% for letter in letter_links %}
+        <a class="badge" {{ letter.href | raw }}>{{ letter.label }}</a>
+    {% endfor %}
+</div>
 <table class="table table-bordered table-condensed">
     <thead>
         <tr>

@@ -997,25 +997,10 @@ class Utils_GenericBrowser extends Module {
 			$rows_data[] = $row_data;
 		}
 
+		$letter_links = null;
 		if (isset($quickjump)) {
-			$quickjump_to = $this->get_module_variable('quickjump_to');
-			$all = '<span class="all">' . __('All') . '</span>';
-			if (isset($quickjump_to) && $quickjump_to != '') $all = '<a class="all" ' . $this->create_unique_href(array('quickjump_to' => '')) . '>' . __('All') . '</a>';
-			$letter_links = array(0 => $all);
-			if ($quickjump_to != '0')
-				$letter_links[] .= '<a class="all" ' . $this->create_unique_href(array('quickjump_to' => '0')) . '>' . '123' . '</a>';
-			else
-				$letter_links[] .= '<span class="all">' . '123' . '</span>';
-			$letter = 'A';
-			while ($letter <= 'Z') {
-				if ($quickjump_to != $letter)
-					$letter_links[] .= '<a class="letter" ' . $this->create_unique_href(array('quickjump_to' => $letter)) . '>' . $letter . '</a>';
-				else
-					$letter_links[] .= '<span class="letter">' . $letter . '</span>';
-				$letter = chr(ord($letter) + 1);
-			}
-			$options['letter_links'] = $letter_links;
-			$options['quickjump_to'] = $quickjump_to;
+			$letter_links = $this->get_quickjump_letters();
+			$options['quickjump_to'] = $this->get_module_variable('quickjump_to');
 		}
 
 		foreach($rows_data as $row_data)
@@ -1083,8 +1068,36 @@ class Utils_GenericBrowser extends Module {
 		$this->display('table.twig', array(
 			'columns' => $out_headers,
 			'rows' => $rows_data,
-			'summary' => $this->summary()
+			'summary' => $this->summary(),
+			'letter_links' => $letter_links
 		));
+	}
+
+	public function get_quickjump_letters()
+	{
+		$quickjump_to = $this->get_module_variable('quickjump_to');
+		$letter_links = array();
+
+		$all['label'] =  __('All');
+		if (isset($quickjump_to) && $quickjump_to != '') $all['href'] = $this->create_unique_href(array('quickjump_to' => ''));
+		$letter_links[] = $all;
+
+		$one_two_three['label'] = '123';
+		if ($quickjump_to != '0') {
+			$one_two_three['href'] = $this->create_unique_href(array('quickjump_to' => '0'));
+		}
+		$letter_links[] = $one_two_three;
+
+		$letter = 'A';
+		while ($letter <= 'Z') {
+			$letter_link['label'] = $letter;
+			if ($quickjump_to != $letter)
+				$letter_link['href'] = $this->create_unique_href(array('quickjump_to' => $letter));
+
+			$letter_links[] = $letter_link;
+			$letter = chr(ord($letter) + 1);
+		}
+		return $letter_links;
 	}
 	
 	public function show_all() {
