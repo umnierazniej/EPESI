@@ -9,6 +9,8 @@
  * @version 1.0
  * @package epesi-base
  */
+use Symfony\Component\Form\Forms;
+
 defined("_VALID_ACCESS") || die('Direct access forbidden');
 
 /**
@@ -774,7 +776,8 @@ abstract class Module extends ModulePrimitive {
 		return false;
 	}
 	//endregion
-	//region Form
+	//endregion
+	//region Forms
 
 	/**
 	 * Function generates form name (based on module path, and counter), and attach Epesi.submit_form handler to form with that name
@@ -791,7 +794,22 @@ abstract class Module extends ModulePrimitive {
 		$counter++;
 		return $form_name;
 	}
-	//endregion
+
+	/**
+	 * Function creates form builder with given options
+	 * Form name and onsubmit action is automatically generated
+	 *
+	 * @param $options
+	 * @return \Symfony\Component\Form\FormBuilderInterface
+     */
+	public function create_form_builder($options)
+	{
+		//todo-pj: Create service for Validator
+		$formFactory = Forms::createFormFactoryBuilder()
+			->addExtension(new \Symfony\Component\Form\Extension\Validator\ValidatorExtension(\Symfony\Component\Validator\Validation::createValidator()))
+			->getFormFactory();
+		return $formFactory->createNamedBuilder($this->reserve_form_name(),'form',null, $options);
+	}
 	//endregion
 
 	//region Display
