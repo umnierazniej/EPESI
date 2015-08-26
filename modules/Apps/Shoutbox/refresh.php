@@ -35,7 +35,18 @@ foreach($arr as $row) {
 	if ($row['to_login_id'])
 		$user_label .= ' -> '.Apps_ShoutboxCommon::create_write_to_link($row['to_login_id']);
 
-	print('<span class="author border_radius_3px dark_blue_gradient">'.$user_label.'</span><span class="time"> ['.Base_RegionalSettingsCommon::time2reg($row['posted_on'],2).']</span><br/><span class="shoutbox_textbox"style="color:'.$fcolor.';">'.(($row['to_login_id']==$myid && $uid===null)?'<b>':'').Utils_BBCodeCommon::parse($row['message']).(($row['to_login_id']==$myid && $uid===null)?'</b>':'').'</span><hr/>');
+	$message = (($row['to_login_id']==$myid && $uid===null)?'<b>':'').Utils_BBCodeCommon::parse($row['message']).(($row['to_login_id']==$myid && $uid===null)?'</b>':'');
+	$time = Base_RegionalSettingsCommon::time2reg($row['posted_on'],2);
+	$color = array('default','primary','success','danger','warning','info')[$row['from_login_id'] % 6];
+
+	$html = <<<HTML
+	<div class="bs-callout bs-callout-$color">
+		<h4>$user_label<span class="label label-default pull-right">$time</span></h4>
+    	<p>$message</p>
+    </div>
+HTML;
+
+	print($html);
 }
 
 $content = ob_get_contents();
