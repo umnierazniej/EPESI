@@ -83,21 +83,25 @@ class Base_Admin extends Module {
 			if (method_exists($name.'Common','admin_icon')) {
 				$icon = call_user_func(array($name.'Common','admin_icon'));
 			} else {
-				$icon = Base_ThemeCommon::get_template_file($name,'icon.png');
-				if (!file_exists($icon)) $icon = Base_ThemeCommon::get_template_file('Base_Admin','icon.png');
+				$icon = 'cogs';
 			}
-			$buttons[$caption['section']][] = array('link'=>'<a '.$this->create_callback_href(array($this, 'set_module'), array($name)).'>'.$caption['label'].'</a>',
-						'icon'=>$icon);
+
+			$button = array(
+				'href' => $this->create_callback_href(array($this, 'set_module'), array($name)),
+				'label' => $caption['label'],
+				'icon' => $icon
+			);
+			$buttons[$caption['section']][] = $button;
 		}
 
 		foreach ($buttons as $section=>$b) {
-			$sections[$section] = array('header'=>$section, 'buttons'=>$b);
+			$sections[$section] = array('label'=>$section, 'buttons'=>$b);
 		}
 		$sections = $this->sort_sections($sections);
 
-		$theme = $this->pack_module(Base_Theme::module_name());
-		$theme->assign('sections', $sections);
-		$theme->display();
+		$this->display('panel.twig', array(
+			'sections' => $sections
+		));
 	}
 	
 	public function caption() {

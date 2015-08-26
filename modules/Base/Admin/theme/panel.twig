@@ -1,0 +1,10 @@
+{% for section in sections %}
+<div class="panel panel-default">
+    <div class="panel-heading">{{ section.label }}</div>
+    <div class="panel-body">
+        {% for button in section.buttons %}
+            <a {{ button.href | raw }} class="btn btn-default"><i class="fa fa-3x fa-{{ button.icon }}"></i><div>{{ button.label }}</div></a>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
