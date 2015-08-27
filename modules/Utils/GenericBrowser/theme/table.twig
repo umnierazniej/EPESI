@@ -22,7 +22,7 @@
     <tbody>
         {% for row in rows %}
             <tr>
-                {% for col in row %}
+                {% for col in row.columns %}
                     <td>{{ col.label | raw }}</td>
                 {% endfor %}
             </tr>
