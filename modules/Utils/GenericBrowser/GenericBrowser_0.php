@@ -425,34 +425,24 @@ class Utils_GenericBrowser extends Module {
 		if(!$this->columns)
 			trigger_error('columns array empty, please call set_table_columns',E_USER_ERROR);
 
-		if(!$this->is_adv_search_on()) {
-			if(isset($search['__keyword__'])) {
-				if(!$array) {
-					if($separate)
-						$search = explode(' ',$search['__keyword__']);
-					else
-						$search = array($search['__keyword__']);
-				}
-				foreach($this->columns as $k=>$v){
-					if (isset($v['search']))
-		 				if (!$array) {
-		 					$t_where = '';
-		 					foreach($search as $s) {
-								$t_where .= ($t_where?' AND':'').' '.$v['search'].' '.DB::like().' '.DB::Concat(DB::qstr('%'),sprintf('%s',DB::qstr($s)),DB::qstr('%'));
-							}
-							$where .= ($where?' OR':'').' ('.$t_where.')';
-						} else
-							$where[(empty($where)?'(':'|').$v['search']][] = sprintf('%s',$search['__keyword__']);
-				}
+		if(isset($search['__keyword__'])) {
+			if(!$array) {
+				if($separate)
+					$search = explode(' ',$search['__keyword__']);
+				else
+					$search = array($search['__keyword__']);
 			}
-		} else {
-			foreach($this->columns as $k=>$v)
-				if (isset($v['search']) && isset($search[$v['search']])) {
-		 			if (!$array)
-						$where .= ($where?' AND':'').' '.$v['search'].' '.DB::like().' '.DB::Concat(DB::qstr('%'),sprintf('%s',DB::qstr($search[$v['search']])),DB::qstr('%'));
-					else
-						$where[$v['search']][] = $search[$v['search']];
-				}
+			foreach($this->columns as $k=>$v){
+				if (isset($v['search']))
+					if (!$array) {
+						$t_where = '';
+						foreach($search as $s) {
+							$t_where .= ($t_where?' AND':'').' '.$v['search'].' '.DB::like().' '.DB::Concat(DB::qstr('%'),sprintf('%s',DB::qstr($s)),DB::qstr('%'));
+						}
+						$where .= ($where?' OR':'').' ('.$t_where.')';
+					} else
+						$where[(empty($where)?'(':'|').$v['search']][] = sprintf('%s',$search['__keyword__']);
+			}
 		}
  		if (isset($quickjump) && $quickjump_to!='') {
  			if ($quickjump_to=='0') {
@@ -484,14 +474,7 @@ class Utils_GenericBrowser extends Module {
 		return $where;
 	}
 
-	/**
-	 * For internal use only.
-	 */
-	public function is_adv_search_on(){
-		return $this->get_module_variable('adv_search',Base_User_SettingsCommon::get('Utils_GenericBrowser','adv_search'));
-	}
-
-	private function check_if_row_fits_array($row,$adv){
+	private function check_if_row_fits_array($row){
 		$search = $this->get_module_variable('search');
 		$this->get_module_variable_or_unique_href_variable('quickjump_to');
 		$quickjump = $this->get_module_variable('quickjump');
@@ -512,7 +495,6 @@ class Utils_GenericBrowser extends Module {
 				}
 			}
  		}
-		if (!$adv){
 			if (!isset($search['__keyword__']) || $search['__keyword__']=='') return true;
 			$ret = true;
 			foreach($this->columns as $k=>$v){
@@ -523,12 +505,6 @@ class Utils_GenericBrowser extends Module {
 				}
 			}
 			return $ret;
-		} else {
-			foreach($this->columns as $k=>$v){
-				if (isset($v['search']) && isset($search[$v['search']]) && stripos(strip_tags(is_array($row[$k])?$row[$k]['value']:$row[$k]),$search[$v['search']])===false) return false;
-			}
-			return true;
-		}
 	}
 
 	private function sort_data(& $data, & $js=null, & $actions=null, & $row_attrs=null){
@@ -626,7 +602,7 @@ class Utils_GenericBrowser extends Module {
 			if (isset($v['search'])) $this->columns[$k]['search'] = $k;
 
 		foreach($this->rows as $k=>$v){
-			if ($this->check_if_row_fits_array($v,$this->is_adv_search_on())) {
+			if ($this->check_if_row_fits_array($v)) {
 				$rows[] = $v;
 				$js[] = isset($this->rows_jses[$k])?$this->rows_jses[$k]:'';
 				$actions[] = isset($this->actions[$k])?$this->actions[$k]:array();
@@ -708,12 +684,6 @@ class Utils_GenericBrowser extends Module {
 		}
 		if ($this->en_actions) $actions_position = Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'actions_position');
 
-		$ch_adv_search = $this->get_unique_href_variable('adv_search');
-		if (isset($ch_adv_search)) {
-			$this->set_module_variable('adv_search', $ch_adv_search);
-			$this->set_module_variable('search', array());
-			location(array());
-		}
 
 		$search = $this->get_module_variable('search');
 
@@ -741,34 +711,15 @@ class Utils_GenericBrowser extends Module {
 			$pager_on = true;
 		}
 		$search_on = false;
-		if (!$this->is_adv_search_on()) {
-			foreach ($this->columns as $k => $v)
-				if (isset($v['search'])) {
-					$this->form_s->addElement('text', 'search', __('Keyword'), array('id' => 'gb_search_field', 'placeholder' => __('search keyword...'), 'x-webkit-speech' => 'x-webkit-speech', 'lang' => Base_LangCommon::get_lang_code(), 'onwebkitspeechchange' => $this->form_s->get_submit_form_js()));
-					$this->form_s->setDefaults(array('search' => isset($search['__keyword__']) ? $search['__keyword__'] : ''));
-					$search_on = true;
-					break;
-				}
-		} else {
-			$search_fields = array();
-			if ($this->en_actions && $actions_position == 0) $mov = 1;
-			else $mov = 0;
-			foreach ($this->columns as $k => $v) {
-				if (isset($v['display']) && !$v['display']) {
-					$mov--;
-					continue;
-				}
-				if (isset($v['search'])) {
-					$this->form_s->addElement('hidden', 'search__' . $v['search'], '');
-					$default = isset($search[$v['search']]) ? $search[$v['search']] : '';
-					$this->form_s->setDefaults(array('search__' . $v['search'] => $default));
-					$in = '<input value="' . $default . '" x-webkit-speech="x-webkit-speech" lang="' . Base_LangCommon::get_lang_code() . '" name="search__textbox_' . $v['search'] . '" placeholder="' . __('search keyword...') . '" onblur="document.forms[\'' . $this->form_s->getAttribute('name') . '\'].search__' . $v['search'] . '.value = this.value;" onkeydown="if (event.keyCode==13) {document.forms[\'' . $this->form_s->getAttribute('name') . '\'].search__' . $v['search'] . '.value = this.value;' . $this->form_s->get_submit_form_js() . ';}" />';
-					$search_fields[$k + $mov] = $in;
-					$search_on = true;
-				}
+
+		foreach ($this->columns as $k => $v)
+			if (isset($v['search'])) {
+				$this->form_s->addElement('text', 'search', __('Keyword'), array('id' => 'gb_search_field', 'placeholder' => __('search keyword...'), 'x-webkit-speech' => 'x-webkit-speech', 'lang' => Base_LangCommon::get_lang_code(), 'onwebkitspeechchange' => $this->form_s->get_submit_form_js()));
+				$this->form_s->setDefaults(array('search' => isset($search['__keyword__']) ? $search['__keyword__'] : ''));
+				$search_on = true;
+				break;
 			}
-			$options['search_fields'] = $search_fields;
-		}
+
 		if ($search_on) {
 			$this->form_s->addElement('submit', 'submit_search', __('Search'), array('id' => 'gb_search_button'));
 			if (Base_User_SettingsCommon::get($this->get_type(), 'show_all_button')) {
@@ -1037,8 +988,6 @@ class Utils_GenericBrowser extends Module {
 			eval_js('gb_show_hide_buttons("' . $md5_id . '")');
 		}
 
-		if ($search_on) $options['adv_search'] = '<a id="switch_search_' . ($this->is_adv_search_on() ? 'simple' : 'advanced') . '" class="button" ' . $this->create_unique_href(array('adv_search' => !$this->is_adv_search_on())) . '>' . ($this->is_adv_search_on() ? __('Simple Search') : __('Advanced Search')) . '&nbsp;&nbsp;&nbsp;<img src="' . Base_ThemeCommon::get_template_file($this->get_type(), 'advanced.png') . '" width="8px" height="20px" border="0" style="vertical-align: middle;"></a>';
-		else $options['adv_search'] = '';
 
 		if (Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'adv_history') && $is_order) {
 			$options['reset'] = '<a ' . $this->create_unique_href(array('action' => 'reset_order')) . '>' . __('Reset Order') . '</a>';
