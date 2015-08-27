@@ -8,6 +8,7 @@
  * @subpackage generic-browser
  */
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
+use Underscore\Types\Arrays;
 
 defined("_VALID_ACCESS") || die('Direct access forbidden');
 
@@ -740,26 +741,19 @@ class Utils_GenericBrowser extends Module {
 		}
 
 
-		$search_on = false;
-
-		foreach ($this->columns as $k => $v)
-			if (isset($v['search'])) {
-				$this->form_s->addElement('text', 'search', __('Keyword'), array('id' => 'gb_search_field', 'placeholder' => __('search keyword...'), 'x-webkit-speech' => 'x-webkit-speech', 'lang' => Base_LangCommon::get_lang_code(), 'onwebkitspeechchange' => $this->form_s->get_submit_form_js()));
-				$this->form_s->setDefaults(array('search' => isset($search['__keyword__']) ? $search['__keyword__'] : ''));
-				$search_on = true;
-				break;
-			}
+		$search_on = Arrays::matchesAny($this->columns, function($column){
+			return isset($column['search']);
+		});
 
 		if ($search_on) {
+			$this->form_s->addElement('text', 'search', __('Keyword'), array('id' => 'gb_search_field', 'placeholder' => __('search keyword...'), 'x-webkit-speech' => 'x-webkit-speech', 'lang' => Base_LangCommon::get_lang_code(), 'onwebkitspeechchange' => $this->form_s->get_submit_form_js()));
+			$this->form_s->setDefaults(array('search' => isset($search['__keyword__']) ? $search['__keyword__'] : ''));
 			$this->form_s->addElement('submit', 'submit_search', __('Search'), array('id' => 'gb_search_button'));
 			if (Base_User_SettingsCommon::get($this->get_type(), 'show_all_button')) {
 				$el = $this->form_s->addElement('hidden', 'show_all_pressed');
 				$this->form_s->addElement('button', 'show_all', __('Show all'), array('onclick' => 'document.forms["' . $this->form_s->getAttribute('name') . '"].show_all_pressed.value="1";' . $this->form_s->get_submit_form_js()));
 				$el->setValue('0');
 			}
-		}
-
-		if ($search_on) {
 			$this->form_s->accept($renderer);
 			$form_array = $renderer->toArray();
 			$options['form_data_search'] = $form_array;
