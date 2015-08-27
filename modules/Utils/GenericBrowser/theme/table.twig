@@ -3,7 +3,7 @@
         <a class="badge" {{ letter.href | raw }}>{{ letter.label }}</a>
     {% endfor %}
 </div>
-<table class="table table-bordered table-condensed">
+<table id="{{ id }}" class="table table-bordered table-condensed">
     <thead>
         <tr>
             {% for column in columns %}
