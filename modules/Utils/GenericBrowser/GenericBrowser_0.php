@@ -688,11 +688,6 @@ class Utils_GenericBrowser extends Module {
 		if ($this->en_actions) $actions_position = Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'actions_position');
 
 
-		$search = $this->get_module_variable('search');
-
-		$renderer = new HTML_QuickForm_Renderer_TCMSArraySmarty();
-
-
 		$pagination_form_builder = $this->create_form_builder(array());
 		if (isset($this->rows_qty) && $paging) {
 
@@ -741,33 +736,45 @@ class Utils_GenericBrowser extends Module {
 		}
 
 
+		$search = $this->get_module_variable('search');
+
 		$search_on = Arrays::matchesAny($this->columns, function($column){
 			return isset($column['search']);
 		});
 
-		if ($search_on) {
-			$this->form_s->addElement('text', 'search', __('Keyword'), array('id' => 'gb_search_field', 'placeholder' => __('search keyword...'), 'x-webkit-speech' => 'x-webkit-speech', 'lang' => Base_LangCommon::get_lang_code(), 'onwebkitspeechchange' => $this->form_s->get_submit_form_js()));
-			$this->form_s->setDefaults(array('search' => isset($search['__keyword__']) ? $search['__keyword__'] : ''));
-			$this->form_s->addElement('submit', 'submit_search', __('Search'), array('id' => 'gb_search_button'));
-			if (Base_User_SettingsCommon::get($this->get_type(), 'show_all_button')) {
-				$el = $this->form_s->addElement('hidden', 'show_all_pressed');
-				$this->form_s->addElement('button', 'show_all', __('Show all'), array('onclick' => 'document.forms["' . $this->form_s->getAttribute('name') . '"].show_all_pressed.value="1";' . $this->form_s->get_submit_form_js()));
-				$el->setValue('0');
-			}
-			$this->form_s->accept($renderer);
-			$form_array = $renderer->toArray();
-			$options['form_data_search'] = $form_array;
-			$options['form_name_search'] = $this->form_s->getAttribute('name');
+		$search_form_builder = $this->create_form_builder(array());
 
-			// form processing
-			if ($this->form_s->validate()) {
-				$values = $this->form_s->exportValues();
-				if (isset($values['show_all_pressed']) && $values['show_all_pressed']) {
-					$this->set_module_variable('search', array());
-					$this->set_module_variable('show_all_triggered', true);
-					location(array());
-					return;
-				}
+		if ($search_on) {
+
+			$search_form_builder->add('search', 'text', array(
+				'label' => __('Keyword'),
+//				'placeholder' => __('search keyword...'),
+				'data' => isset($search['__keyword__']) ? $search['__keyword__'] : ''
+			));
+
+//			$search_form_builder->add('submit_search', 'submit', array(
+//				'label' => 'Search'
+//			));
+
+			if (Base_User_SettingsCommon::get($this->get_type(), 'show_all_button')) {
+//				$search_form_builder->add('show_all','submit',array(
+//					'label' => __('Show all')
+//				));
+			}
+
+			$search_form = $search_form_builder->getForm();
+
+			$search_form->handleRequest();
+			if ($search_form->isValid()) {
+				$values = $search_form->getData();
+				//todo-pj: to nie będzie działać jeżeli bedziemy mieli system odświeżania strony jaki mamy (is clikced zawsze jest false)
+//				if ($search_form->get('show_all')->isClicked()) {
+//					$this->set_module_variable('search', array());
+//					$this->set_module_variable('show_all_triggered', true);
+//					location(array());
+//					return;
+//				}
+
 				$search = array();
 				foreach ($values as $k => $v) {
 					if ($k == 'search') {
@@ -781,10 +788,9 @@ class Utils_GenericBrowser extends Module {
 					}
 				}
 				$this->set_module_variable('search', $search);
-				location(array());
-				return;
 			}
 		}
+
 
 		$headers = array();
 		if ($this->en_actions) {
@@ -800,6 +806,7 @@ class Utils_GenericBrowser extends Module {
 			else $headers[count($this->columns)] = array('label' => '<span>' . '&nbsp;' . '</span>', 'attrs' => 'style="width: ' . ($max_actions * 16 + 6) . 'px;" class="Utils_GenericBrowser__actions"');
 		}
 
+
 		$all_width = 0;
 		foreach ($this->columns as $k => $v) {
 			if (!isset($this->columns[$k]['width'])) $this->columns[$k]['width'] = 100;
@@ -810,6 +817,8 @@ class Utils_GenericBrowser extends Module {
 				$quickjump_col = $k;
 			}
 		}
+
+
 		$i = 0;
 		$is_order = false;
 		$adv_history = Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'adv_history');
@@ -1032,8 +1041,8 @@ class Utils_GenericBrowser extends Module {
 			'letter_links' => $letter_links,
 			'id' => $md5_id,
 			'pagination' => $pagination,
-			'pagination_form' => isset($pagination_form) ? $pagination_form->createView() : false
-
+			'pagination_form' => isset($pagination_form) ? $pagination_form->createView() : false,
+			'search_form' => isset($search_form) ? $search_form->createView() : false
 		));
 	}
 

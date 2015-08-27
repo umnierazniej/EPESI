@@ -1,8 +1,16 @@
+{% if search_form %}
+    {{ form_start(search_form) }}
+    {{ form_widget(search_form) }}
+    <input type="submit" class="btn btn-default" name="login" value="Submit">
+    {{ form_end(search_form) }}
+{% endif %}
+
 <div>
     {% for letter in letter_links %}
         <a class="badge" {{ letter.href | raw }}>{{ letter.label }}</a>
     {% endfor %}
 </div>
+
 <table id="table_{{ id }}" class="table table-bordered table-condensed">
     <thead>
         <tr>
@@ -38,12 +46,15 @@
     {% if pagination.first %}
         <a class="btn btn-primary" {{ pagination.first.href | raw }}>{{ pagination.first.label }}</a>
     {% endif %}
+
     {% if pagination.prev %}
         <a class="btn btn-primary" {{ pagination.prev.href | raw }}>{{ pagination.prev.label }}</a>
     {% endif %}
+
     {% if pagination.next %}
         <a class="btn btn-primary" {{ pagination.next.href | raw }}>{{ pagination.next.label }}</a>
     {% endif %}
+
     {% if pagination.last %}
         <a class="btn btn-primary" {{ pagination.last.href | raw }}>{{ pagination.last.label }}</a>
     {% endif %}
