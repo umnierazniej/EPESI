@@ -7,6 +7,8 @@
  * @package epesi-utils
  * @subpackage generic-browser
  */
+use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
+
 defined("_VALID_ACCESS") || die('Direct access forbidden');
 
 class Utils_GenericBrowser extends Module {
@@ -688,13 +690,20 @@ class Utils_GenericBrowser extends Module {
 		$search = $this->get_module_variable('search');
 
 		$renderer = new HTML_QuickForm_Renderer_TCMSArraySmarty();
-		$form_p = $this->init_module(Libs_QuickForm::module_name());
-		$pager_on = false;
+
+
+		$pagination_form_builder = $this->create_form_builder(array());
 		if (isset($this->rows_qty) && $paging) {
+
 			if (!$this->forced_per_page) {
-				$form_p->addElement('select', 'per_page', __('Number of rows per page'), Utils_GenericBrowserCommon::$possible_vals_for_per_page, 'onChange="' . $form_p->get_submit_form_js(false) . '"');
-				$form_p->setDefaults(array('per_page' => $per_page));
+				$pagination_form_builder->add('per_page', 'choice', array(
+						'label' => __('Number of rows per page'),
+						'choices' => Utils_GenericBrowserCommon::$possible_vals_for_per_page,
+						'data' => $per_page
+					)
+				);
 			}
+
 			$qty_pages = ceil($this->rows_qty / $this->per_page);
 			if ($qty_pages <= 25) {
 				$pages = array();
@@ -702,14 +711,35 @@ class Utils_GenericBrowser extends Module {
 					$pages[0] = 1;
 				else
 					foreach (range(1, $qty_pages) as $v) $pages[$v] = $v;
-				$form_p->addElement('select', 'page', __('Page'), $pages, 'onChange="' . $form_p->get_submit_form_js(false) . '"');
-				$form_p->setDefaults(array('page' => (int)(ceil($this->offset / $this->per_page) + 1)));
+
+				$pagination_form_builder->add('page','choice',array(
+					'label' => __('Page'),
+					'choices' => $pages,
+					'data' => (int)(ceil($this->offset / $this->per_page) + 1)
+				));
 			} else {
-				$form_p->addElement('text', 'page', __('Page (%s to %s)', array(1, $qty_pages)), array('onclick' => 'this.focus();this.select();', 'onChange' => $form_p->get_submit_form_js(false), 'style' => 'width:' . (7 * strlen($qty_pages)) . 'px;'));
-				$form_p->setDefaults(array('page' => (int)(ceil($this->offset / $this->per_page) + 1)));
+				$pagination_form_builder->add('page', 'text', array(
+					'label' => __('Page (%s to %s)', array(1, $qty_pages)),
+					'data' => (int)(ceil($this->offset / $this->per_page) + 1)
+				));
 			}
-			$pager_on = true;
+			$pagination_form = $pagination_form_builder->getForm();
+
+
+			$pagination_form->handleRequest();
+			if($pagination_form->isValid()){
+				$values = $pagination_form->getData();
+				if (isset($values['per_page'])) {
+					$this->set_module_variable('per_page', $values['per_page']);
+					Base_User_SettingsCommon::save(Utils_GenericBrowser::module_name(), 'per_page', $values['per_page']);
+				}
+				if (isset($values['page']) && is_numeric($values['page']) && ($values['page'] >= 1 && $values['page'] <= $qty_pages)) {
+					$this->set_module_variable('offset', ($values['page'] - 1) * $this->per_page);
+				}
+			}
 		}
+
+
 		$search_on = false;
 
 		foreach ($this->columns as $k => $v)
@@ -728,26 +758,7 @@ class Utils_GenericBrowser extends Module {
 				$el->setValue('0');
 			}
 		}
-		if ($pager_on) {
-			$form_p->accept($renderer);
-			$form_array = $renderer->toArray();
-			$options['form_data_paging'] = $form_array;
-			$options['form_name_paging'] = $form_p->getAttribute('name');
 
-			// form processing
-			if ($form_p->validate()) {
-				$values = $form_p->exportValues();
-				if (isset($values['per_page'])) {
-					$this->set_module_variable('per_page', $values['per_page']);
-					Base_User_SettingsCommon::save(Utils_GenericBrowser::module_name(), 'per_page', $values['per_page']);
-				}
-				if (isset($values['page']) && is_numeric($values['page']) && ($values['page'] >= 1 && $values['page'] <= $qty_pages)) {
-					$this->set_module_variable('offset', ($values['page'] - 1) * $this->per_page);
-				}
-				location(array());
-				return;
-			}
-		}
 		if ($search_on) {
 			$this->form_s->accept($renderer);
 			$form_array = $renderer->toArray();
@@ -1026,7 +1037,9 @@ class Utils_GenericBrowser extends Module {
 			'summary' => $this->summary(),
 			'letter_links' => $letter_links,
 			'id' => $md5_id,
-			'pagination' => $pagination
+			'pagination' => $pagination,
+			'pagination_form' => isset($pagination_form) ? $pagination_form->createView() : false
+
 		));
 	}
 

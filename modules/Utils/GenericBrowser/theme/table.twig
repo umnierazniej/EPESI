@@ -3,7 +3,7 @@
         <a class="badge" {{ letter.href | raw }}>{{ letter.label }}</a>
     {% endfor %}
 </div>
-<table id="{{ id }}" class="table table-bordered table-condensed">
+<table id="table_{{ id }}" class="table table-bordered table-condensed">
     <thead>
         <tr>
             {% for column in columns %}
@@ -24,6 +24,15 @@
         <tr><td colspan="{{ columns|length }}">{{ summary | raw }}</td></tr>
     </tfoot>
 </table>
+
+{% if pagination_form %}
+    {{ form_start(pagination_form) }}
+    {{ form_widget(pagination_form) }}
+    <input type="submit" class="btn btn-default" name="login" value="Submit">
+    {{ form_end(pagination_form) }}
+{% endif %}
+
+
 {% if pagination %}
 <div>
     {% if pagination.first %}
