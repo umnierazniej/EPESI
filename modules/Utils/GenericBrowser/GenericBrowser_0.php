@@ -880,7 +880,7 @@ class Utils_GenericBrowser extends Module {
 			$i++;
 		}
 		ksort($headers);
-		$out_headers = array_values($headers);
+		$columns = array_values($headers);
 		unset($headers);
 
 		$out_data = array();
@@ -1008,7 +1008,7 @@ class Utils_GenericBrowser extends Module {
 				$out_data[] = $col_data;
 
 		$options['data'] = $out_data;
-		$options['cols'] = $out_headers;
+		$options['cols'] = $columns;
 
 		$options['row_attrs'] = $this->row_attrs;
 
@@ -1069,8 +1069,10 @@ class Utils_GenericBrowser extends Module {
 			'last' => $this->gb_last()
 		);
 
+
+
 		$this->display('table.twig', array(
-			'columns' => $out_headers,
+			'columns' => $columns,
 			'rows' => $rows_data,
 			'summary' => $this->summary(),
 			'letter_links' => $letter_links,
