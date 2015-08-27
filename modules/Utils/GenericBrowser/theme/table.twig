@@ -24,3 +24,19 @@
         <tr><td colspan="{{ columns|length }}">{{ summary | raw }}</td></tr>
     </tfoot>
 </table>
+{% if pagination %}
+<div>
+    {% if pagination.first %}
+        <a class="btn btn-primary" {{ pagination.first.href | raw }}>{{ pagination.first.label }}</a>
+    {% endif %}
+    {% if pagination.prev %}
+        <a class="btn btn-primary" {{ pagination.prev.href | raw }}>{{ pagination.prev.label }}</a>
+    {% endif %}
+    {% if pagination.next %}
+        <a class="btn btn-primary" {{ pagination.next.href | raw }}>{{ pagination.next.label }}</a>
+    {% endif %}
+    {% if pagination.last %}
+        <a class="btn btn-primary" {{ pagination.last.href | raw }}>{{ pagination.last.label }}</a>
+    {% endif %}
+</div>
+{% endif %}

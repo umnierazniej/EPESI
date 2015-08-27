@@ -1020,10 +1020,6 @@ class Utils_GenericBrowser extends Module {
 		$options['table_postfix'] = $this->table_postfix;
 
 		$options['summary'] = $this->summary();
-		$options['first'] = $this->gb_first();
-		$options['prev'] = $this->gb_prev();
-		$options['next'] = $this->gb_next();
-		$options['last'] = $this->gb_last();
 		$options['custom_label'] = $this->custom_label;
 		$options['custom_label_args'] = $this->custom_label_args;
 
@@ -1065,11 +1061,21 @@ class Utils_GenericBrowser extends Module {
 		else
 			$theme->display();
 		$this->set_module_variable('show_all_triggered', false);
+
+		$pagination = array(
+			'first' => $this->gb_first(),
+			'prev' => $this->gb_prev(),
+			'next' => $this->gb_next(),
+			'last' => $this->gb_last()
+		);
+
 		$this->display('table.twig', array(
 			'columns' => $out_headers,
 			'rows' => $rows_data,
 			'summary' => $this->summary(),
-			'letter_links' => $letter_links
+			'letter_links' => $letter_links,
+			'id' => $md5_id,
+			'pagination' => $pagination
 		));
 	}
 
@@ -1116,23 +1122,43 @@ class Utils_GenericBrowser extends Module {
 	//endregion
 	//region Pagination
 	private function gb_first() {
-		if($this->get_module_variable('offset')>0)
-			return '<a '.$this->create_unique_href(array('first'=>1)).'>'.__('First').'</a>';
+		if($this->get_module_variable('offset')>0){
+			return array(
+				'href' => $this->create_unique_href(array('first'=>1)),
+				'label' => __('First')
+			);
+		}
+			return null;
 	}
 
 	private function gb_prev() {
-		if($this->get_module_variable('offset')>0)
-    		return '<a '.$this->create_unique_href(array('prev'=>1)).'>'.__('Prev').'</a>';
+		if($this->get_module_variable('offset')>0){
+			return array(
+				'href' => $this->create_unique_href(array('prev'=>1)),
+				'label' => __('Prev')
+			);
+		}
+    		return null;
 	}
 
 	private function gb_next() {
-		if($this->get_module_variable('offset')+$this->get_module_variable('per_page')<$this->rows_qty)
-      		return '<a '.$this->create_unique_href(array('next'=>1)).'>'.__('Next').'</a>';
+		if($this->get_module_variable('offset')+$this->get_module_variable('per_page')<$this->rows_qty) {
+			return array(
+				'href' => $this->create_unique_href(array('next'=>1)),
+				'label' => __('Next')
+			);
+		}
+      		return null;
 	}
 
 	private function gb_last() {
-		if($this->get_module_variable('offset')+$this->get_module_variable('per_page')<$this->rows_qty)
-      		return '<a '.$this->create_unique_href(array('last'=>1)).'>'.__('Last').'</a>';
+		if($this->get_module_variable('offset')+$this->get_module_variable('per_page')<$this->rows_qty) {
+			return array(
+				'href' => $this->create_unique_href(array('last'=>1)),
+				'label' => __('Last')
+			);
+		}
+      		return null;
 	}
 
 	public function set_prefix($arg) {
