@@ -1,5 +1,5 @@
 {
     "require": {
-
+        "anahkiasen/underscore-php": "^2.0"
     }
 }
