@@ -674,7 +674,6 @@ class Utils_RecordBrowser extends Module {
 
         if(!$pdf) $gb->set_expandable(true);
         
-        if($pdf) $gb->set_resizable_columns(false);
         else $gb->set_fixed_columns_class($this->fixed_columns_class);
 
         if ($special) {
