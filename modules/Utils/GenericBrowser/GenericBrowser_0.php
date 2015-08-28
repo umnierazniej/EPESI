@@ -666,15 +666,7 @@ class Utils_GenericBrowser extends Module {
 		$this->set_module_variable('first_display', 'done');
 		$theme = $this->init_module(Base_Theme::module_name());
 		$per_page = $this->get_module_variable('per_page');
-		$this->expandable = $this->get_module_variable('expandable', $this->expandable);
 
-		$expand_action_only = false;
-		if ($this->expandable) {
-			if (!$this->en_actions) {
-				$expand_action_only = true;
-				$this->en_actions = true;
-			}
-		}
 
 		$pagination_form_builder = $this->create_form_builder(array());
 		if (isset($this->rows_qty) && $paging) {
@@ -810,7 +802,40 @@ class Utils_GenericBrowser extends Module {
 
 		$out_data = array();
 
+		$letter_links = null;
+		if (isset($quickjump)) {
+			$letter_links = $this->get_quickjump_letters();
+			$options['quickjump_to'] = $this->get_module_variable('quickjump_to');
+		}
+
+		$table_data = $this->get_rows_template_data();
+
+		foreach($table_data as $row_data)
+			foreach($row_data['columns'] as $col_data)
+				$out_data[] = $col_data;
+
+		$options['data'] = $out_data;
+		$options['cols'] = $this->get_columns_template_data();
+
+		$options['row_attrs'] = $this->row_attrs;
+
+		$options['table_id'] = 'table_' . $md5_id;
+		$options['table_prefix'] = $this->table_prefix;
+		$options['table_postfix'] = $this->table_postfix;
+
+		$options['summary'] = $this->summary();
+		$options['custom_label'] = $this->custom_label;
+		$options['custom_label_args'] = $this->custom_label_args;
+
+		$this->expandable = $this->get_module_variable('expandable', $this->expandable);
+
+
 		if ($this->expandable) {
+			if (!$this->en_actions) {
+				eval_js('gb_expandable_hide_actions("' . $md5_id . '")');
+				$this->en_actions = true;
+			}
+
 			eval_js_once('gb_expandable["' . $md5_id . '"] = {};');
 			eval_js_once('gb_expanded["' . $md5_id . '"] = 0;');
 
@@ -818,13 +843,8 @@ class Utils_GenericBrowser extends Module {
 			eval_js_once('gb_collapse_icon = "' . Base_ThemeCommon::get_template_file(Utils_GenericBrowser::module_name(), 'collapse.gif') . '";');
 			eval_js_once('gb_expand_icon_off = "' . Base_ThemeCommon::get_template_file(Utils_GenericBrowser::module_name(), 'expand_gray.gif') . '";');
 			eval_js_once('gb_collapse_icon_off = "' . Base_ThemeCommon::get_template_file(Utils_GenericBrowser::module_name(), 'collapse_gray.gif') . '";');
-		}
 
-		$table_data = array();
-
-		foreach ($this->rows as $row_num => $row) {
-			$row_data = array();
-			if ($this->expandable) {
+			foreach ($this->rows as $row_num => $row) {
 				$row_id = $md5_id . '_' . $row_num;
 				$this->__add_row_action($row_num, 'style="display:none;" href="javascript:void(0)" onClick="gb_expand(\'' . $md5_id . '\',\'' . $row_num . '\')" id="gb_more_' . $row_id . '"', 'Expand', null, Base_ThemeCommon::get_template_file(Utils_GenericBrowser::module_name(), 'plus_gray.png'), 1001);
 				$this->__add_row_action($row_num, 'style="display:none;" href="javascript:void(0)" onClick="gb_collapse(\'' . $md5_id . '\',\'' . $row_num . '\')" id="gb_less_' . $row_id . '"', 'Collapse', null, Base_ThemeCommon::get_template_file(Utils_GenericBrowser::module_name(), 'minus_gray.png'), 1001, false, 0);
@@ -833,6 +853,62 @@ class Utils_GenericBrowser extends Module {
 				$this->row_attrs[$row_num] .= 'id="gb_row_' . $row_id . '"';
 			}
 
+			$options['expand_collapse'] = array(
+				'e_label' => __('Expand All'),
+				'e_href' => 'href="javascript:void(0);" onClick=\'gb_expand_all("' . $md5_id . '")\'',
+				'e_id' => 'expand_all_button_' . $md5_id,
+				'c_label' => __('Collapse All'),
+				'c_href' => 'href="javascript:void(0);" onClick=\'gb_collapse_all("' . $md5_id . '")\'',
+				'c_id' => 'collapse_all_button_' . $md5_id
+			);
+			$max_actions = isset($max_actions) ? $max_actions : 0;
+			eval_js('gb_expandable_adjust_action_column("' . $md5_id . '", ' . $max_actions . ')');
+			eval_js('gb_show_hide_buttons("' . $md5_id . '")');
+		}
+
+
+		if (Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'adv_history') && $is_order) {
+			$options['reset'] = '<a ' . $this->create_unique_href(array('action' => 'reset_order')) . '>' . __('Reset Order') . '</a>';
+			$options['order'] = $this->get_module_variable('order_history_display');
+		}
+		$options['id'] = md5($this->get_path());
+
+		foreach($options as $key => $value)
+			$theme->assign($key, $value);
+
+		if (isset($template))
+			$theme->display($template, true);
+		else
+			$theme->display();
+		$this->set_module_variable('show_all_triggered', false);
+
+		$pagination = array(
+			'first' => $this->gb_first(),
+			'prev' => $this->gb_prev(),
+			'next' => $this->gb_next(),
+			'last' => $this->gb_last()
+		);
+
+
+
+		$this->display('table.twig', array(
+			'columns' => $this->get_columns_template_data(),
+			'rows' => $this->get_rows_template_data(),
+			'summary' => $this->summary(),
+			'letter_links' => $letter_links,
+			'id' => $md5_id,
+			'pagination' => $pagination,
+			'pagination_form' => isset($pagination_form) ? $pagination_form->createView() : false,
+			'search_form' => isset($search_form) ? $search_form->createView() : false
+		));
+	}
+
+	private function get_rows_template_data()
+	{
+		$table_data = array();
+
+		foreach ($this->rows as $row_num => $row) {
+			$row_data = array();
 			$row_data['actions'] = array();
 			if ($this->en_actions) {
 				//$actions_position jeśli 0 to na początku inaczej na końcu
@@ -897,82 +973,7 @@ class Utils_GenericBrowser extends Module {
 			if (isset($this->rows_jses[$row_num])) eval_js($this->rows_jses[$row_num]);
 			$table_data[] = $row_data;
 		}
-
-		$letter_links = null;
-		if (isset($quickjump)) {
-			$letter_links = $this->get_quickjump_letters();
-			$options['quickjump_to'] = $this->get_module_variable('quickjump_to');
-		}
-
-		foreach($table_data as $row_data)
-			foreach($row_data['columns'] as $col_data)
-				$out_data[] = $col_data;
-
-		$options['data'] = $out_data;
-		$options['cols'] = $this->get_columns_template_data();
-
-		$options['row_attrs'] = $this->row_attrs;
-
-		$options['table_id'] = 'table_' . $md5_id;
-		if ($expand_action_only) {
-			eval_js('gb_expandable_hide_actions("' . $md5_id . '")');
-		}
-		$options['table_prefix'] = $this->table_prefix;
-		$options['table_postfix'] = $this->table_postfix;
-
-		$options['summary'] = $this->summary();
-		$options['custom_label'] = $this->custom_label;
-		$options['custom_label_args'] = $this->custom_label_args;
-
-		if ($this->expandable) {
-			$options['expand_collapse'] = array(
-				'e_label' => __('Expand All'),
-				'e_href' => 'href="javascript:void(0);" onClick=\'gb_expand_all("' . $md5_id . '")\'',
-				'e_id' => 'expand_all_button_' . $md5_id,
-				'c_label' => __('Collapse All'),
-				'c_href' => 'href="javascript:void(0);" onClick=\'gb_collapse_all("' . $md5_id . '")\'',
-				'c_id' => 'collapse_all_button_' . $md5_id
-			);
-			$max_actions = isset($max_actions) ? $max_actions : 0;
-			eval_js('gb_expandable_adjust_action_column("' . $md5_id . '", ' . $max_actions . ')');
-			eval_js('gb_show_hide_buttons("' . $md5_id . '")');
-		}
-
-
-		if (Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'adv_history') && $is_order) {
-			$options['reset'] = '<a ' . $this->create_unique_href(array('action' => 'reset_order')) . '>' . __('Reset Order') . '</a>';
-			$options['order'] = $this->get_module_variable('order_history_display');
-		}
-		$options['id'] = md5($this->get_path());
-
-		foreach($options as $key => $value)
-			$theme->assign($key, $value);
-
-		if (isset($template))
-			$theme->display($template, true);
-		else
-			$theme->display();
-		$this->set_module_variable('show_all_triggered', false);
-
-		$pagination = array(
-			'first' => $this->gb_first(),
-			'prev' => $this->gb_prev(),
-			'next' => $this->gb_next(),
-			'last' => $this->gb_last()
-		);
-
-
-
-		$this->display('table.twig', array(
-			'columns' => $this->get_columns_template_data(),
-			'rows' => $table_data,
-			'summary' => $this->summary(),
-			'letter_links' => $letter_links,
-			'id' => $md5_id,
-			'pagination' => $pagination,
-			'pagination_form' => isset($pagination_form) ? $pagination_form->createView() : false,
-			'search_form' => isset($search_form) ? $search_form->createView() : false
-		));
+		return $table_data;
 	}
 
 	private function get_columns_template_data()
