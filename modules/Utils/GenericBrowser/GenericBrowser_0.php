@@ -911,8 +911,17 @@ class Utils_GenericBrowser extends Module {
                     content: html,
                     trigger: 'hover'
                 }
-        )
+        );
     });
+
+    	jQuery('.abc').popover({
+        	title: "",
+        	html: true,
+        	content: function(){
+        	    return jQuery(this).siblings('.letters').html()
+        	},
+        	trigger: 'click'
+    	});
 JS;
 		eval_js($js);
 

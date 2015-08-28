@@ -5,11 +5,14 @@
     {{ form_end(search_form) }}
 {% endif %}
 
-<div>
+{% if letter_links %}
+<button class="abc btn btn-primary">ABC</button>
+<div class="letters" style="display: none">
     {% for letter in letter_links %}
         <a class="badge" {{ letter.href | raw }}>{{ letter.label }}</a>
     {% endfor %}
 </div>
+{% endif %}
 
 <table id="table_{{ id }}" class="table table-condensed">
     <thead>
@@ -47,10 +50,8 @@
             </tr>
         {% endfor %}
     </tbody>
-    <tfoot>
-        <tr><td colspan="{{ columns|length }}">{{ summary | raw }}</td></tr>
-    </tfoot>
 </table>
+<div>{{ summary | raw }}</div>
 
 {% if pagination_form %}
     {{ form_start(pagination_form) }}
