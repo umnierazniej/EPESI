@@ -673,10 +673,13 @@ class Utils_GenericBrowser extends Module {
 
 			if (!$this->forced_per_page) {
 				$pagination_form_builder->add('per_page', 'choice', array(
-						'label' => __('Number of rows per page'),
-						'choices' => Utils_GenericBrowserCommon::$possible_vals_for_per_page,
-						'data' => $per_page
-					)
+								'label' => __('Number of rows per page'),
+								'choices' => Utils_GenericBrowserCommon::$possible_vals_for_per_page,
+								'data' => $per_page,
+								'attr' => array(
+										'onchange' => 'jQuery(this).submit()'
+								)
+						)
 				);
 			}
 
@@ -688,15 +691,21 @@ class Utils_GenericBrowser extends Module {
 				else
 					foreach (range(1, $qty_pages) as $row_col) $pages[$row_col] = $row_col;
 
-				$pagination_form_builder->add('page','choice',array(
-					'label' => __('Page'),
-					'choices' => $pages,
-					'data' => (int)(ceil($this->offset / $this->per_page) + 1)
+				$pagination_form_builder->add('page', 'choice', array(
+						'label' => __('Page'),
+						'choices' => $pages,
+						'data' => (int)(ceil($this->offset / $this->per_page) + 1),
+						'attr' => array(
+								'onchange' => 'jQuery(this).submit()'
+						)
 				));
 			} else {
 				$pagination_form_builder->add('page', 'text', array(
-					'label' => __('Page (%s to %s)', array(1, $qty_pages)),
-					'data' => (int)(ceil($this->offset / $this->per_page) + 1)
+						'label' => __('Page (%s to %s)', array(1, $qty_pages)),
+						'data' => (int)(ceil($this->offset / $this->per_page) + 1),
+						'attr' => array(
+								'onchange' => 'jQuery(this).submit()'
+						)
 				));
 			}
 			$pagination_form = $pagination_form_builder->getForm();

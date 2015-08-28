@@ -11,7 +11,7 @@
     {% endfor %}
 </div>
 
-<table id="table_{{ id }}" class="table table-bordered table-condensed">
+<table id="table_{{ id }}" class="table table-condensed">
     <thead>
         <tr>
             {% if enable_actions and actions_position == 0 %}<th>Actions</th>{% endif %}
@@ -55,7 +55,6 @@
 {% if pagination_form %}
     {{ form_start(pagination_form) }}
     {{ form_widget(pagination_form) }}
-    <input type="submit" class="btn btn-default" name="login" value="Submit">
     {{ form_end(pagination_form) }}
 {% endif %}
 
