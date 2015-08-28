@@ -936,20 +936,6 @@ class Utils_GenericBrowser extends Module {
 				$col['class'] = Arrays::get($row_col, 'class');
 				$col['hint'] = Arrays::get($column_meta,'hint');
 				$col['wrapmode'] = Arrays::get($column_meta,'wrapmode');
-
-				if ($all_width != 0)
-					$max_width = 130 * $column_meta['width'] / $all_width * (7 + (isset($column_meta['fontsize']) ? $column_meta['fontsize'] : 0));
-				else
-					$max_width = 0;
-
-				if (isset($column_meta['wrapmode']) && $column_meta['wrapmode'] == 'cut') {
-					if (strlen($col['label']) > $max_width) {
-						if (is_array($row_col) && isset($row_col['hint'])) $col['attrs'] .= ' title="' . $col['label'] . ': ' . $row_col['hint'] . '"';
-						else $col['attrs'] .= ' title="' . $col['label'] . '"';
-						$col['label'] = substr($col['label'], 0, $max_width - 3) . '...';
-					} elseif (is_array($row_col) && isset($row_col['hint'])) $col['attrs'] .= ' title="' . $row_col['hint'] . '"';
-					$col['attrs'] .= ' nowrap';
-				}
 				$col['expanded'] = $this->expandable;
 				$row_data['columns'][] = $col;
 			}
