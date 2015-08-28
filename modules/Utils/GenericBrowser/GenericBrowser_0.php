@@ -891,12 +891,12 @@ class Utils_GenericBrowser extends Module {
 //			$theme->display();
 		$this->set_module_variable('show_all_triggered', false);
 
-		$pagination = array(
+		$pagination = Arrays::clean(array(
 			'first' => $this->gb_first(),
 			'prev' => $this->gb_prev(),
 			'next' => $this->gb_next(),
 			'last' => $this->gb_last()
-		);
+		));
 
 		//todo-pj: Zamienić content na callback
 		$js = <<<JS
