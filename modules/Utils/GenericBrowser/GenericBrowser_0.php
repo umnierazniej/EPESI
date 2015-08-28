@@ -666,7 +666,6 @@ class Utils_GenericBrowser extends Module {
 		$this->set_module_variable('first_display', 'done');
 		$theme = $this->init_module(Base_Theme::module_name());
 		$per_page = $this->get_module_variable('per_page');
-		$order = $this->get_module_variable('order');
 		$this->expandable = $this->get_module_variable('expandable', $this->expandable);
 
 		$expand_action_only = false;
@@ -676,8 +675,6 @@ class Utils_GenericBrowser extends Module {
 				$this->en_actions = true;
 			}
 		}
-		if ($this->en_actions) $actions_position = Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'actions_position');
-
 
 		$pagination_form_builder = $this->create_form_builder(array());
 		if (isset($this->rows_qty) && $paging) {
@@ -783,7 +780,6 @@ class Utils_GenericBrowser extends Module {
 		}
 
 
-		$headers = array();
 		if ($this->en_actions) {
 			$max_actions = 0; // Possibly improve it to calculate it during adding actions
 			foreach ($this->actions as $row_num => $row_col) {
@@ -808,27 +804,9 @@ class Utils_GenericBrowser extends Module {
 		}
 
 
-		$row_num = 0;
-		$is_order = false;
-		$adv_history = Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'adv_history');
-		foreach ($this->columns as $row_col) {
-			if (array_key_exists('display', $row_col) && $row_col['display'] == false) {
-				$row_num++;
-				continue;
-			}
-			if (isset($row_col['order'])) $is_order = true;
-			if (!isset($headers[$row_num])) $headers[$row_num] = array('label' => '');
-			if (!$adv_history && $row_col['name'] && $row_col['name'] == $order[0]['column']) $label = '<span style="padding-right: 12px; margin-right: 12px; background-image: url(' . Base_ThemeCommon::get_template_file('Utils_GenericBrowser', 'sort-' . strtolower($order[0]['direction']) . 'ending.png') . '); background-repeat: no-repeat; background-position: right;">' . $row_col['name'] . '</span>';
-			else $label = $row_col['name'];
-			$headers[$row_num]['label'] .= (isset($row_col['preppend']) ? $row_col['preppend'] : '') . (isset($row_col['order']) ? '<a ' . $this->create_unique_href(array('change_order' => $row_col['name'])) . '>' . $label . '</a>' : $label) . (isset($row_col['append']) ? $row_col['append'] : '');
-			//if ($v['search']) $headers[$i] .= $form_array['search__'.$v['search']]['label'].$form_array['search__'.$v['search']]['html'];
-			$headers[$row_num]['attrs'] .= 'nowrap="1" ';
-			if (isset($row_col['attrs'])) $headers[$row_num]['attrs'] .= $row_col['attrs'] . ' ';
-			$row_num++;
-		}
-		ksort($headers);
-		$columns = array_values($headers);
-		unset($headers);
+		$is_order = Arrays::matchesAny($this->columns, function ($column) {
+			return Arrays::has($column, 'order');
+		});
 
 		$out_data = array();
 
@@ -931,7 +909,7 @@ class Utils_GenericBrowser extends Module {
 				$out_data[] = $col_data;
 
 		$options['data'] = $out_data;
-		$options['cols'] = $columns;
+		$options['cols'] = $this->get_columns_template_data();
 
 		$options['row_attrs'] = $this->row_attrs;
 
@@ -986,7 +964,7 @@ class Utils_GenericBrowser extends Module {
 
 
 		$this->display('table.twig', array(
-			'columns' => $columns,
+			'columns' => $this->get_columns_template_data(),
 			'rows' => $table_data,
 			'summary' => $this->summary(),
 			'letter_links' => $letter_links,
@@ -995,6 +973,30 @@ class Utils_GenericBrowser extends Module {
 			'pagination_form' => isset($pagination_form) ? $pagination_form->createView() : false,
 			'search_form' => isset($search_form) ? $search_form->createView() : false
 		));
+	}
+
+	private function get_columns_template_data()
+	{
+		$columns = array();
+		$order = $this->get_module_variable('order');
+		$adv_history = Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(), 'adv_history');
+		foreach ($this->columns as $col) {
+			if (array_key_exists('display', $col) && $col['display'] == false) {
+				continue;
+			}
+
+			$out_col = array();
+
+			if (!$adv_history && $col['name'] && $col['name'] == $order[0]['column'])
+				$out_col['sort'] = strtolower($order[0]['direction']);
+
+			$out_col['name'] = $col['name'];
+			$out_col['preppend'] = Arrays::get($col,'preppend');
+			$out_col['append'] = Arrays::get($col,'append');
+			$out_col['change_order_href'] = $this->create_unique_href(array('change_order' => $col['name']));
+			$columns[] = $out_col;
+		}
+		return $columns;
 	}
 
 	public function get_quickjump_letters()

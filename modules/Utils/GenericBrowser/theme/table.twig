@@ -15,7 +15,12 @@
     <thead>
         <tr>
             {% for column in columns %}
-            <th nowrap>{{ column.label | raw }}</th>
+                {% set sort_icon %}
+                    {% if column.sort == 'asc' %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort-asc"></i></a>{% endif %}
+                    {% if column.sort == 'desc' %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort-desc"></i></a>{% endif %}
+                    {% if column.sort is null %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort"></i></a>{% endif %}
+                {% endset %}
+            <th nowrap>{{ column.name }} {{ sort_icon }}</th>
             {% endfor %}
         </tr>
     </thead>
