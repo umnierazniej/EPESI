@@ -922,29 +922,27 @@ class Utils_GenericBrowser extends Module {
 
 				$col['label'] = $row_col['value'];
 
-				if (!isset($row_col['overflow_box']) || $row_col['overflow_box']) {
+				if (Arrays::get($row_col, 'overflow_box', true)) {
 					$col['attrs'] .= ' onmouseover="if(typeof(table_overflow_show)!=\'undefined\')table_overflow_show(this);"';
 				} else {
 					if (!isset($row_col['style'])) $row_col['style'] = '';
 					$row_col['style'] .= 'white-space: normal;';
 				}
 
-				$col['attrs'] .= ' class="Utils_GenericBrowser__td ' . (isset($row_col['class']) ? $row_col['class'] : '') . '"';
-
-				$col['attrs'] .= isset($row_col['style']) ? ' style="' . $row_col['style'] . '"' : '';
 
 				if (isset($quickjump_col) && $row_col_num == $quickjump_col) $col['attrs'] .= ' class="Utils_GenericBrowser__quickjump"';
 
-				if ((!isset($this->columns[$row_col_num]['wrapmode']) || $this->columns[$row_col_num]['wrapmode'] != 'cut') && isset($row_col['hint'])) $col['attrs'] .= ' title="' . $row_col['hint'] . '"';
-
-				$col['attrs'] .= (isset($this->columns[$row_col_num]['wrapmode']) && $this->columns[$row_col_num]['wrapmode'] == 'nowrap') ? ' nowrap' : '';
+				$col['style'] = Arrays::get($row_col, 'style');
+				$col['class'] = Arrays::get($row_col, 'class');
+				$col['hint'] = Arrays::get($column_meta,'hint');
+				$col['wrapmode'] = Arrays::get($column_meta,'wrapmode');
 
 				if ($all_width != 0)
-					$max_width = 130 * $this->columns[$row_col_num]['width'] / $all_width * (7 + (isset($this->columns[$row_col_num]['fontsize']) ? $this->columns[$row_col_num]['fontsize'] : 0));
+					$max_width = 130 * $column_meta['width'] / $all_width * (7 + (isset($column_meta['fontsize']) ? $column_meta['fontsize'] : 0));
 				else
 					$max_width = 0;
 
-				if (isset($this->columns[$row_col_num]['wrapmode']) && $this->columns[$row_col_num]['wrapmode'] == 'cut') {
+				if (isset($column_meta['wrapmode']) && $column_meta['wrapmode'] == 'cut') {
 					if (strlen($col['label']) > $max_width) {
 						if (is_array($row_col) && isset($row_col['hint'])) $col['attrs'] .= ' title="' . $col['label'] . ': ' . $row_col['hint'] . '"';
 						else $col['attrs'] .= ' title="' . $col['label'] . '"';
