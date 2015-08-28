@@ -1145,7 +1145,6 @@ class Utils_RecordBrowser extends Module {
             return $ret;
         }
 		if ($pdf) {
-			$gb->absolute_width(true);
 			$args = array(Base_ThemeCommon::get_template_filename('Utils_GenericBrowser','pdf'));
 		} else $args = array();
 		$this->display_module($gb, $args);

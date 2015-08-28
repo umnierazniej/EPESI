@@ -27,7 +27,6 @@ class Utils_GenericBrowser extends Module {
 	private $custom_label_args = '';
 	private $table_prefix = '';
 	private $table_postfix = '';
-	private $absolute_width = false;
 	private $no_actions = array();
     private $expandable = false;
 	public $form_s = null;
@@ -58,10 +57,6 @@ class Utils_GenericBrowser extends Module {
 	
 		$classes = array_map(function($c){return (substr($c,0,1)=='.')? $c: '.'.$c;}, $classes);	
 		$this->fixed_columns_selector = implode(',', $classes);
-	}
-
-	public function absolute_width($arg){
-		$this->absolute_width = $arg;
 	}
 
 	/**
@@ -827,13 +822,6 @@ class Utils_GenericBrowser extends Module {
 			else $label = $row_col['name'];
 			$headers[$row_num]['label'] .= (isset($row_col['preppend']) ? $row_col['preppend'] : '') . (isset($row_col['order']) ? '<a ' . $this->create_unique_href(array('change_order' => $row_col['name'])) . '>' . $label . '</a>' : $label) . (isset($row_col['append']) ? $row_col['append'] : '');
 			//if ($v['search']) $headers[$i] .= $form_array['search__'.$v['search']]['label'].$form_array['search__'.$v['search']]['html'];
-			if ($this->absolute_width) {
-				$headers[$row_num]['attrs'] = 'width="' . $row_col['width'] . '" ';
-			} elseif (!is_numeric($row_col['width'])) {
-				$headers[$row_num]['attrs'] = 'style="width:' . $row_col['width'] . '" ';
-			} else {
-				$headers[$row_num]['attrs'] = 'width="' . intval(100 * $row_col['width'] / $all_width) . '%" ';
-			}
 			$headers[$row_num]['attrs'] .= 'nowrap="1" ';
 			if (isset($row_col['attrs'])) $headers[$row_num]['attrs'] .= $row_col['attrs'] . ' ';
 			$row_num++;
@@ -902,22 +890,6 @@ class Utils_GenericBrowser extends Module {
 
 				if(Arrays::has($row_col, 'attrs')) $col['attrs'] = $row_col['attrs'];
 				else $col['attrs'] = '';
-
-
-				//REGRES
-//				if ($this->absolute_width) {
-//					if (Arrays::get($row_col, 'dummy', false)) {
-//						$reverse_col = array_reverse($col, true);
-//
-//						foreach ($reverse_col as $kk => $vv)
-//							if (isset($vv['width'])) {
-//								if (stripos($vv['attrs'], 'colspan') === false) break;
-//								$col[$kk]['width'] += $this->columns[$row_col_num]['width'];
-//								break;
-//							}
-//					} else $col[$row_col_num]['width'] = $this->columns[$row_col_num]['width'];
-//				}
-
 
 
 				$col['label'] = $row_col['value'];
