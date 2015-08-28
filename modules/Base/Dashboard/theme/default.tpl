@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-{$color}">
 	<div class="handle panel-heading clearfix">
 		<span class="panel-title">{$caption}</span>
 

@@ -213,7 +213,7 @@ class Base_Dashboard extends Module {
 				}
 
 				$th->assign('caption',$opts['title']);
-				$th->assign('color',$colors[$row['color']]['class']);
+				$th->assign('color',$color = array('default','primary','success','danger','warning','info')[rand(0,5)]);
 				
 				$th->assign('actions',$opts['actions']);
 
