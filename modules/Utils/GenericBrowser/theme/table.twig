@@ -14,22 +14,36 @@
 <table id="table_{{ id }}" class="table table-bordered table-condensed">
     <thead>
         <tr>
+            {% if enable_actions and actions_position == 0 %}<th>Actions</th>{% endif %}
             {% for column in columns %}
                 {% set sort_icon %}
                     {% if column.sort == 'asc' %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort-asc"></i></a>{% endif %}
                     {% if column.sort == 'desc' %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort-desc"></i></a>{% endif %}
                     {% if column.sort is null %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort"></i></a>{% endif %}
                 {% endset %}
-            <th nowrap>{{ column.name }} {{ sort_icon }}</th>
+                <th nowrap>{{ column.name }} {{ sort_icon }}</th>
             {% endfor %}
+            {% if enable_actions and actions_position != 0 %}<th>Actions</th>{% endif %}
         </tr>
     </thead>
     <tbody>
         {% for row in rows %}
-            <tr>
+            {% set row_num = loop.index %}
+            {% set actions %}
+                {% for action in row.actions %}
+                    {% set action_num = loop.index %}
+                    <a data-action-num="{{ action_num }}" {{ action.href | raw }} {% if action.tooltip %}data-toggle="popover" class="popover-info"{% else %} title="{{ action.label }}" {% endif %}><i class="fa fa-{{ action.icon }}"></i></a>
+                    {% if action.tooltip %}
+                        <div data-action-num="{{ action_num }}" class="tooltip-data" style="display: none">{{ action.tooltip | raw }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endset %}
+            <tr data-row-num="{{ row_num }}">
+                {% if enable_actions and actions_position == 0 %}<td>{{ actions }}</td>{% endif %}
                 {% for col in row.columns %}
                     <td>{{ col.label | raw }}</td>
                 {% endfor %}
+                {% if enable_actions and actions_position != 0 %}<td>{{ actions }}</td>{% endif %}
             </tr>
         {% endfor %}
     </tbody>

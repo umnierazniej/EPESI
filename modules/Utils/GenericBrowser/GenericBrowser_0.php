@@ -889,17 +889,35 @@ class Utils_GenericBrowser extends Module {
 			'last' => $this->gb_last()
 		);
 
-
+		//todo-pj: Zamienić content na callback
+		$js = <<<JS
+		jQuery('.popover-info').each(function () {
+        var rownum = jQuery(this).parent().parent().data('row-num');
+        var actionnum = jQuery(this).data('action-num');
+        var html = jQuery('tr[data-row-num="' + rownum + '"] .tooltip-data[data-action-num="' + actionnum + '"]').html();
+        jQuery(this).popover(
+                {
+                	title: "",
+                    html: true,
+                    content: html,
+                    trigger: 'hover'
+                }
+        )
+    });
+JS;
+		eval_js($js);
 
 		$this->display('table.twig', array(
-			'columns' => $this->get_columns_template_data(),
-			'rows' => $this->get_rows_template_data(),
-			'summary' => $this->summary(),
-			'letter_links' => $letter_links,
-			'id' => $md5_id,
-			'pagination' => $pagination,
-			'pagination_form' => isset($pagination_form) ? $pagination_form->createView() : false,
-			'search_form' => isset($search_form) ? $search_form->createView() : false
+				'columns' => $this->get_columns_template_data(),
+				'rows' => $this->get_rows_template_data(),
+				'summary' => $this->summary(),
+				'letter_links' => $letter_links,
+				'id' => $md5_id,
+				'pagination' => $pagination,
+				'pagination_form' => isset($pagination_form) ? $pagination_form->createView() : false,
+				'search_form' => isset($search_form) ? $search_form->createView() : false,
+				'enable_actions' => $this->en_actions,
+				'actions_position' => Base_User_SettingsCommon::get(Utils_GenericBrowser::module_name(),'actions_position')
 		));
 	}
 
