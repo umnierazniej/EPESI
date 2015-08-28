@@ -20,11 +20,11 @@
             {% if enable_actions and actions_position == 0 %}<th>Actions</th>{% endif %}
             {% for column in columns %}
                 {% set sort_icon %}
-                    {% if column.sort == 'asc' %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort-asc"></i></a>{% endif %}
-                    {% if column.sort == 'desc' %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort-desc"></i></a>{% endif %}
-                    {% if column.sort is null %}<a class="pull-right" {{ column.change_order_href | raw }}><i class="fa fa-sort"></i></a>{% endif %}
+                    {% if column.sort == 'asc' %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort-asc"></i></a>{% endif %}
+                    {% if column.sort == 'desc' %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort-desc"></i></a>{% endif %}
+                    {% if column.sort is null %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort"></i></a>{% endif %}
                 {% endset %}
-                <th nowrap>{{ column.name }} {{ sort_icon }}</th>
+                <th nowrap>{{ sort_icon }} {{ column.name }}</th>
             {% endfor %}
             {% if enable_actions and actions_position != 0 %}<th>Actions</th>{% endif %}
         </tr>
