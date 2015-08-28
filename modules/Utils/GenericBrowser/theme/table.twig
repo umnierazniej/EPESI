@@ -60,10 +60,12 @@
 {% endif %}
 
 {% if pagination %}
-    <div class="btn-group" role="group" aria-label="...">
-        <button type="button" class="btn btn-default" title="{{ pagination.first.label | raw }}" {% if pagination.first is null %}disabled="disabled"{% endif %} {{ pagination.first.href | raw }}><i class="fa fa-angle-double-left"></i></button>
-        <button type="button" class="btn btn-default" title="{{ pagination.prev.label | raw }}" {% if pagination.prev is null %}disabled="disabled"{% endif %} {{ pagination.prev.href | raw }}><i class="fa fa-angle-left"></i></button>
-        <button type="button" class="btn btn-default" title="{{ pagination.next.label | raw }}" {% if pagination.next is null %}disabled="disabled"{% endif %} {{ pagination.next.href | raw }}><i class="fa fa-angle-right"></i></button>
-        <button type="button" class="btn btn-default" title="{{ pagination.last.label | raw }}" {% if pagination.last is null %}disabled="disabled"{% endif %} {{ pagination.last.href | raw }}><i class="fa fa-angle-double-right"></i></button>
-    </div>
+    <nav class="text-center">
+        <ul class="pagination">
+            <li {% if pagination.first is null %}class="disabled"{% endif %}><a aria-label="{{ pagination.first.label | raw }}" {{ pagination.first.href | raw }}><i class="fa fa-angle-double-left"></i></a></li>
+            <li {% if pagination.prev is null %}class="disabled"{% endif %}><a aria-label="{{ pagination.prev.label | raw }}" {{ pagination.prev.href | raw }}><i class="fa fa-angle-left"></i></a></li>
+            <li {% if pagination.next is null %}class="disabled"{% endif %}><a aria-label="{{ pagination.next.label | raw }}" {{ pagination.next.href | raw }}><i class="fa fa-angle-right"></i></a></li>
+            <li {% if pagination.last is null %}class="disabled"{% endif %}><a aria-label="{{ pagination.last.label | raw }}" {{ pagination.last.href | raw }}><i class="fa fa-angle-double-right"></i></a></li>
+        </ul>
+    </nav>
 {% endif %}
