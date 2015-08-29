@@ -823,16 +823,16 @@ class Utils_GenericBrowser extends Module {
 			foreach($row_data['columns'] as $col_data)
 				$out_data[] = $col_data;
 
-		$options['data'] = $out_data;
-		$options['cols'] = $this->get_columns_template_data();
+//		$options['data'] = $out_data;
+//		$options['cols'] = $this->get_columns_template_data();
 
-		$options['row_attrs'] = $this->row_attrs;
+//		$options['row_attrs'] = $this->row_attrs;
 
-		$options['table_id'] = 'table_' . $md5_id;
+//		$options['table_id'] = 'table_' . $md5_id;
 		$options['table_prefix'] = $this->table_prefix;
 		$options['table_postfix'] = $this->table_postfix;
 
-		$options['summary'] = $this->summary();
+//		$options['summary'] = $this->summary();
 		$options['custom_label'] = $this->custom_label;
 		$options['custom_label_args'] = $this->custom_label_args;
 
@@ -885,10 +885,11 @@ class Utils_GenericBrowser extends Module {
 		foreach($options as $key => $value)
 			$theme->assign($key, $value);
 
-//		if (isset($template))
-//			$theme->display($template, true);
-//		else
-//			$theme->display();
+		//todo-pj: Record browser cos wyświetla przez custom label
+		if (isset($template))
+			$theme->display($template, true);
+		else
+			$theme->display();
 		$this->set_module_variable('show_all_triggered', false);
 
 		$pagination = Arrays::clean(array(
