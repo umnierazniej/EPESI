@@ -2,13 +2,14 @@
 	<!-- Default panel contents -->
 	<div class="panel-heading"><img src="{{ icon }}"> {{ caption | raw}}
         {% if form %}
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            {{ form_end(form) }}
+            <div class="pull-right">
+                {{ form_start(form) }}
+                {{ form_widget(form.browse_mode) }}
+                {{ form_end(form) }}
+            </div>
         {% endif %}
         </div>
     <div class="panel-body">
-        {#<div>{{ filters | raw }}#}
         {{ table | raw }}
     </div>
 </div>
