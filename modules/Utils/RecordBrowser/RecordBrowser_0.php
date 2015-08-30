@@ -1369,70 +1369,73 @@ class Utils_RecordBrowser extends Module {
             //Utils_ShortcutCommon::add(array('esc'), 'function(){'.$this->create_back_href_js().'}');
         }
 
+        $template_options = array();
         if ($mode!='add') {
-            $theme -> assign('info_tooltip', '<a '.Utils_TooltipCommon::open_tag_attrs(Utils_RecordBrowserCommon::get_html_record_info($this->tab, $id)).'><img border="0" src="'.Base_ThemeCommon::get_template_file('Utils_RecordBrowser','info.png').'" /></a>');
-            $row_data= array();
+            $template_options['info_tooltip'] = '<a ' . Utils_TooltipCommon::open_tag_attrs(Utils_RecordBrowserCommon::get_html_record_info($this->tab, $id)) . '><img border="0" src="' . Base_ThemeCommon::get_template_file('Utils_RecordBrowser', 'info.png') . '" /></a>';
+            $row_data = array();
 
-			if ($mode!='history') {
-				if ($this->favorites)
-					$theme -> assign('fav_tooltip', Utils_RecordBrowserCommon::get_fav_button($this->tab, $id));
-				if ($this->watchdog)
-					$theme -> assign('subscription_tooltip', Utils_WatchdogCommon::get_change_subscription_icon($this->tab, $id));
-				if ($this->full_history) {
-					$info = Utils_RecordBrowserCommon::get_record_info($this->tab, $id);
-					if ($info['edited_on']===null) $theme -> assign('history_tooltip', '<a '.Utils_TooltipCommon::open_tag_attrs(__('This record was never edited')).'><img border="0" src="'.Base_ThemeCommon::get_template_file('Utils_RecordBrowser','history_inactive.png').'" /></a>');
-					else $theme -> assign('history_tooltip', '<a '.Utils_TooltipCommon::open_tag_attrs(__('Click to view edit history of currently displayed record')).' '.$this->create_callback_href(array($this,'navigate'), array('view_edit_history', $id)).'><img border="0" src="'.Base_ThemeCommon::get_template_file('Utils_RecordBrowser','history.png').'" /></a>');
-				}
-				if ($this->clipboard_pattern) {
-					$theme -> assign('clipboard_tooltip', '<a '.Utils_TooltipCommon::open_tag_attrs(__('Click to export values to copy')).' '.Libs_LeightboxCommon::get_open_href('clipboard').'><img border="0" src="'.Base_ThemeCommon::get_template_file('Utils_RecordBrowser','clipboard.png').'" /></a>');
-					$text = $this->clipboard_pattern;
-					$record = Utils_RecordBrowserCommon::get_record($this->tab, $id);
-					/* for every field name store its value */
-					$data = array();
-					foreach($this->table_rows as $val) {
-						$fval = Utils_RecordBrowserCommon::get_val($this->tab, $val['id'], $record, true);
-						if(strlen($fval)) $data[$val['id']] = $fval;
-					}
-					/* some complicate preg match to find every occurence
-					 * of %{ .. {f_name} .. } pattern
-					 */
+            if ($mode != 'history') {
+                if ($this->favorites)
+                    $template_options['fav_tooltip'] = Utils_RecordBrowserCommon::get_fav_button($this->tab, $id);
+                if ($this->watchdog)
+                    $template_options['subscription_tooltip'] = Utils_WatchdogCommon::get_change_subscription_icon($this->tab, $id);
+                if ($this->full_history) {
+                    $info = Utils_RecordBrowserCommon::get_record_info($this->tab, $id);
+                    if ($info['edited_on'] === null) $template_options['history_tooltip'] = '<a ' . Utils_TooltipCommon::open_tag_attrs(__('This record was never edited')) . '><img border="0" src="' . Base_ThemeCommon::get_template_file('Utils_RecordBrowser', 'history_inactive.png') . '" /></a>';
+                    else $template_options['history_tooltip'] = '<a ' . Utils_TooltipCommon::open_tag_attrs(__('Click to view edit history of currently displayed record')) . ' ' . $this->create_callback_href(array($this, 'navigate'), array('view_edit_history', $id)) . '><img border="0" src="' . Base_ThemeCommon::get_template_file('Utils_RecordBrowser', 'history.png') . '" /></a>';
+                }
+                if ($this->clipboard_pattern) {
+                    $template_options['clipboard_tooltip'] = '<a ' . Utils_TooltipCommon::open_tag_attrs(__('Click to export values to copy')) . ' ' . Libs_LeightboxCommon::get_open_href('clipboard') . '><img border="0" src="' . Base_ThemeCommon::get_template_file('Utils_RecordBrowser', 'clipboard.png') . '" /></a>';
+                    $text = $this->clipboard_pattern;
+                    $record = Utils_RecordBrowserCommon::get_record($this->tab, $id);
+                    /* for every field name store its value */
+                    $data = array();
+                    foreach ($this->table_rows as $val) {
+                        $fval = Utils_RecordBrowserCommon::get_val($this->tab, $val['id'], $record, true);
+                        if (strlen($fval)) $data[$val['id']] = $fval;
+                    }
+                    /* some complicate preg match to find every occurence
+                     * of %{ .. {f_name} .. } pattern
+                     */
                     if (preg_match_all('/%\{(([^%\}\{]*?\{[^%\}\{]+?\}[^%\}\{]*?)+?)\}/', $text, $match)) { // match for all patterns %{...{..}...}
                         foreach ($match[0] as $k => $matched_string) {
                             $text_replace = $match[1][$k];
                             $changed = false;
-                            while(preg_match('/\{(.+?)\}/', $text_replace, $second_match)) { // match for keys in braces {key}
+                            while (preg_match('/\{(.+?)\}/', $text_replace, $second_match)) { // match for keys in braces {key}
                                 $replace_value = '';
-                                if(array_key_exists($second_match[1], $data)) {
+                                if (array_key_exists($second_match[1], $data)) {
                                     $replace_value = $data[$second_match[1]];
                                     $changed = true;
                                 }
                                 $text_replace = str_replace($second_match[0], $replace_value, $text_replace);
                             }
-                            if(! $changed ) $text_replace = '';
+                            if (!$changed) $text_replace = '';
                             $text = str_replace($matched_string, $text_replace, $text);
                         }
                     }
-					load_js("modules/Utils/RecordBrowser/selecttext.js");
-					/* remove all php new lines, replace <br>|<br/> to new lines and quote all special chars */
-					$ftext = htmlspecialchars(preg_replace('#<[bB][rR]/?>#', "\n", str_replace("\n", '', $text)));
-					$flash_copy = '<object width="60" height="20">'.
-								'<param name="FlashVars" value="txtToCopy='.$ftext.'">'.
-								'<param name="movie" value="'.$this->get_module_dir().'copyButton.swf">'.
-								'<embed src="'.$this->get_module_dir().'copyButton.swf" flashvars="txtToCopy='.$ftext.'" width="60" height="20">'.
-								'</embed>'.
-								'</object>';
-					$text = '<h3>'.__('Click Copy under the box or move mouse over box below to select text and hit Ctrl-c to copy it.').'</h3><div onmouseover="fnSelect(this)" style="border: 1px solid gray; margin: 15px; padding: 20px;">'.$text.'</div>'.$flash_copy;
+                    load_js("modules/Utils/RecordBrowser/selecttext.js");
+                    /* remove all php new lines, replace <br>|<br/> to new lines and quote all special chars */
+                    $ftext = htmlspecialchars(preg_replace('#<[bB][rR]/?>#', "\n", str_replace("\n", '', $text)));
+                    $flash_copy = '<object width="60" height="20">' .
+                        '<param name="FlashVars" value="txtToCopy=' . $ftext . '">' .
+                        '<param name="movie" value="' . $this->get_module_dir() . 'copyButton.swf">' .
+                        '<embed src="' . $this->get_module_dir() . 'copyButton.swf" flashvars="txtToCopy=' . $ftext . '" width="60" height="20">' .
+                        '</embed>' .
+                        '</object>';
+                    $text = '<h3>' . __('Click Copy under the box or move mouse over box below to select text and hit Ctrl-c to copy it.') . '</h3><div onmouseover="fnSelect(this)" style="border: 1px solid gray; margin: 15px; padding: 20px;">' . $text . '</div>' . $flash_copy;
 
-					Libs_LeightboxCommon::display('clipboard',$text,__('Copy'));
-				}
-			}
+                    Libs_LeightboxCommon::display('clipboard', $text, __('Copy'));
+                }
+            }
         }
 
 		if ($mode=='view') {
 			$dp = Utils_RecordBrowserCommon::record_processing($this->tab, $this->record, 'display');
 			if ($dp && is_array($dp))
-				foreach ($dp as $k=>$v)
-					$theme->assign($k, $v);
+				foreach ($dp as $k=>$v){
+                    $theme->assign($k, $v);
+                    $template_options[$k] = $v;
+                }
 		}
 
         if ($mode=='view' || $mode=='history') $form->freeze();
@@ -1450,7 +1453,7 @@ class Utils_RecordBrowser extends Module {
 			$label = $label['field'];
 		} else $cols = false;
 
-        $this->view_entry_details(1, $last_page, $data, $theme, true);
+        $this->view_entry_details(1, $last_page, $data, $theme, true, 2, null, $template_options);
         $ret = DB::Execute('SELECT position, field, param FROM '.$this->tab.'_field WHERE type = \'page_split\' AND position > %d ORDER BY position', array($last_page));
         $row = true;
         if ($mode=='view')
@@ -1558,7 +1561,7 @@ class Utils_RecordBrowser extends Module {
         print('Addon is broken, please contact system administrator.');
     }
 
-    public function view_entry_details($from, $to, $data, $theme=null, $main_page = false, $cols = 2, $tab_label = null){
+    public function view_entry_details($from, $to, $data, $theme=null, $main_page = false, $cols = 2, $tab_label = null, $template_options){
         if ($theme==null) $theme = $this->init_module(Base_Theme::module_name());
         $fields = array();
         $longfields = array();
@@ -1605,9 +1608,9 @@ class Utils_RecordBrowser extends Module {
             $tpl = '';
             if (self::$mode=='view') print('<form>');
         }
-		if ($tpl) Base_ThemeCommon::load_css('Utils_RecordBrowser','View_entry');
-        $theme->display(($tpl!=='')?$tpl:'View_entry', ($tpl!==''));
-        if (!$main_page && self::$mode=='view') print('</form>');
+//		if ($tpl) Base_ThemeCommon::load_css('Utils_RecordBrowser','View_entry');
+//        $theme->display(($tpl!=='')?$tpl:'View_entry', ($tpl!==''));
+//        if (!$main_page && self::$mode=='view') print('</form>');
 
         $tooltip_js = <<<JS
         jQuery('[data-toggle="tooltip"]').tooltip();
@@ -1617,7 +1620,9 @@ JS;
             'fields' => $fields,
             'caption' => _V($this->caption) . $this->get_jump_to_id_button(),
             'main_page' => $main_page,
-            'required_tooltip' => __('Indicates required fields.')
+            'required_tooltip' => __('Indicates required fields.'),
+            'options' => $template_options,
+            'icon' => $this->icon
         ));
     }
 
