@@ -10,6 +10,8 @@
  * @subpackage RecordBrowser
  */
 
+use Underscore\Types\Arrays;
+
 defined("_VALID_ACCESS") || die();
 
 class Utils_RecordBrowser extends Module {
@@ -1578,6 +1580,12 @@ class Utils_RecordBrowser extends Module {
             }
         }
         if ($cols==0) $cols=2;
+
+        //Fake field colors
+        $fields = Arrays::each($fields, function ($field) {
+            $field['color'] = array('default','primary','success','danger','warning','info')[rand(0,5) % 6];
+            return $field;
+        });
         $theme->assign('fields', $fields);
         $theme->assign('cols', $cols);
         $theme->assign('longfields', $longfields);
