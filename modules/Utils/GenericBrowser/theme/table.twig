@@ -1,18 +1,30 @@
-{% if search_form %}
-    {{ form_start(search_form) }}
-    {{ form_widget(search_form) }}
-    <input type="submit" class="btn btn-default" name="login" value="Submit">
-    {{ form_end(search_form) }}
+<div class="row">
+    <div class="col-md-8">
+        {% if letter_links %}
+            <button class="abc btn btn-primary">ABC</button>
+            <div class="letters" style="display: none">
+                {% for letter in letter_links %}
+                    <a class="badge" {{ letter.href | raw }}>{{ letter.label }}</a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {% if search_form %}
+    <div class="col-md-4">
+        {{ form_start(search_form) }}
+        <div class="form-group">
+            {#{{ form_label(search_form.search) }}#}
+            <div class="input-group">
+                {{ form_widget(search_form.search) }}
+                <div class="input-group-btn"><button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button></div>
+            </div>
+            {{ form_end(search_form) }}
+        </div>
+    </div>
 {% endif %}
 
-{% if letter_links %}
-<button class="abc btn btn-primary">ABC</button>
-<div class="letters" style="display: none">
-    {% for letter in letter_links %}
-        <a class="badge" {{ letter.href | raw }}>{{ letter.label }}</a>
-    {% endfor %}
 </div>
-{% endif %}
+
 
 <table id="table_{{ id }}" class="table table-condensed">
     <thead>
@@ -56,8 +68,8 @@
     <div class="col-md-8">{{ summary | raw }}</div>
     {% if pagination_form %}
         {{ form_start(pagination_form) }}
-    <div class="col-md-2">{{ form_label(pagination_form.per_page) }} {{ form_widget(pagination_form.per_page) }}</div>
-    <div class="col-md-2">{{ form_label(pagination_form.page) }} {{ form_widget(pagination_form.page) }}</div>
+    <div class="col-md-2"><div class="form-group">{{ form_label(pagination_form.per_page) }} {{ form_widget(pagination_form.per_page) }}</div></div>
+    <div class="col-md-2"><div class="form-group">{{ form_label(pagination_form.page) }} {{ form_widget(pagination_form.page) }}</div></div>
     {{ form_end(pagination_form) }}
         {% endif %}
     </div>
