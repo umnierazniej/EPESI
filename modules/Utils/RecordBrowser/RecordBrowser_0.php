@@ -285,7 +285,6 @@ class Utils_RecordBrowser extends Module {
         $this->crits = Utils_RecordBrowserCommon::merge_crits($this->crits, $crits);
 
         $theme = $this->init_module(Base_Theme::module_name());
-        $theme->assign('filters', $filters);
         $opts = array('all'=>__('All'));
         if ($this->recent>0) $opts['recent'] = __('Recent');
         if ($this->favorites) $opts['favorites'] = __('Favorites');
@@ -330,16 +329,15 @@ class Utils_RecordBrowser extends Module {
         $table = ob_get_contents();
         ob_end_clean();
 
-//        $theme->assign('table', $table);
-        if (!$this->disabled['headline']) $theme->assign('caption', _V($this->caption).($this->additional_caption?' - '.$this->additional_caption:'').($this->get_jump_to_id_button()));
-        $theme->assign('icon', $this->icon);
+//        if (!$this->disabled['headline']) $theme->assign('caption', _V($this->caption).($this->additional_caption?' - '.$this->additional_caption:'').($this->get_jump_to_id_button()));
         $theme->display('Browsing_records');
 
         $this->display('list.twig', array(
             'table' => $table,
             'icon' => $this->icon,
             'caption' => _V($this->caption).($this->additional_caption?' - '.$this->additional_caption:'').($this->get_jump_to_id_button()),
-            'form' => $form->createView()
+            'form' => isset($form)?$form->createView():null,
+            'filters' => $filters
         ));
     }
     public function switch_view($mode){

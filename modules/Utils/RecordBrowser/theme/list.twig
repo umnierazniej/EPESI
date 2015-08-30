@@ -1,11 +1,18 @@
 <div class="panel panel-primary">
 	<!-- Default panel contents -->
-	<div class="panel-heading">{{ caption | raw}}
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
+	<div class="panel-heading"><img src="{{ icon }}"> {{ caption | raw}}
+        {% if form %}
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+        {% endif %}
         </div>
     <div class="panel-body">
-        {{ table | raw }}
+        <div class="panel panel-default">
+            <div class="panel-body">{{ filters | raw }}</div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">{{ table | raw }}</div>
+        </div>
     </div>
 </div>
