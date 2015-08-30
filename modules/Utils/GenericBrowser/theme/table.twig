@@ -10,57 +10,68 @@
         {% endif %}
     </div>
     {% if search_form %}
-    <div class="col-md-4">
-        {{ form_start(search_form) }}
-        <div class="form-group">
-            {#{{ form_label(search_form.search) }}#}
-            <div class="input-group">
-                {{ form_widget(search_form.search) }}
-                <div class="input-group-btn"><button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button></div>
+        <div class="col-md-4">
+            {{ form_start(search_form) }}
+            <div class="form-group">
+                {#{{ form_label(search_form.search) }}#}
+                <div class="input-group">
+                    {{ form_widget(search_form.search) }}
+                    <div class="input-group-btn">
+                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
             </div>
             {{ form_end(search_form) }}
         </div>
-    </div>
-{% endif %}
+    {% endif %}
 
 </div>
 
 
 <table id="table_{{ id }}" class="table table-condensed">
     <thead>
-        <tr>
-            {% if enable_actions and actions_position == 0 %}<th>Actions</th>{% endif %}
-            {% for column in columns %}
-                {% set sort_icon %}
-                    {% if column.sort == 'asc' %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort-asc"></i></a>{% endif %}
-                    {% if column.sort == 'desc' %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort-desc"></i></a>{% endif %}
-                    {% if column.sort is null %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort"></i></a>{% endif %}
-                {% endset %}
-                <th nowrap>{{ sort_icon }} {{ column.name }}</th>
-            {% endfor %}
-            {% if enable_actions and actions_position != 0 %}<th>Actions</th>{% endif %}
-        </tr>
+    <tr>
+        {% if enable_actions and actions_position == 0 %}
+            <th>Actions</th>{% endif %}
+        {% for column in columns %}
+            {% set sort_icon %}
+                {% if column.sort == 'asc' %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort-asc"></i>
+                    </a>{% endif %}
+                {% if column.sort == 'desc' %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort-desc"></i>
+                    </a>{% endif %}
+                {% if column.sort is null %}<a {{ column.change_order_href | raw }}><i class="fa fa-sort"></i>
+                    </a>{% endif %}
+            {% endset %}
+            <th nowrap>{{ sort_icon }} {{ column.name }}</th>
+        {% endfor %}
+        {% if enable_actions and actions_position != 0 %}
+            <th>Actions</th>{% endif %}
+    </tr>
     </thead>
     <tbody>
-        {% for row in rows %}
-            {% set row_num = loop.index %}
-            {% set actions %}
-                {% for action in row.actions %}
-                    {% set action_num = loop.index %}
-                    <a data-action-num="{{ action_num }}" {{ action.href | raw }} {% if action.tooltip %}data-toggle="popover" class="popover-info"{% else %} title="{{ action.label }}" {% endif %}><i class="fa fa-{{ action.icon }}"></i></a>
-                    {% if action.tooltip %}
-                        <div data-action-num="{{ action_num }}" class="tooltip-data" style="display: none">{{ action.tooltip | raw }}</div>
-                    {% endif %}
-                {% endfor %}
-            {% endset %}
-            <tr data-row-num="{{ row_num }}">
-                {% if enable_actions and actions_position == 0 %}<td>{{ actions }}</td>{% endif %}
-                {% for col in row.columns %}
-                    <td>{{ col.label | raw }}</td>
-                {% endfor %}
-                {% if enable_actions and actions_position != 0 %}<td>{{ actions }}</td>{% endif %}
-            </tr>
-        {% endfor %}
+    {% for row in rows %}
+        {% set row_num = loop.index %}
+        {% set actions %}
+            {% for action in row.actions %}
+                {% set action_num = loop.index %}
+                <a data-action-num="{{ action_num }}" {{ action.href | raw }} {% if action.tooltip %}data-toggle="popover" class="popover-info"{% else %} title="{{ action.label }}" {% endif %}><i
+                            class="fa fa-{{ action.icon }}"></i></a>
+                {% if action.tooltip %}
+                    <div data-action-num="{{ action_num }}" class="tooltip-data"
+                         style="display: none">{{ action.tooltip | raw }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endset %}
+        <tr data-row-num="{{ row_num }}">
+            {% if enable_actions and actions_position == 0 %}
+                <td>{{ actions }}</td>{% endif %}
+            {% for col in row.columns %}
+                <td>{{ col.label | raw }}</td>
+            {% endfor %}
+            {% if enable_actions and actions_position != 0 %}
+                <td>{{ actions }}</td>{% endif %}
+        </tr>
+    {% endfor %}
     </tbody>
 </table>
 
@@ -68,19 +79,31 @@
     <div class="col-md-8">{{ summary | raw }}</div>
     {% if pagination_form %}
         {{ form_start(pagination_form) }}
-    <div class="col-md-2"><div class="form-group">{{ form_label(pagination_form.per_page) }} {{ form_widget(pagination_form.per_page) }}</div></div>
-    <div class="col-md-2"><div class="form-group">{{ form_label(pagination_form.page) }} {{ form_widget(pagination_form.page) }}</div></div>
-    {{ form_end(pagination_form) }}
-        {% endif %}
-    </div>
+        <div class="col-md-2">
+            <div class="form-group">{{ form_label(pagination_form.per_page) }} {{ form_widget(pagination_form.per_page) }}</div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">{{ form_label(pagination_form.page) }} {{ form_widget(pagination_form.page) }}</div>
+        </div>
+        {{ form_end(pagination_form) }}
+    {% endif %}
+</div>
 
 {% if pagination %}
     <nav class="text-center">
         <ul class="pagination">
-            <li {% if pagination.first is null %}class="disabled"{% endif %}><a aria-label="{{ pagination.first.label | raw }}" {{ pagination.first.href | raw }}><i class="fa fa-angle-double-left"></i></a></li>
-            <li {% if pagination.prev is null %}class="disabled"{% endif %}><a aria-label="{{ pagination.prev.label | raw }}" {{ pagination.prev.href | raw }}><i class="fa fa-angle-left"></i></a></li>
-            <li {% if pagination.next is null %}class="disabled"{% endif %}><a aria-label="{{ pagination.next.label | raw }}" {{ pagination.next.href | raw }}><i class="fa fa-angle-right"></i></a></li>
-            <li {% if pagination.last is null %}class="disabled"{% endif %}><a aria-label="{{ pagination.last.label | raw }}" {{ pagination.last.href | raw }}><i class="fa fa-angle-double-right"></i></a></li>
+            <li {% if pagination.first is null %}class="disabled"{% endif %}><a
+                        aria-label="{{ pagination.first.label | raw }}" {{ pagination.first.href | raw }}><i
+                            class="fa fa-angle-double-left"></i></a></li>
+            <li {% if pagination.prev is null %}class="disabled"{% endif %}><a
+                        aria-label="{{ pagination.prev.label | raw }}" {{ pagination.prev.href | raw }}><i
+                            class="fa fa-angle-left"></i></a></li>
+            <li {% if pagination.next is null %}class="disabled"{% endif %}><a
+                        aria-label="{{ pagination.next.label | raw }}" {{ pagination.next.href | raw }}><i
+                            class="fa fa-angle-right"></i></a></li>
+            <li {% if pagination.last is null %}class="disabled"{% endif %}><a
+                        aria-label="{{ pagination.last.label | raw }}" {{ pagination.last.href | raw }}><i
+                            class="fa fa-angle-double-right"></i></a></li>
         </ul>
     </nav>
 {% endif %}

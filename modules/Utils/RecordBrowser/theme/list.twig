@@ -8,11 +8,7 @@
         {% endif %}
         </div>
     <div class="panel-body">
-        <div class="panel panel-default">
-            <div class="panel-body">{{ filters | raw }}</div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-body">{{ table | raw }}</div>
-        </div>
+        {#<div>{{ filters | raw }}#}
+        {{ table | raw }}
     </div>
 </div>

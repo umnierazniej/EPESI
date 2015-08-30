@@ -890,10 +890,10 @@ class Utils_GenericBrowser extends Module {
 			$theme->assign($key, $value);
 
 		//todo-pj: Record browser cos wyświetla przez custom label
-		if (isset($template))
-			$theme->display($template, true);
-		else
-			$theme->display();
+//		if (isset($template))
+//			$theme->display($template, true);
+//		else
+//			$theme->display();
 		$this->set_module_variable('show_all_triggered', false);
 
 		$pagination = Arrays::clean(array(
