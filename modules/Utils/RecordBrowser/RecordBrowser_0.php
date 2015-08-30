@@ -322,10 +322,16 @@ class Utils_RecordBrowser extends Module {
         $table = ob_get_contents();
         ob_end_clean();
 
-        $theme->assign('table', $table);
+//        $theme->assign('table', $table);
         if (!$this->disabled['headline']) $theme->assign('caption', _V($this->caption).($this->additional_caption?' - '.$this->additional_caption:'').($this->get_jump_to_id_button()));
         $theme->assign('icon', $this->icon);
         $theme->display('Browsing_records');
+
+        $this->display('list.twig', array(
+            'table' => $table,
+            'icon' => $this->icon,
+            'caption' => _V($this->caption).($this->additional_caption?' - '.$this->additional_caption:'').($this->get_jump_to_id_button())
+        ));
     }
     public function switch_view($mode){
         Base_User_SettingsCommon::save(Utils_RecordBrowser::module_name(),$this->tab.'_default_view',$mode);
