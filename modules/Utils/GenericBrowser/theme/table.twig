@@ -51,13 +51,16 @@
         {% endfor %}
     </tbody>
 </table>
-<div>{{ summary | raw }}</div>
 
-{% if pagination_form %}
-    {{ form_start(pagination_form) }}
-    {{ form_widget(pagination_form) }}
+<div class="row">
+    <div class="col-md-8">{{ summary | raw }}</div>
+    {% if pagination_form %}
+        {{ form_start(pagination_form) }}
+    <div class="col-md-2">{{ form_label(pagination_form.per_page) }} {{ form_widget(pagination_form.per_page) }}</div>
+    <div class="col-md-2">{{ form_label(pagination_form.page) }} {{ form_widget(pagination_form.page) }}</div>
     {{ form_end(pagination_form) }}
-{% endif %}
+        {% endif %}
+    </div>
 
 {% if pagination %}
     <nav class="text-center">

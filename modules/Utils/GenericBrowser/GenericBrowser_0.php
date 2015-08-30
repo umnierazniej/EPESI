@@ -668,7 +668,11 @@ class Utils_GenericBrowser extends Module {
 		$per_page = $this->get_module_variable('per_page');
 
 
-		$pagination_form_builder = $this->create_form_builder(array());
+		$pagination_form_builder = $this->create_form_builder(array(
+			'attr' => array(
+				'class' => 'form-inline'
+			)
+		));
 		if (isset($this->rows_qty) && $paging) {
 
 			if (!$this->forced_per_page) {
