@@ -1574,7 +1574,7 @@ class Utils_RecordBrowser extends Module {
                                     'error'=>isset($data[$args['id']]['error'])?$data[$args['id']]['error']:null,
                                     'required'=>isset($args['required'])?$args['required']:null,
                                     'type'=>$args['type']);
-                    if ($args['type']<>'long text') $fields[$args['id']] = $arr; else $longfields[$args['id']] = $arr;
+                    $fields[$args['id']] = $arr;
             }
         }
         if ($cols==0) $cols=2;
@@ -1583,7 +1583,7 @@ class Utils_RecordBrowser extends Module {
         $theme->assign('longfields', $longfields);
         $theme->assign('action', self::$mode=='history'?'view':self::$mode);
         $theme->assign('form_data', $data);
-        $theme->assign('required_note', __('Indicates required fields.'));
+//        $theme->assign('required_note', __('Indicates required fields.'));
 
         $theme->assign('caption',_V($this->caption) . $this->get_jump_to_id_button());
         $theme->assign('icon',$this->icon);
@@ -1600,6 +1600,17 @@ class Utils_RecordBrowser extends Module {
 		if ($tpl) Base_ThemeCommon::load_css('Utils_RecordBrowser','View_entry');
         $theme->display(($tpl!=='')?$tpl:'View_entry', ($tpl!==''));
         if (!$main_page && self::$mode=='view') print('</form>');
+
+        $tooltip_js = <<<JS
+        jQuery('[data-toggle="tooltip"]').tooltip();
+JS;
+        eval_js($tooltip_js);
+        $this->display('view.twig', array(
+            'fields' => $fields,
+            'caption' => _V($this->caption) . $this->get_jump_to_id_button(),
+            'main_page' => $main_page,
+            'required_tooltip' => __('Indicates required fields.')
+        ));
     }
 
     public function check_new_record_access($data) {

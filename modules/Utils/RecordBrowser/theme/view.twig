@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+    {% if main_page %}
+        <div class="panel-heading"><i  class="fa fa-{{ icon }}"></i>&nbsp;{{ caption | raw }}</div>
+    {% endif %}
+    <div class="panel-body row">
+        {% for field in fields %}
+            <div class="col-md-2">
+                <div id="rb_field_{{ field.element }}" class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ field.label | raw }} {% if field.required %}<i data-toggle="tooltip" data-placement="bottom" title="{{ required_tooltip }}" class="fa fa-exclamation-circle" style="color: red"></i> {% endif %}</h3>
+                    </div>
+                    <div class="panel-body">
+                        {{ field.html | raw }}&nbsp;
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
