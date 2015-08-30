@@ -302,18 +302,26 @@ class Utils_RecordBrowser extends Module {
                 $this->browse_mode = $this->get_module_variable('browse_mode', Base_User_SettingsCommon::get(Utils_RecordBrowser::module_name(),$this->tab.'_default_view'));
                 if (!$this->browse_mode) $this->browse_mode='all';
                 if (($this->browse_mode=='recent' && $this->recent==0) || ($this->browse_mode=='favorites' && !$this->favorites)) $this->set_module_variable('browse_mode', $this->browse_mode='all');
-                $form = $this->init_module(Libs_QuickForm::module_name());
-                $form->addElement('select', 'browse_mode', '', $opts, array('onchange'=>$form->get_submit_form_js()));
-                $form->setDefaults(array('browse_mode'=>$this->browse_mode));
-                if ($form->validate()) {
-                    $vals = $form->exportValues();
-                    if (isset($opts[$vals['browse_mode']])) {
-                        $this->switch_view($vals['browse_mode']);
+
+                $formBuilder = $this->create_form_builder(array());
+                $formBuilder->add('browse_mode', 'choice', array(
+                    'choices' => $opts,
+                    'data' => $this->browse_mode,
+                    'attr' => array(
+                        'onchange' => 'jQuery(this).submit()'
+                    )
+                ));
+                $form = $formBuilder->getForm();
+
+                $form->handleRequest();
+                if ($form->isValid()) {
+                    $val = $form->get('browse_mode')->getData();
+                    if (isset($opts[$val])) {
+                        $this->switch_view($val);
                         location(array());
                         return;
                     }
                 }
-                $form->assign_theme('form', $theme);
             }
         }
 
@@ -330,7 +338,8 @@ class Utils_RecordBrowser extends Module {
         $this->display('list.twig', array(
             'table' => $table,
             'icon' => $this->icon,
-            'caption' => _V($this->caption).($this->additional_caption?' - '.$this->additional_caption:'').($this->get_jump_to_id_button())
+            'caption' => _V($this->caption).($this->additional_caption?' - '.$this->additional_caption:'').($this->get_jump_to_id_button()),
+            'form' => $form->createView()
         ));
     }
     public function switch_view($mode){
