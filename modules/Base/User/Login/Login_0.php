@@ -11,6 +11,12 @@
  * @package epesi-base
  * @subpackage user-login
  */
+use Symfony\Bridge\Twig\Extension\FormExtension;
+use Symfony\Bridge\Twig\Form\TwigRenderer;
+use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Component\Form\Forms;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 defined("_VALID_ACCESS") || die('Direct access forbidden');
 
 class Base_User_Login extends Module {
@@ -71,156 +77,153 @@ class Base_User_Login extends Module {
 
 	}
 
-	public function login($tpl=null) {
-		//check bans
-        if (!Acl::is_user() && Base_User_LoginCommon::is_banned()) {
-            print __('You have exceeded the number of allowed login attempts.').'<br>';
-            print('<a href="'.get_epesi_url().'">'.__('Host banned. Click here to refresh.').'</a>');
-            return;
-		}
-
-
-		if($this->is_back())
-		    $this->unset_module_variable('mail_recover_pass');
-
-		//if recover pass
-		if($this->get_module_variable_or_unique_href_variable('mail_recover_pass')=='1') {
-			$this->recover_pass();
+	public function login()
+	{
+		if (!Acl::is_user() && Base_User_LoginCommon::is_banned()) {
+			print __('You have exceeded the number of allowed login attempts.').'<br>';
+			print('<a href="'.get_epesi_url().'">'.__('Host banned. Click here to refresh.').'</a>');
 			return;
 		}
-		if (isset($_REQUEST['password_recovered'])) {
-			$this->theme->assign('message', __('An e-mail with a new password has been sent.').'<br><a href="'.get_epesi_url().'">'.__('Login').'</a>');
-			$this->theme->display();
-			return;
+
+        if($this->autologin()) return;
+
+		$formBuilder = $this->create_form_builder(array(
+			'constraints' => array(
+				new \Symfony\Component\Validator\Constraints\Callback(array($this, 'validate'))
+			)
+		));
+
+		//todo-pj: Add information with demo users credentials
+
+		$formBuilder->add('login','text');
+		$formBuilder->add('password','password');
+
+
+		if (Base_User_LoginCommon::is_autologin_forbidden() == false) {
+			$formBuilder->add('autologin','checkbox', array(
+				'label'=>__('Remember me'),
+				'required' => false
+			));
 		}
-		if($this->autologin()) return;
 
-		//else just login form
-		$form = $this->init_module(Libs_QuickForm::module_name(),__('Logging in'));
-		$form->addElement('header', 'login_header', __('Login'));
-		
-		if(DEMO_MODE) {
-			global $demo_users;
-			$form->addElement('select', 'username', __('Username'), $demo_users, array('id'=>'username', 'onChange'=>'this.form.elements["password"].value=this.options[this.selectedIndex].value;'));
-			$form->addElement('hidden', 'password', key($demo_users));
-		} else {
-			$form->addElement('text', 'username', __('Username'),array('id'=>'username'));
-			$form->addElement('password', 'password', __('Password'));
-		}
+		$form = $formBuilder->getForm();
 
-		// Display warning about storing a cookie
-        if (Base_User_LoginCommon::is_autologin_forbidden() == false) {
-    		$warning=__('Keep this box unchecked if using a public computer');
-	    	$form->addElement('static','warning',null,$warning);
-		    $form->addElement('checkbox', 'autologin', '',__('Remember me'));
-        }
 
-		$form->addElement('static', 'recover_password', null, '<a '.$this->create_unique_href(array('mail_recover_pass'=>1)).'>'.__('Recover password').'</a>');
-		$form->addElement('submit', 'submit_button', __('Login'), array('class'=>'submit'));
+		$form->handleRequest();
+		if ($form->isValid()) {
+			$user = $form->get('login')->getData();
+			Base_User_LoginCommon::set_logged($user);
 
-        // register and add a rule to check if user is banned
-        $form->registerRule('check_user_banned', 'callback', 'rule_login_banned', 'Base_User_LoginCommon');
-        $form->addRule('username', __('You have exceeded the number of allowed login attempts for this username. Try again later.'), 'check_user_banned');
-        
-		// register and add a rule to check if a username and password is ok
-		$form->registerRule('check_login', 'callback', 'submit_login', 'Base_User_LoginCommon');
-		$form->addRule(array('username','password'), __('Login or password incorrect'), 'check_login');
-
-		$form->addRule('username', __('Field required'), 'required');
-		$form->addRule('password', __('Field required'), 'required');
-
-		if($form->isSubmitted() && $form->validate()) {
-			$user = $form->exportValue('username');
-            Base_User_LoginCommon::set_logged($user);
-
-            if (Base_User_LoginCommon::is_autologin_forbidden() == false) {
-                $autologin = $form->exportValue('autologin');
-                if($autologin)
-                    Base_User_LoginCommon::new_autologin_id();
-            }
+			if (Base_User_LoginCommon::is_autologin_forbidden() == false) {
+				$autologin = $form->get('autologin')->getData();
+				if($autologin)
+				Base_User_LoginCommon::new_autologin_id();
+			}
 
 			location(array());
-		} else {
-			$form->assign_theme('form', $this->theme);
-			$this->theme->assign('mode', 'login');
-
-            $logo = $this->init_module(Base_MainModuleIndicator::module_name());
-            $logo->set_inline_display();
-            $this->theme->assign('logo', $this->get_html_of_module($logo,null,'login_logo'));
-
-			ob_start();
-			if (!$tpl) {
-			        $this->theme->set_inline_display();
-				$this->theme->display('login_form');
-				eval_js("focus_by_id('username')");
-			} else
-				Base_ThemeCommon::display_smarty($this->theme->get_smarty(),$tpl[0],$tpl[1]);
-			$ret = ob_get_clean();
-//			if(stripos($ret,'<a href="http://www.telaxus.com">Telaxus LLC</a>')===false ||
-//			    stripos($ret,'<a href="http://epe.si/"><img src="images/epesi-powered.png" alt="EPESI powered" /></a>')===false
-//			    ) trigger_error('Epesi terms of use have been violated',E_USER_ERROR);
-			print($ret);
-		}
-	}
-
-	public function recover_pass() {
-		$form = $this->init_module(Libs_QuickForm::module_name(),__('Processing request'));
-
-		$form->addElement('header', null, __('Recover password'));
-		$form->addElement('hidden', $this->create_unique_key('mail_recover_pass'), '1');
-		$form->addElement('text', 'username', __('Username'));
-		$form->addElement('text', 'mail', __('E-mail'));
-		$ok_b = & HTML_QuickForm::createElement('submit', 'submit_button', __('OK'));
-		$cancel_b = & HTML_QuickForm::createElement('button', 'cancel_button', __('Cancel'), $this->create_back_href());
-		$form->addGroup(array($ok_b,$cancel_b),'buttons');
-
-		// require a username
-		$form->addRule('username', __('A username must be between 3 and 32 chars'), 'rangelength', array(3,32));
-		// register and add a rule to check if a username and password is ok
-		$form->registerRule('check_username', 'callback', 'check_username_mail_valid', 'Base_User_Login');
-		$form->addRule('username', __('Username or e-mail invalid'), 'check_username', $form);
-		$form->addRule('username', __('Field required'), 'required');
-		//require valid e-mail address
-		$form->addRule('mail', __('Field required'), 'required');
-		$form->addRule('mail', __('Invalid e-mail address'), 'email');
-
-		if($form->validate()) {
-			if($form->process(array(&$this, 'submit_recover')))
-				$this->theme->assign('message', __('Password reset instructions were sent.').'<br><a '.$this->create_back_href().'>'.__('Login').'</a>');
-		} else {
-			$this->theme->assign('mode', 'recover_pass');
-			$form->assign_theme('form', $this->theme);
-			eval_js("focus_by_id('username')");
 		}
 
-		$this->theme->display('login_form');
+		$recover_href = $this->create_callback_href(array($this, 'recover_pass'));
+
+
+		$this->display('login.twig', array(
+			'form' => $form->createView(),
+			'login_header' => __('Login'),
+			'login_button_label'=>__('Login'),
+			'recover_pass' => $recover_href,
+			'recover_pass_label' => __('Recover password'),
+            'autologin_warning' => __('Keep this box unchecked if using a public computer')
+		));
+
+
 	}
 
-	public static function check_username_mail_valid($username, $form) {
-		$mail = $form->getElement('mail')->getValue();
-		$ret = DB::Execute('SELECT null FROM user_password p JOIN user_login u ON u.id=p.user_login_id WHERE u.login=%s AND p.mail=%s AND u.active=1',array($username, $mail));
-		return $ret->FetchRow()!==false;
+	public function validate($data, ExecutionContextInterface $context)
+	{
+		if(!Base_User_LoginCommon::submit_login(array($data['login'], $data['password'])))
+			$context->addViolation(__('Login or password incorrect'));
+
+		if (!Base_User_LoginCommon::rule_login_banned($data['login']))
+			$context->addViolation(__('You have exceeded the number of allowed login attempts for this username. Try again later.'));
+
 	}
 
-	public function submit_recover($data) {
-		$mail = $data['mail'];
+	public function recover_pass()
+	{
+        if ($this->is_back()) {
+            return false;
+        }
+
+		$formBuilder = $this->create_form_builder(array(
+				'constraints'=>array(
+					new \Symfony\Component\Validator\Constraints\Callback(array($this,'check_username_mail_valid'))
+				)
+			)
+		);
+
+        $formBuilder->add('username', 'text', array
+            (
+                'label' => __('Username'),
+                'constraints' => array(
+                    new \Symfony\Component\Validator\Constraints\Length(array('min' => 3, 'max' => 32))
+                )
+            )
+        );
+        $formBuilder->add('email','email',array('label'=> __('E-mail')));
+
+        $form = $formBuilder->getForm();
+
+
+        $form->handleRequest();
+        if ($form->isValid()) {
+            $user = $form->get('username')->getData();
+            $email = $form->get('email')->getData();
+            $this->submit_recover($user, $email);
+            $this->display('recover.twig',array(
+                'message' => __('Password reset instructions were sent.')
+            ));
+            return false;
+        }
+
+
+
+		$this->display('recover.twig', array(
+            'form' => $form->createView(),
+            'form_label' => __('Recover password'),
+            'submit_label' => __('OK'),
+            'cancel_label' => __('Cancel'),
+            'cancel_href' => $this->create_back_href()
+        ));
+
+        return true;
+
+	}
+
+	public static function check_username_mail_valid($data, ExecutionContextInterface $context) {
 		$username = $data['username'];
+		$mail = $data['email'];
+		$ret = DB::Execute('SELECT null FROM user_password p JOIN user_login u ON u.id=p.user_login_id WHERE u.login=%s AND p.mail=%s AND u.active=1',array($username, $mail));
+		if ($ret->FetchRow()==false) {
+			$context->addViolation(__('Username or e-mail invalid'));
+		}
+	}
 
+	public function submit_recover($username, $mail) {
  		if(DEMO_MODE && $username=='admin') {
- 			print('In demo you cannot recover \'admin\' user password. If you want to login please type \'admin\' as password.'); 
+ 			print('In demo you cannot recover \'admin\' user password. If you want to login please type \'admin\' as password.');
 			return false;
  		}
 
 		$user_id = Base_UserCommon::get_user_id($username);
 		DB::Execute('DELETE FROM user_reset_pass WHERE created_on<%T',array(time()-3600*2));
-		
+
 		if($user_id===false) {
 			print('No such user!');
 			return false;
 		}
 		$hash = md5($user_id.''.openssl_random_pseudo_bytes(100));
 		DB::Execute('INSERT INTO user_reset_pass(user_login_id,hash_id,created_on) VALUES (%d,%s,%T)',array($user_id, $hash,time()));
-		
+
 		$subject = __('Password recovery');
 		$message = __('A password recovery for the account with the e-mail address %s has been requested.',array($mail))."\n\n".
 				   __('If you want to reset your password, visit the following URL:')."\n".
