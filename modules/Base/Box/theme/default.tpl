@@ -7,10 +7,6 @@
 
 {else}
 
-{php}
-	load_js($this->get_template_vars('theme_dir').'/Base/Box/default.js');
-	eval_js_once('document.body.id=null'); //pointer-events:none;
-{/php}
 	<div id="top_bar" class="nonselectable" style="width:100%">
 		<div id="MenuBar">
 		<table id="top_bar_1" cellspacing="0" cellpadding="0" border="0">

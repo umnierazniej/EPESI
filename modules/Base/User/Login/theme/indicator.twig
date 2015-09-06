@@ -1,7 +1,8 @@
-<div class="dropdown">
+<li class="dropdown">
     <a href="#" data-toggle="dropdown" class="dropdown-toggle" aria-expanded="false">
         <i class="fa fa-user"></i>
         <strong>&nbsp;{{ indicator.login }}</strong>
+        <span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
         <li>
@@ -45,14 +46,14 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <p>
-                            <a {{ logout.href | raw}} class="btn btn-danger btn-block">{{ logout.text }}</a>
+                            <a {{ logout.href | raw }} class="btn btn-danger btn-block">{{ logout.text }}</a>
                         </p>
                     </div>
                 </div>
             </div>
         </li>
     </ul>
-</div>
+</li>
 
 
 <style>

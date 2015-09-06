@@ -161,7 +161,6 @@ Please choose <?php print(EPESI);?> version:<ul>
 	</head>
 	<body <?php if (DIRECTION_RTL) print('class="epesi_rtl"'); ?> >
 
-		<div id="body_content">
 			<div id="main_content" style="display:none;"></div>
 			<div id="debug_content" style="padding-top:97px;display:none;">
 				<div class="button" onclick="$('error_box').innerHTML='';$('debug_content').style.display='none';">Hide</div>
@@ -182,8 +181,7 @@ Please choose <?php print(EPESI);?> version:<ul>
 					</tr>
 				</table>
 			</div>	
-		</div>
-        <?php 
+        <?php
         /*
          * init_js file allows only num_of_clients sessions. If there is image
          * with empty src="" browser will load index.php file, so we cannot

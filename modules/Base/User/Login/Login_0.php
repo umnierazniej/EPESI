@@ -68,6 +68,7 @@ class Base_User_Login extends Module {
 				'perspective' => $perspective
 			)
 		);
+
 	}
 
 	public function login($tpl=null) {

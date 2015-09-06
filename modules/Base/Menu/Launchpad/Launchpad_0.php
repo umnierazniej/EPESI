@@ -8,7 +8,7 @@
  */
 class Base_Menu_Launchpad extends Module
 {
-    public function body()
+    public function modal()
     {
         $launchpad = array();
         if (Base_AclCommon::is_user()) {

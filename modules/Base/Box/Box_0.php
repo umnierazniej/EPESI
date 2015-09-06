@@ -27,17 +27,18 @@ class Base_Box extends Module {
             return;
         }
 
+        $options = array();
+
         $theme = $this->pack_module(Base_Theme::module_name());
 		$ini = Base_BoxCommon::get_ini_file();
-		
+        $logged = Base_AclCommon::is_user();
+
         if (!$ini) {
             print(__('Unable to read Base/Box/default.ini file! Please create one, or change theme.'));
             $this->pack_module(Base_Theme_Administrator::module_name(),null,'admin');
             return;
         }
         $ini_file = parse_ini_file($ini,true);
-        $logged = Base_AclCommon::is_user();
-        $theme->assign('logged',$logged);
         $containers = array();
         $containers['main'] = array('module'=>null,'name'=>''); //so 'main' is first in array
 
@@ -141,23 +142,27 @@ class Base_Box extends Module {
                 else
                     $this->display_module($this->modules[$k]);
             }
-            $theme->assign($k,ob_get_contents());
+            $options[$k] = ob_get_contents();
             ob_end_clean();
         }
 
 
         //main output
-		$version_no = Base_BoxCommon::update_version_check_indicator();
+        $options['logged'] = $logged;
 
 		if (SUGGEST_DONATION)
-			$theme->assign('donate',Utils_TooltipCommon::create('<a target="_blank" href="http://epe.si/cost">'.__('Support EPESI!').'</a>', '<center>'.__('If you find our software useful, please support us by making a %s.', array(__('donation'))).'<br/>'.__('Your funding will help to ensure continued development of this project.').'<br/>'.__('Click for details.').'</center>', false, 500));
-			
-		// Consider moving this code properly as initated module by *.ini file
-		$theme->assign('home', array('href'=>Base_HomePageCommon::get_href(), 'label'=>__('Home')));
-		
-        $theme->assign('version_no',$version_no);
-        $theme->display();
+            $options['donate'] = Utils_TooltipCommon::create('<a target="_blank" href="http://epe.si/cost">'.__('Support EPESI!').'</a>', '<center>'.__('If you find our software useful, please support us by making a %s.', array(__('donation'))).'<br/>'.__('Your funding will help to ensure continued development of this project.').'<br/>'.__('Click for details.').'</center>', false, 500);
 
+		// Consider moving this code properly as initated module by *.ini file
+        $options['home'] = array('href'=>Base_HomePageCommon::get_href(), 'label'=>__('Home'));
+		$options['version_no'] = Base_BoxCommon::update_version_check_indicator();
+
+        $options['menu'] = $this->init_module(Base_Menu::module_name())->body();
+        $options['login'] = $this->init_module(Base_User_Login::module_name())->indicator();
+        $options['launchpad_modal'] = $theme->init_module(Base_Menu_Launchpad::module_name())->modal();
+
+
+        $this->display('default.twig', $options);
     }
 
     public function get_main_module() {
