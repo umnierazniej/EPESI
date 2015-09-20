@@ -69,7 +69,6 @@ class ConfigInfo extends AdminModule {
         $this->printTD('Report all errors (E_ALL): ', (REPORT_ALL_ERRORS ? 'YES' : 'NO'));
         $this->printTD('GZIP client web browser history: ', (GZIP_HISTORY ? 'YES' : 'NO'));
 
-        $this->printTD('Reducing Transfer: ', (REDUCING_TRANSFER ? 'YES' : 'NO'));
         $this->printTD('Minify Encode: ', (MINIFY_ENCODE ? 'YES' : 'NO'));
         $this->printTD('Minify sources: ', (MINIFY_SOURCES ? 'YES' : 'NO'));
         $this->printTD('Suggest Donation: ', (SUGGEST_DONATION ? 'YES' : 'NO'));

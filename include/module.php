@@ -846,52 +846,45 @@ abstract class Module extends ModulePrimitive {
 		}
 		Epesi::$content[$path]['module'] = & $m;
 
-		if(!REDUCING_TRANSFER || 
-			(!$m->is_fast_process() || (isset($_REQUEST['__action_module__']) && strpos($_REQUEST['__action_module__'],$path)===0) || !isset($_SESSION['client']['__module_content__'][$path]))) {
-			if($args===null) $args = array();
-			elseif(!is_array($args)) $args = array($args);
+		if($args===null) $args = array();
+		elseif(!is_array($args)) $args = array($args);
 
-			ob_start();
+		ob_start();
 
-			$callbacks = array_reverse($m->get_module_variable('__callbacks__',array()),true);
-			$skip_display = false;
-			foreach($callbacks as $name=>$c) {
-				$ret = $m->get_module_variable_or_unique_href_variable($name);
-				if($ret=='1') {
-					$func = $c['func'];
-					if(is_array($func)) {
-						if($func[0]===null)
-							$func[0] = & $m;
-						if(!method_exists($func[0],$func[1])) trigger_error('Invalid method passed as callback: '.(is_string($func[0])?$func[0]:$func[0]->get_type()).'::'.$func[1],E_USER_ERROR);
-					}
-					$r = call_user_func_array($func,$c['args']);
-					if($r) {
-						$skip_display = true;
-						break;
-					} else
-						$m->unset_module_variable($name);
+		$callbacks = array_reverse($m->get_module_variable('__callbacks__',array()),true);
+		$skip_display = false;
+		foreach($callbacks as $name=>$c) {
+			$ret = $m->get_module_variable_or_unique_href_variable($name);
+			if($ret=='1') {
+				$func = $c['func'];
+				if(is_array($func)) {
+					if($func[0]===null)
+						$func[0] = & $m;
+					if(!method_exists($func[0],$func[1])) trigger_error('Invalid method passed as callback: '.(is_string($func[0])?$func[0]:$func[0]->get_type()).'::'.$func[1],E_USER_ERROR);
 				}
+				$r = call_user_func_array($func,$c['args']);
+				if($r) {
+					$skip_display = true;
+					break;
+				} else
+					$m->unset_module_variable($name);
 			}
-
-			if(!$skip_display) {
-				$m->display_func=true;
-				call_user_func_array(array($m,$function_name),$args);
-				$m->display_func=false;
-			}
-
-			if(STRIP_OUTPUT) {
-				require_once('libs/minify/Minify/HTML.php');
-				Epesi::$content[$path]['value'] = Minify_HTML::minify(ob_get_contents());
-			} else
-				Epesi::$content[$path]['value'] = ob_get_contents();
-			ob_end_clean();
-			Epesi::$content[$path]['js'] = $m->get_jses();
-		} else {
-			Epesi::$content[$path]['value'] = $_SESSION['client']['__module_content__'][$path]['value'];
-			Epesi::$content[$path]['js'] = $_SESSION['client']['__module_content__'][$path]['js'];
-			if(DEBUG)
-				Epesi::debug('Fast process of '.$path);
 		}
+
+		if(!$skip_display) {
+			$m->display_func=true;
+			call_user_func_array(array($m,$function_name),$args);
+			$m->display_func=false;
+		}
+
+		if(STRIP_OUTPUT) {
+			require_once('libs/minify/Minify/HTML.php');
+			Epesi::$content[$path]['value'] = Minify_HTML::minify(ob_get_contents());
+		} else
+			Epesi::$content[$path]['value'] = ob_get_contents();
+		ob_end_clean();
+		Epesi::$content[$path]['js'] = $m->get_jses();
+
 		if(MODULE_TIMES)
 			Epesi::$content[$path]['time'] = microtime(true)-$time;
 
@@ -947,7 +940,7 @@ abstract class Module extends ModulePrimitive {
 	 * @return true if this module instance is displayed inline, false otherwise
 	 */
 	public final function is_inline_display() {
-		return $this->inline_display || !REDUCING_TRANSFER;
+		return true;
 	}
 
 	/**

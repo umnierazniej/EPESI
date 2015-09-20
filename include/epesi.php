@@ -343,44 +343,22 @@ class Epesi {
 		foreach (self::$content as $k => $v) {
 			$reload = $v['module']->get_reload();
 			$parent = $v['module']->get_parent_path();
-			if(DEBUG && REDUCING_TRANSFER) {
-				$debug .= '<hr style="height: 3px; background-color:black">';
-				$debug .= '<b> Checking '.$k.', &nbsp;&nbsp;&nbsp; parent='.$v['module']->get_parent_path().'</b><ul>'.
-					'<li>Force - '.(isset($reload)?print_r($reload,true):'not set').'</li>'.
-					'<li>First display - '.(isset ($_SESSION['client']['__module_content__'][$k])?'no</li>'.
-					'<li>Content changed - '.(($_SESSION['client']['__module_content__'][$k]['value'] !== $v['value'])?'yes':'no').'</li>'.
-					'<li>JS changed - '.(($_SESSION['client']['__module_content__'][$k]['js'] !== $v['js'])?'yes':'no'):'yes').'</li>'.
-					'<li>Parent reloaded - '.(isset($reloaded[$parent])?'yes':'no').'</li>'.
-					'<li>History call - '.(($history_call)?'yes':'no').'</li>'.
-					'</ul>';
-			}
-			if (!REDUCING_TRANSFER
-				 || ((!isset($reload) && (!isset ($_SESSION['client']['__module_content__'][$k])
-				 || $_SESSION['client']['__module_content__'][$k]['value'] !== $v['value'] //content differs
-				 || $_SESSION['client']['__module_content__'][$k]['js'] !== $v['js']))
-				 || $history_call
-				 || $reload == true || isset($reloaded[$parent]))) { //force reload or parent reloaded
-				if(DEBUG && isset($_SESSION['client']['__module_content__'])){
-					$debug .= '<b>Reloading: '.(isset($v['span'])?';&nbsp;&nbsp;&nbsp;&nbsp;span='.$v['span'].',':'').'&nbsp;&nbsp;&nbsp;&nbsp;triggered='.(($reload==true)?'force':'auto').',&nbsp;&nbsp;</b><hr><b>New value:</b><br><pre>'.htmlspecialchars($v['value']).'</pre>'.(isset($_SESSION['client']['__module_content__'][$k]['value'])?'<hr><b>Old value:</b><br><pre>'.htmlspecialchars($_SESSION['client']['__module_content__'][$k]['value']).'</pre>':'');
-					if($debug_diff && isset($_SESSION['client']['__module_content__'][$k]['value'])) {
-						$xxx = new Text_Diff(explode("\n",$_SESSION['client']['__module_content__'][$k]['value']),explode("\n",$v['value']));
-						$debug .= '<hr><b>Diff:</b><br><pre>'.$diff_renderer->render($xxx).'</pre>';
-					}
-					$debug .= '<hr style="height: 5px; background-color:black">';
+			if(DEBUG && isset($_SESSION['client']['__module_content__'])){
+				$debug .= '<b>Reloading: '.(isset($v['span'])?';&nbsp;&nbsp;&nbsp;&nbsp;span='.$v['span'].',':'').'&nbsp;&nbsp;&nbsp;&nbsp;triggered='.(($reload==true)?'force':'auto').',&nbsp;&nbsp;</b><hr><b>New value:</b><br><pre>'.htmlspecialchars($v['value']).'</pre>'.(isset($_SESSION['client']['__module_content__'][$k]['value'])?'<hr><b>Old value:</b><br><pre>'.htmlspecialchars($_SESSION['client']['__module_content__'][$k]['value']).'</pre>':'');
+				if($debug_diff && isset($_SESSION['client']['__module_content__'][$k]['value'])) {
+					$xxx = new Text_Diff(explode("\n",$_SESSION['client']['__module_content__'][$k]['value']),explode("\n",$v['value']));
+					$debug .= '<hr><b>Diff:</b><br><pre>'.$diff_renderer->render($xxx).'</pre>';
 				}
+				$debug .= '<hr style="height: 5px; background-color:black">';
+			}
 
-				if(isset($v['span']))
-					self::text($v['value'], $v['span']);
-				if($v['js'])
-					self::js(join(";",$v['js']));
-				if (REDUCING_TRANSFER) {
-					$_SESSION['client']['__module_content__'][$k]['value'] = $v['value'];
-					$_SESSION['client']['__module_content__'][$k]['js'] = $v['js'];
-				}
-				$_SESSION['client']['__module_content__'][$k]['parent'] = $parent;
-				$reloaded[$k] = true;
-				if(method_exists($v['module'],'reloaded')) $v['module']->reloaded();
-			}
+			if(isset($v['span']))
+				self::text($v['value'], $v['span']);
+			if($v['js'])
+				self::js(join(";",$v['js']));
+			$_SESSION['client']['__module_content__'][$k]['parent'] = $parent;
+			$reloaded[$k] = true;
+			if(method_exists($v['module'],'reloaded')) $v['module']->reloaded();
 		}
 
 		foreach($_SESSION['client']['__module_content__'] as $k=>$v)
