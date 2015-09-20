@@ -110,7 +110,6 @@ class Apps_Shoutbox extends Module {
 				);
 			}
 
-        $gb->set_inline_display(true);
 		$th->assign('messages',$this->get_html_of_module($gb));
 		$th->display();
             return true;

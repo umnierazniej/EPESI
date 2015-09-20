@@ -119,12 +119,10 @@ class Base_User_Login extends Module {
 			$this->theme->assign('mode', 'login');
 
             $logo = $this->init_module(Base_MainModuleIndicator::module_name());
-            $logo->set_inline_display();
             $this->theme->assign('logo', $this->get_html_of_module($logo,null,'login_logo'));
 
 			ob_start();
 			if (!$tpl) {
-			        $this->theme->set_inline_display();
 				$this->theme->display();
 				eval_js("focus_by_id('username')");
 			} else

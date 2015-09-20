@@ -839,11 +839,6 @@ abstract class Module extends ModulePrimitive {
 			$time = microtime(true);
 		//define key in array so it is before its children
 		$path = $m->get_path();
-		if($this->is_inline_display()) $m->set_inline_display();
-		if(!$m->is_inline_display()) {
-			Epesi::$content[$path]['span'] = $this_path.'|'.$this->children_count_display.'content';
-			$this->children_count_display++;
-		}
 		Epesi::$content[$path]['module'] = & $m;
 
 		if($args===null) $args = array();
@@ -891,12 +886,9 @@ abstract class Module extends ModulePrimitive {
 		$m->mark_displayed();
 
 		
-		if($m->is_inline_display()) {
-		    $ret = Epesi::$content[$path]['value'];
-		    Epesi::$content[$path]['value'] = '';
-			return $ret;
-		}
-		return '<span id="'.Epesi::$content[$path]['span'].'"></span>';
+		$ret = Epesi::$content[$path]['value'];
+		Epesi::$content[$path]['value'] = '';
+		return $ret;
 	}
 
 	/**
@@ -935,19 +927,11 @@ abstract class Module extends ModulePrimitive {
 	}
 
 	/**
-	 * Returns whether this module instance is displayed inline.
-	 *
-	 * @return true if this module instance is displayed inline, false otherwise
-	 */
-	public final function is_inline_display() {
-		return true;
-	}
-
-	/**
 	 * Changes display behavior for this module instance to inline.
+	 * @deprecated
 	 */
 	public final function set_inline_display() {
-		$this->inline_display = true;
+		trigger_error('set_inline_display method is deprecated and will be removed in future versions', E_USER_WARNING);
 	}
 
 	//endregion

@@ -27,8 +27,6 @@ class Base_Theme extends Module {
 	 * For internal use only.
 	 */
 	public function construct() {
-		$this->set_inline_display();
-
 		if(!isset(self::$theme))
 			self::$theme = Base_ThemeCommon::get_default_template();
 
