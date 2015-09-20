@@ -315,62 +315,17 @@ class Epesi {
 		}
 
 		$debug = '';
-		if(DEBUG && ($debug_diff = @include_once('tools/Diff.php'))) {
-			require_once 'tools/Text/Diff/Renderer/inline.php';
-			$diff_renderer = new Text_Diff_Renderer_inline();
-		}
-
-		//clean up old modules
-		if(isset($_SESSION['client']['__module_content__'])) {
-			$to_cleanup = array_keys($_SESSION['client']['__module_content__']);
-			foreach($to_cleanup as $k) {
-				$mod = ModuleManager::get_instance($k);
-				if($mod === null) {
-					$xx = explode('/',$k);
-					$yy = explode('|',$xx[count($xx)-1]);
-					$mod = $yy[0];
-					if(is_callable(array($mod.'Common','destroy')))
-						call_user_func(array($mod.'Common','destroy'),$k,isset($_SESSION['client']['__module_vars__'][$k])?$_SESSION['client']['__module_vars__'][$k]:null);
-					if(DEBUG)
-						$debug .= 'Clearing mod vars & module content '.$k.'<br>';
-					unset($_SESSION['client']['__module_vars__'][$k]);
-					unset($_SESSION['client']['__module_content__'][$k]);
-				}
-			}
-		}
 
 		$reloaded = array();
 		foreach (self::$content as $k => $v) {
-			$reload = $v['module']->get_reload();
-			$parent = $v['module']->get_parent_path();
-			if(DEBUG && isset($_SESSION['client']['__module_content__'])){
-				$debug .= '<b>Reloading: '.(isset($v['span'])?';&nbsp;&nbsp;&nbsp;&nbsp;span='.$v['span'].',':'').'&nbsp;&nbsp;&nbsp;&nbsp;triggered='.(($reload==true)?'force':'auto').',&nbsp;&nbsp;</b><hr><b>New value:</b><br><pre>'.htmlspecialchars($v['value']).'</pre>'.(isset($_SESSION['client']['__module_content__'][$k]['value'])?'<hr><b>Old value:</b><br><pre>'.htmlspecialchars($_SESSION['client']['__module_content__'][$k]['value']).'</pre>':'');
-				if($debug_diff && isset($_SESSION['client']['__module_content__'][$k]['value'])) {
-					$xxx = new Text_Diff(explode("\n",$_SESSION['client']['__module_content__'][$k]['value']),explode("\n",$v['value']));
-					$debug .= '<hr><b>Diff:</b><br><pre>'.$diff_renderer->render($xxx).'</pre>';
-				}
-				$debug .= '<hr style="height: 5px; background-color:black">';
-			}
 
-			if(isset($v['span']))
-				self::text($v['value'], $v['span']);
-			if($v['js'])
-				self::js(join(";",$v['js']));
-			$_SESSION['client']['__module_content__'][$k]['parent'] = $parent;
+			if(isset($v['span'])) self::text($v['value'], $v['span']);
+
+			if($v['js']) self::js(join(";",$v['js']));
+
 			$reloaded[$k] = true;
 			if(method_exists($v['module'],'reloaded')) $v['module']->reloaded();
 		}
-
-		foreach($_SESSION['client']['__module_content__'] as $k=>$v)
-			if(!array_key_exists($k,self::$content) && isset($reloaded[$v['parent']])) {
-				if(DEBUG)
-					$debug .= 'Reloading missing '.$k.'<hr>';
-				if(isset($v['span']))
-					self::text($v['value'], $v['span']);
-				if(isset($v['js']) && $v['js'])
-					self::js(join(";",$v['js']));
-				$reloaded[$k] = true;
-			}
 
 		if(DEBUG) {
 			$debug .= 'vars '.CID.': '.print_r($_SESSION['client']['__module_vars__'],true).'<br>';
