@@ -789,7 +789,6 @@ abstract class Module extends ModulePrimitive {
 	 * which name is passed as third parameter.
 	 * You can pass additional arguments.
 	 *
-	 * @param module $m child module
 	 * @param mixed $args arguments
 	 * @param string $function_name function to call (get output from), if user has enought privileges.
 	 * @return mixed if access denied returns false, else true
@@ -800,6 +799,7 @@ abstract class Module extends ModulePrimitive {
 		print($ret);
 		return true;
 	}
+
 
 	/**
 	 * Call method of the module passed as first parameter,
@@ -818,43 +818,47 @@ abstract class Module extends ModulePrimitive {
 		if(!$m) trigger_error('Arument 0 for display_module is null.',E_USER_ERROR);
 		if($this_path!=$m->get_parent_path()) return false;
 
+		return $m->get_html($args, $function_name);
+	}
+
+	public final function get_html($args=null, $function_name = null) {
 		if(!isset($function_name)) $function_name = 'body';
-		if (!method_exists($m, $function_name))
-			trigger_error('Invalid method name ('.get_class($m).'::'.$function_name.') given as argument 2 for display_module.',E_USER_ERROR);
+		if (!method_exists($this, $function_name))
+			trigger_error('Invalid method name ('.get_class($this).'::'.$function_name.') given as argument 2 for display_module.',E_USER_ERROR);
 
-		if($m->displayed())
-			trigger_error('You can\'t display the same module twice, path:'.$m->get_path().'.',E_USER_ERROR);
+		if($this->displayed())
+			trigger_error('You can\'t display the same module twice, path:'.$this->get_path().'.',E_USER_ERROR);
 
-		if (!$m->check_access($function_name))
+		if (!$this->check_access($function_name))
 			return false;
-			//we cannot trigger error here, couse logout doesn't work
-			//trigger_error('Method given as argument 2 for display_module inaccessible.<br>$'.$this->get_type().'->display_module(\''.$m->get_type().'\','.$args.',\''.$function_name.'\');',E_USER_ERROR);
+		//we cannot trigger error here, couse logout doesn't work
+		//trigger_error('Method given as argument 2 for display_module inaccessible.<br>$'.$this->get_type().'->display_module(\''.$m->get_type().'\','.$args.',\''.$function_name.'\');',E_USER_ERROR);
 
-		$s = & $m->get_module_variable('__shared_unique_vars__',array());
+		$s = & $this->get_module_variable('__shared_unique_vars__',array());
 		foreach($s as $k=>$v) {
-			$_REQUEST[$m->create_unique_key($k)] = & $_REQUEST[$v];
+			$_REQUEST[$this->create_unique_key($k)] = & $_REQUEST[$v];
 		}
 
 		if(MODULE_TIMES)
 			$time = microtime(true);
 		//define key in array so it is before its children
-		$path = $m->get_path();
-		Epesi::$content[$path]['module'] = & $m;
+		$path = $this->get_path();
+		Epesi::$content[$path]['module'] = & $this;
 
 		if($args===null) $args = array();
 		elseif(!is_array($args)) $args = array($args);
 
 		ob_start();
 
-		$callbacks = array_reverse($m->get_module_variable('__callbacks__',array()),true);
+		$callbacks = array_reverse($this->get_module_variable('__callbacks__',array()),true);
 		$skip_display = false;
 		foreach($callbacks as $name=>$c) {
-			$ret = $m->get_module_variable_or_unique_href_variable($name);
+			$ret = $this->get_module_variable_or_unique_href_variable($name);
 			if($ret=='1') {
 				$func = $c['func'];
 				if(is_array($func)) {
 					if($func[0]===null)
-						$func[0] = & $m;
+						$func[0] = & $this;
 					if(!method_exists($func[0],$func[1])) trigger_error('Invalid method passed as callback: '.(is_string($func[0])?$func[0]:$func[0]->get_type()).'::'.$func[1],E_USER_ERROR);
 				}
 				$r = call_user_func_array($func,$c['args']);
@@ -862,24 +866,24 @@ abstract class Module extends ModulePrimitive {
 					$skip_display = true;
 					break;
 				} else
-					$m->unset_module_variable($name);
+					$this->unset_module_variable($name);
 			}
 		}
 
 		if(!$skip_display) {
-			$m->display_func=true;
-			call_user_func_array(array($m,$function_name),$args);
-			$m->display_func=false;
+			$this->display_func=true;
+			call_user_func_array(array($this,$function_name),$args);
+			$this->display_func=false;
 		}
 
 		$ret = ob_get_contents();
 		ob_end_clean();
-		Epesi::$content[$path]['js'] = $m->get_jses();
+		Epesi::$content[$path]['js'] = $this->get_jses();
 
 		if(MODULE_TIMES)
 			Epesi::$content[$path]['time'] = microtime(true)-$time;
 
-		$m->mark_displayed();
+		$this->mark_displayed();
 
 		return $ret;
 	}
