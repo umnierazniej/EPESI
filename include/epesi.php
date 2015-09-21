@@ -282,8 +282,6 @@ class Epesi {
 			return self::process(http_build_query($loc),false,true);
 		}
 
-		self::text(self::$content, 'main_content');
-
 		foreach(self::$instances as $instance) {
 			if(method_exists($instance,'reloaded')) $instance->reloaded();
 			foreach($instance->get_jses() as $js) self::js($js);
@@ -328,7 +326,6 @@ class Epesi {
 			self::$debug .= '<b>Queries times:</b> '.$sum.'<br>';
 		}
 		if(!isset($_SESSION['client']['custom_debug']) || self::$debug!=$_SESSION['client']['custom_debug']) {
-			self::text(self::$debug,'debug');
 			if (self::$debug) Epesi::js("$('debug_content').style.display='block';");
 			$_SESSION['client']['custom_debug'] = self::$debug;
 		}
@@ -341,6 +338,5 @@ class Epesi {
 			self::js('Epesi.history_add('.History::get_id().')');
 		}
 
-		self::send_output();
 	}
 }
