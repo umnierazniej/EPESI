@@ -201,7 +201,7 @@ class Epesi {
 	public static $instances = array();
 
 	public static $content;
-
+	public static $debug;
 	public static $times;
 
 	private static function check_firstrun() {
@@ -282,8 +282,6 @@ class Epesi {
 			return self::process(http_build_query($loc),false,true);
 		}
 
-		$debug = '';
-
 		self::text(self::$content, 'main_content');
 
 		foreach(self::$instances as $instance) {
@@ -292,25 +290,25 @@ class Epesi {
 		}
 
 		if(DEBUG) {
-			$debug .= 'vars '.CID.': '.print_r($_SESSION['client']['__module_vars__'],true).'<br>';
-			$debug .= 'user='.Base_AclCommon::get_user().'<br>';
+			self::$debug .= 'vars '.CID.': '.print_r($_SESSION['client']['__module_vars__'],true).'<br>';
+			self::$debug .= 'user='.Base_AclCommon::get_user().'<br>';
 			if(isset($_REQUEST['__action_module__']))
-				$debug .= 'action module='.$_REQUEST['__action_module__'].'<br>';
+				self::$debug .= 'action module='.$_REQUEST['__action_module__'].'<br>';
 		}
-		$debug .= self::debug();
+		self::$debug .= self::debug();
 
 		if(MODULE_TIMES) {
 			foreach (self::$times as $k => $v) {
 				$style='color:red;font-weight:bold';
 				if ($v<0.5) $style = 'color:orange;font-weight:bold';
 				if ($v<0.05) $style = 'color:green;font-weight:bold';
-				$debug .= 'Time of loading module <b>'.$k.'</b>: <i>'.'<span style="'.$style.';">'.number_format($v,4).'</span>'.'</i><br>';
+				self::$debug .= 'Time of loading module <b>'.$k.'</b>: <i>'.'<span style="'.$style.';">'.number_format($v,4).'</span>'.'</i><br>';
 			}
-			$debug .= 'Page renderered in '.(microtime(true)-$time).'s<hr>';
+			self::$debug .= 'Page renderered in '.(microtime(true)-$time).'s<hr>';
 		}
 
 		if(SQL_TIMES) {
-			$debug .= '<font size="+1">QUERIES</font><br>';
+			self::$debug .= '<font size="+1">QUERIES</font><br>';
 			$queries = DB::GetQueries();
 			$sum = 0;
 			$qty = 0;
@@ -322,17 +320,17 @@ class Epesi {
 					if($queries[$kkk]['args']==$q['args']) {
 						$style .= ';text-decoration:underline';
 					}
-				$debug .= '<span style="'.$style.';">'.'<b>'.$q['func'].'</b> '.htmlspecialchars(var_export($q['args'],true)).' <i><b>'.number_format($q['time'],4).'</b></i><br>'.'</span>';
+				self::$debug .= '<span style="'.$style.';">'.'<b>'.$q['func'].'</b> '.htmlspecialchars(var_export($q['args'],true)).' <i><b>'.number_format($q['time'],4).'</b></i><br>'.'</span>';
 				$sum+=$q['time'];
 				$qty++;
 			}
-			$debug .= '<b>Number of queries:</b> '.$qty.'<br>';
-			$debug .= '<b>Queries times:</b> '.$sum.'<br>';
+			self::$debug .= '<b>Number of queries:</b> '.$qty.'<br>';
+			self::$debug .= '<b>Queries times:</b> '.$sum.'<br>';
 		}
-		if(!isset($_SESSION['client']['custom_debug']) || $debug!=$_SESSION['client']['custom_debug']) {
-			self::text($debug,'debug');
-			if ($debug) Epesi::js("$('debug_content').style.display='block';");
-			$_SESSION['client']['custom_debug'] = $debug;
+		if(!isset($_SESSION['client']['custom_debug']) || self::$debug!=$_SESSION['client']['custom_debug']) {
+			self::text(self::$debug,'debug');
+			if (self::$debug) Epesi::js("$('debug_content').style.display='block';");
+			$_SESSION['client']['custom_debug'] = self::$debug;
 		}
 
 		if(!$history_call && !History::soft_call()) {
