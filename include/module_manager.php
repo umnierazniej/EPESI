@@ -928,6 +928,13 @@ class ModuleManager {
 		} catch (Exception $e) {
 			self::$root = ModuleManager :: new_instance(FIRST_RUN,null,'0');
 		}
+
+		if(method_exists(self::$root,'construct')) {
+			ob_start();
+			call_user_func_array(array(self::$root,'construct'),array());
+			ob_end_clean();
+		}
+
 		$ret = trim(ob_get_contents());
 		if(strlen($ret)>0 || self::$root==null) trigger_error($ret,E_USER_ERROR);
 		ob_end_clean();

@@ -254,11 +254,6 @@ class Epesi {
 
 		$root = & ModuleManager::create_root();
 		//
-		if(method_exists($root,'construct')) {
-			ob_start();
-			call_user_func_array(array($root,'construct'),array());
-			ob_end_clean();
-		}
 
 		$path = $root->get_path();
 		self::$content[$path]['span'] = 'main_content';
