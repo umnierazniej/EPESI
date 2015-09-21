@@ -843,7 +843,7 @@ abstract class Module extends ModulePrimitive {
 			$time = microtime(true);
 		//define key in array so it is before its children
 		$path = $this->get_path();
-		Epesi::$content[$path]['module'] = & $this;
+		Epesi::$instances[] = $this;
 
 		if($args===null) $args = array();
 		elseif(!is_array($args)) $args = array($args);
@@ -878,10 +878,8 @@ abstract class Module extends ModulePrimitive {
 
 		$ret = ob_get_contents();
 		ob_end_clean();
-		Epesi::$content[$path]['js'] = $this->get_jses();
 
-		if(MODULE_TIMES)
-			Epesi::$content[$path]['time'] = microtime(true)-$time;
+		if(MODULE_TIMES) Epesi::$times[$path] = microtime(true)-$time;
 
 		$this->mark_displayed();
 

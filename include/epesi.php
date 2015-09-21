@@ -195,7 +195,12 @@ class Epesi {
 	}
 
 	//============================================
-	public static $content;
+	/**
+	 * @var Module[]
+     */
+	public static $instances = array();
+
+	public static $times;
 
 	private static function check_firstrun() {
 		$first_run = false;
@@ -267,9 +272,6 @@ class Epesi {
 				$loc['__action_module__'] = $_REQUEST['__action_module__'];
 
 			//clean up
-			foreach(self::$content as $k=>$v)
-				unset(self::$content[$k]);
-
 			foreach(self::$jses as $k=>$v)
 				if($v[1]) unset(self::$jses[$k]);
 
@@ -282,11 +284,9 @@ class Epesi {
 
 		self::text($main_content, 'main_content');
 
-		foreach (self::$content as $k => $v) {
-
-			if($v['js']) self::js(join(";",$v['js']));
-
-			if(method_exists($v['module'],'reloaded')) $v['module']->reloaded();
+		foreach(self::$instances as $instance) {
+			if(method_exists($instance,'reloaded')) $instance->reloaded();
+			foreach($instance->get_jses() as $js) self::js($js);
 		}
 
 		if(DEBUG) {
@@ -298,11 +298,11 @@ class Epesi {
 		$debug .= self::debug();
 
 		if(MODULE_TIMES) {
-			foreach (self::$content as $k => $v) {
+			foreach (self::$times as $k => $v) {
 				$style='color:red;font-weight:bold';
-				if ($v['time']<0.5) $style = 'color:orange;font-weight:bold';
-				if ($v['time']<0.05) $style = 'color:green;font-weight:bold';
-				$debug .= 'Time of loading module <b>'.$k.'</b>: <i>'.'<span style="'.$style.';">'.number_format($v['time'],4).'</span>'.'</i><br>';
+				if ($v<0.5) $style = 'color:orange;font-weight:bold';
+				if ($v<0.05) $style = 'color:green;font-weight:bold';
+				$debug .= 'Time of loading module <b>'.$k.'</b>: <i>'.'<span style="'.$style.';">'.number_format($v,4).'</span>'.'</i><br>';
 			}
 			$debug .= 'Page renderered in '.(microtime(true)-$time).'s<hr>';
 		}
