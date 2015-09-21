@@ -252,28 +252,7 @@ class Epesi {
 			call_user_func_array($k['func'],$k['args']);
 		}
 
-		$root = & ModuleManager::create_root();
-		//
-
-		$path = $root->get_path();
-		self::$content[$path]['span'] = 'main_content';
-		self::$content[$path]['module'] = & $root;
-		if(MODULE_TIMES)
-			$time = microtime(true);
-
-		ob_start();
-		if (!$root->check_access('body')) {
-			print ('You don\'t have permission to access default module! It\'s probably wrong configuration.');
-		} else
-			$root->body();
-		$main_content = ob_get_contents();
-		ob_end_clean();
-		self::$content[$path]['js'] = $root->get_jses();
-
-		if(MODULE_TIMES)
-			self::$content[$path]['time'] = microtime(true)-$time;
-
-		//
+		$main_content = ModuleManager::create_root()->get_html();
 
 		//go somewhere else?
 		$loc = location(null,true);
