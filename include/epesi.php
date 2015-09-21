@@ -144,10 +144,6 @@ class Epesi {
 	public final static function js($js,$del_on_loc=true) {
 		if(!is_string($js) || strlen($js)==0) return false;
 		$js = rtrim($js,';');
-		if(STRIP_OUTPUT) {
-			require_once('libs/minify/JSMin.php');
-			$js = JSmin::minify($js);
-		}
         $js_def = array($js,$del_on_loc);
         if (DEBUG_JS && function_exists('debug_backtrace')) {
             $arg = false;
