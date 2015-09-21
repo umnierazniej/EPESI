@@ -240,12 +240,14 @@ class Epesi {
 			print ('You don\'t have permission to access default module! It\'s probably wrong configuration.');
 		} else
 			$m->body();
-		self::$content[$path]['value'] = ob_get_contents();
+		$ret = ob_get_contents();
 		ob_end_clean();
 		self::$content[$path]['js'] = $m->get_jses();
 
 		if(MODULE_TIMES)
 		    self::$content[$path]['time'] = microtime(true)-$time;
+
+		return $ret;
 	}
 
 	public static function debug($msg=null) {		
@@ -284,7 +286,7 @@ class Epesi {
 		}
 
 		$root = & ModuleManager::create_root();
-		self::go($root);
+		$main_content = self::go($root);
 
 		//go somewhere else?
 		$loc = location(null,true);
@@ -312,10 +314,10 @@ class Epesi {
 
 		$debug = '';
 
+		self::text($main_content, 'main_content');
+
 		$reloaded = array();
 		foreach (self::$content as $k => $v) {
-
-			if(isset($v['span'])) self::text($v['value'], $v['span']);
 
 			if($v['js']) self::js(join(";",$v['js']));
 
