@@ -122,13 +122,5 @@ $twig = ModuleManager::get_container()['twig'];
 /** @var Twig_Environment $twig */
 $content = $twig->render('main.twig', $options);
 
-require_once('libs/minify/HTTP/Encoder.php');
-if (MINIFY_ENCODE) {
-    $he = new HTTP_Encoder(array('content' => $content));
-    $he->encode();
-    $content = $he->getContent();
-    $response->headers->set('Content-Encoding', HTTP_Encoder::getAcceptedEncoding()[1]);
-}
-
 $response->setContent($content);
 $response->send();
