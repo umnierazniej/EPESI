@@ -872,7 +872,7 @@ abstract class Module extends ModulePrimitive {
 			$m->display_func=false;
 		}
 
-		Epesi::$content[$path]['value'] = ob_get_contents();
+		$ret = ob_get_contents();
 		ob_end_clean();
 		Epesi::$content[$path]['js'] = $m->get_jses();
 
@@ -881,9 +881,6 @@ abstract class Module extends ModulePrimitive {
 
 		$m->mark_displayed();
 
-		
-		$ret = Epesi::$content[$path]['value'];
-		Epesi::$content[$path]['value'] = '';
 		return $ret;
 	}
 
