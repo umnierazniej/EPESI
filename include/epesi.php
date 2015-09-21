@@ -200,6 +200,8 @@ class Epesi {
      */
 	public static $instances = array();
 
+	public static $content;
+
 	public static $times;
 
 	private static function check_firstrun() {
@@ -257,7 +259,7 @@ class Epesi {
 			call_user_func_array($k['func'],$k['args']);
 		}
 
-		$main_content = ModuleManager::create_root()->get_html();
+		self::$content = ModuleManager::create_root()->get_html();
 
 		//go somewhere else?
 		$loc = location(null,true);
@@ -282,7 +284,7 @@ class Epesi {
 
 		$debug = '';
 
-		self::text($main_content, 'main_content');
+		self::text(self::$content, 'main_content');
 
 		foreach(self::$instances as $instance) {
 			if(method_exists($instance,'reloaded')) $instance->reloaded();
