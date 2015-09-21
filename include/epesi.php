@@ -282,12 +282,10 @@ class Epesi {
 
 		self::text($main_content, 'main_content');
 
-		$reloaded = array();
 		foreach (self::$content as $k => $v) {
 
 			if($v['js']) self::js(join(";",$v['js']));
 
-			$reloaded[$k] = true;
 			if(method_exists($v['module'],'reloaded')) $v['module']->reloaded();
 		}
 
