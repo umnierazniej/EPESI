@@ -217,40 +217,7 @@ class Epesi {
 		ob_end_clean();
 	}
 
-	/**
-	 * @param $m Module
-     */
-	private static function go(& $m) {
-		//define key so it's first in array
-		$path = $m->get_path();
-
-		if(method_exists($m,'construct')) {
-			ob_start();
-			call_user_func_array(array($m,'construct'),array());
-			ob_end_clean();
-		}
-
-		self::$content[$path]['span'] = 'main_content';
-		self::$content[$path]['module'] = & $m;
-		if(MODULE_TIMES)
-		    $time = microtime(true);
-		//go
-		ob_start();
-		if (!$m->check_access('body')) {
-			print ('You don\'t have permission to access default module! It\'s probably wrong configuration.');
-		} else
-			$m->body();
-		$ret = ob_get_contents();
-		ob_end_clean();
-		self::$content[$path]['js'] = $m->get_jses();
-
-		if(MODULE_TIMES)
-		    self::$content[$path]['time'] = microtime(true)-$time;
-
-		return $ret;
-	}
-
-	public static function debug($msg=null) {		
+	public static function debug($msg=null) {
 		static $msgs = '';
 		if($msg) $msgs .= $msg.'<br>';
 		return $msgs;
@@ -286,7 +253,32 @@ class Epesi {
 		}
 
 		$root = & ModuleManager::create_root();
-		$main_content = self::go($root);
+		//
+		if(method_exists($root,'construct')) {
+			ob_start();
+			call_user_func_array(array($root,'construct'),array());
+			ob_end_clean();
+		}
+
+		$path = $root->get_path();
+		self::$content[$path]['span'] = 'main_content';
+		self::$content[$path]['module'] = & $root;
+		if(MODULE_TIMES)
+			$time = microtime(true);
+
+		ob_start();
+		if (!$root->check_access('body')) {
+			print ('You don\'t have permission to access default module! It\'s probably wrong configuration.');
+		} else
+			$root->body();
+		$main_content = ob_get_contents();
+		ob_end_clean();
+		self::$content[$path]['js'] = $root->get_jses();
+
+		if(MODULE_TIMES)
+			self::$content[$path]['time'] = microtime(true)-$time;
+
+		//
 
 		//go somewhere else?
 		$loc = location(null,true);
