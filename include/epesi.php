@@ -144,10 +144,6 @@ class Epesi {
 	public final static function js($js,$del_on_loc=true) {
 		if(!is_string($js) || strlen($js)==0) return false;
 		$js = rtrim($js,';');
-		if(STRIP_OUTPUT) {
-			require_once('libs/minify/JSMin.php');
-			$js = JSmin::minify($js);
-		}
         $js_def = array($js,$del_on_loc);
         if (DEBUG_JS && function_exists('debug_backtrace')) {
             $arg = false;
@@ -199,7 +195,14 @@ class Epesi {
 	}
 
 	//============================================
+	/**
+	 * @var Module[]
+     */
+	public static $instances = array();
+
 	public static $content;
+	public static $debug;
+	public static $times;
 
 	private static function check_firstrun() {
 		$first_run = false;
@@ -221,38 +224,7 @@ class Epesi {
 		ob_end_clean();
 	}
 
-	/**
-	 * @param $m Module
-     */
-	private static function go(& $m) {
-		//define key so it's first in array
-		$path = $m->get_path();
-
-		if(method_exists($m,'construct')) {
-			ob_start();
-			call_user_func_array(array($m,'construct'),array());
-			ob_end_clean();
-		}
-
-		self::$content[$path]['span'] = 'main_content';
-		self::$content[$path]['module'] = & $m;
-		if(MODULE_TIMES)
-		    $time = microtime(true);
-		//go
-		ob_start();
-		if (!$m->check_access('body')) {
-			print ('You don\'t have permission to access default module! It\'s probably wrong configuration.');
-		} else
-			$m->body();
-		self::$content[$path]['value'] = ob_get_contents();
-		ob_end_clean();
-		self::$content[$path]['js'] = $m->get_jses();
-
-		if(MODULE_TIMES)
-		    self::$content[$path]['time'] = microtime(true)-$time;
-	}
-
-	public static function debug($msg=null) {		
+	public static function debug($msg=null) {
 		static $msgs = '';
 		if($msg) $msgs .= $msg.'<br>';
 		return $msgs;
@@ -287,8 +259,7 @@ class Epesi {
 			call_user_func_array($k['func'],$k['args']);
 		}
 
-		$root = & ModuleManager::create_root();
-		self::go($root);
+		self::$content = ModuleManager::create_root()->get_html();
 
 		//go somewhere else?
 		$loc = location(null,true);
@@ -303,9 +274,6 @@ class Epesi {
 				$loc['__action_module__'] = $_REQUEST['__action_module__'];
 
 			//clean up
-			foreach(self::$content as $k=>$v)
-				unset(self::$content[$k]);
-
 			foreach(self::$jses as $k=>$v)
 				if($v[1]) unset(self::$jses[$k]);
 
@@ -314,106 +282,31 @@ class Epesi {
 			return self::process(http_build_query($loc),false,true);
 		}
 
-		$debug = '';
-		if(DEBUG && ($debug_diff = @include_once('tools/Diff.php'))) {
-			require_once 'tools/Text/Diff/Renderer/inline.php';
-			$diff_renderer = new Text_Diff_Renderer_inline();
+		foreach(self::$instances as $instance) {
+			if(method_exists($instance,'reloaded')) $instance->reloaded();
+			foreach($instance->get_jses() as $js) self::js($js);
 		}
-
-		//clean up old modules
-		if(isset($_SESSION['client']['__module_content__'])) {
-			$to_cleanup = array_keys($_SESSION['client']['__module_content__']);
-			foreach($to_cleanup as $k) {
-				$mod = ModuleManager::get_instance($k);
-				if($mod === null) {
-					$xx = explode('/',$k);
-					$yy = explode('|',$xx[count($xx)-1]);
-					$mod = $yy[0];
-					if(is_callable(array($mod.'Common','destroy')))
-						call_user_func(array($mod.'Common','destroy'),$k,isset($_SESSION['client']['__module_vars__'][$k])?$_SESSION['client']['__module_vars__'][$k]:null);
-					if(DEBUG)
-						$debug .= 'Clearing mod vars & module content '.$k.'<br>';
-					unset($_SESSION['client']['__module_vars__'][$k]);
-					unset($_SESSION['client']['__module_content__'][$k]);
-				}
-			}
-		}
-
-		$reloaded = array();
-		foreach (self::$content as $k => $v) {
-			$reload = $v['module']->get_reload();
-			$parent = $v['module']->get_parent_path();
-			if(DEBUG && REDUCING_TRANSFER) {
-				$debug .= '<hr style="height: 3px; background-color:black">';
-				$debug .= '<b> Checking '.$k.', &nbsp;&nbsp;&nbsp; parent='.$v['module']->get_parent_path().'</b><ul>'.
-					'<li>Force - '.(isset($reload)?print_r($reload,true):'not set').'</li>'.
-					'<li>First display - '.(isset ($_SESSION['client']['__module_content__'][$k])?'no</li>'.
-					'<li>Content changed - '.(($_SESSION['client']['__module_content__'][$k]['value'] !== $v['value'])?'yes':'no').'</li>'.
-					'<li>JS changed - '.(($_SESSION['client']['__module_content__'][$k]['js'] !== $v['js'])?'yes':'no'):'yes').'</li>'.
-					'<li>Parent reloaded - '.(isset($reloaded[$parent])?'yes':'no').'</li>'.
-					'<li>History call - '.(($history_call)?'yes':'no').'</li>'.
-					'</ul>';
-			}
-			if (!REDUCING_TRANSFER
-				 || ((!isset($reload) && (!isset ($_SESSION['client']['__module_content__'][$k])
-				 || $_SESSION['client']['__module_content__'][$k]['value'] !== $v['value'] //content differs
-				 || $_SESSION['client']['__module_content__'][$k]['js'] !== $v['js']))
-				 || $history_call
-				 || $reload == true || isset($reloaded[$parent]))) { //force reload or parent reloaded
-				if(DEBUG && isset($_SESSION['client']['__module_content__'])){
-					$debug .= '<b>Reloading: '.(isset($v['span'])?';&nbsp;&nbsp;&nbsp;&nbsp;span='.$v['span'].',':'').'&nbsp;&nbsp;&nbsp;&nbsp;triggered='.(($reload==true)?'force':'auto').',&nbsp;&nbsp;</b><hr><b>New value:</b><br><pre>'.htmlspecialchars($v['value']).'</pre>'.(isset($_SESSION['client']['__module_content__'][$k]['value'])?'<hr><b>Old value:</b><br><pre>'.htmlspecialchars($_SESSION['client']['__module_content__'][$k]['value']).'</pre>':'');
-					if($debug_diff && isset($_SESSION['client']['__module_content__'][$k]['value'])) {
-						$xxx = new Text_Diff(explode("\n",$_SESSION['client']['__module_content__'][$k]['value']),explode("\n",$v['value']));
-						$debug .= '<hr><b>Diff:</b><br><pre>'.$diff_renderer->render($xxx).'</pre>';
-					}
-					$debug .= '<hr style="height: 5px; background-color:black">';
-				}
-
-				if(isset($v['span']))
-					self::text($v['value'], $v['span']);
-				if($v['js'])
-					self::js(join(";",$v['js']));
-				if (REDUCING_TRANSFER) {
-					$_SESSION['client']['__module_content__'][$k]['value'] = $v['value'];
-					$_SESSION['client']['__module_content__'][$k]['js'] = $v['js'];
-				}
-				$_SESSION['client']['__module_content__'][$k]['parent'] = $parent;
-				$reloaded[$k] = true;
-				if(method_exists($v['module'],'reloaded')) $v['module']->reloaded();
-			}
-		}
-
-		foreach($_SESSION['client']['__module_content__'] as $k=>$v)
-			if(!array_key_exists($k,self::$content) && isset($reloaded[$v['parent']])) {
-				if(DEBUG)
-					$debug .= 'Reloading missing '.$k.'<hr>';
-				if(isset($v['span']))
-					self::text($v['value'], $v['span']);
-				if(isset($v['js']) && $v['js'])
-					self::js(join(";",$v['js']));
-				$reloaded[$k] = true;
-			}
 
 		if(DEBUG) {
-			$debug .= 'vars '.CID.': '.print_r($_SESSION['client']['__module_vars__'],true).'<br>';
-			$debug .= 'user='.Base_AclCommon::get_user().'<br>';
+			self::$debug .= 'vars '.CID.': '.print_r($_SESSION['client']['__module_vars__'],true).'<br>';
+			self::$debug .= 'user='.Base_AclCommon::get_user().'<br>';
 			if(isset($_REQUEST['__action_module__']))
-				$debug .= 'action module='.$_REQUEST['__action_module__'].'<br>';
+				self::$debug .= 'action module='.$_REQUEST['__action_module__'].'<br>';
 		}
-		$debug .= self::debug();
+		self::$debug .= self::debug();
 
 		if(MODULE_TIMES) {
-			foreach (self::$content as $k => $v) {
+			foreach (self::$times as $k => $v) {
 				$style='color:red;font-weight:bold';
-				if ($v['time']<0.5) $style = 'color:orange;font-weight:bold';
-				if ($v['time']<0.05) $style = 'color:green;font-weight:bold';
-				$debug .= 'Time of loading module <b>'.$k.'</b>: <i>'.'<span style="'.$style.';">'.number_format($v['time'],4).'</span>'.'</i><br>';
+				if ($v<0.5) $style = 'color:orange;font-weight:bold';
+				if ($v<0.05) $style = 'color:green;font-weight:bold';
+				self::$debug .= 'Time of loading module <b>'.$k.'</b>: <i>'.'<span style="'.$style.';">'.number_format($v,4).'</span>'.'</i><br>';
 			}
-			$debug .= 'Page renderered in '.(microtime(true)-$time).'s<hr>';
+			self::$debug .= 'Page renderered in '.(microtime(true)-$time).'s<hr>';
 		}
 
 		if(SQL_TIMES) {
-			$debug .= '<font size="+1">QUERIES</font><br>';
+			self::$debug .= '<font size="+1">QUERIES</font><br>';
 			$queries = DB::GetQueries();
 			$sum = 0;
 			$qty = 0;
@@ -425,17 +318,16 @@ class Epesi {
 					if($queries[$kkk]['args']==$q['args']) {
 						$style .= ';text-decoration:underline';
 					}
-				$debug .= '<span style="'.$style.';">'.'<b>'.$q['func'].'</b> '.htmlspecialchars(var_export($q['args'],true)).' <i><b>'.number_format($q['time'],4).'</b></i><br>'.'</span>';
+				self::$debug .= '<span style="'.$style.';">'.'<b>'.$q['func'].'</b> '.htmlspecialchars(var_export($q['args'],true)).' <i><b>'.number_format($q['time'],4).'</b></i><br>'.'</span>';
 				$sum+=$q['time'];
 				$qty++;
 			}
-			$debug .= '<b>Number of queries:</b> '.$qty.'<br>';
-			$debug .= '<b>Queries times:</b> '.$sum.'<br>';
+			self::$debug .= '<b>Number of queries:</b> '.$qty.'<br>';
+			self::$debug .= '<b>Queries times:</b> '.$sum.'<br>';
 		}
-		if(!isset($_SESSION['client']['custom_debug']) || $debug!=$_SESSION['client']['custom_debug']) {
-			self::text($debug,'debug');
-			if ($debug) Epesi::js("$('debug_content').style.display='block';");
-			$_SESSION['client']['custom_debug'] = $debug;
+		if(!isset($_SESSION['client']['custom_debug']) || self::$debug!=$_SESSION['client']['custom_debug']) {
+			if (self::$debug) Epesi::js("$('debug_content').style.display='block';");
+			$_SESSION['client']['custom_debug'] = self::$debug;
 		}
 
 		if(!$history_call && !History::soft_call()) {
@@ -446,6 +338,5 @@ class Epesi {
 			self::js('Epesi.history_add('.History::get_id().')');
 		}
 
-		self::send_output();
 	}
 }

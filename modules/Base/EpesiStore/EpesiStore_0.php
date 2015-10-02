@@ -46,7 +46,6 @@ class Base_EpesiStore extends Module {
 		Base_ActionBarCommon::add('view', __('Invoices'), $this->create_callback_href(array($this,'display_invoices')));
 
         $setup = $this->init_module('Base_Setup');
-        $setup->set_inline_display();
         if (Base_SetupCommon::is_simple_setup()) {
 			if (!$this->isset_module_variable('filter_set')) {
 				eval_js('base_setup__last_filter="'.(!Base_EssClientCommon::has_license_key()?'':(Base_EpesiStoreCommon::is_update_available()?'updates':'store')).'";');

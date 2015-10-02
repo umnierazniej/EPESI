@@ -1272,7 +1272,6 @@ class Utils_RecordBrowser extends Module {
 //        if ($mode!='add' && !$this->record[':active'] && !Base_AclCommon::i_am_admin()) return $this->back();
 
         $tb = $this->init_module(Utils_TabbedBrowser::module_name(), null, 'recordbrowser_addons');
-		if ($mode=='history') $tb->set_inline_display();
         self::$tab_param = $tb->get_path();
 
         $form = $this->init_module(Libs_QuickForm::module_name(),null, $mode);
@@ -2557,8 +2556,6 @@ class Utils_RecordBrowser extends Module {
                                         array('name'=>__('New value'), 'width'=>10, 'wrapmode'=>'nowrap'));
 
         $gb_cha->set_table_columns( $table_columns_changes );
-
-        $gb_cha->set_inline_display();
 
         $created = Utils_RecordBrowserCommon::get_record($this->tab, $id, true);
         $access = $this->get_access('view', $created);

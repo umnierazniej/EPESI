@@ -211,7 +211,6 @@ class Utils_Attachment extends Module {
         $tb = & $this->init_module(Utils_TabbedBrowser::module_name());
         $tb->start_tab('File history');
         $gb = $this->init_module(Utils_GenericBrowser::module_name(),null,'hua'.$id);
-        $gb->set_inline_display();
         $gb->set_table_columns(array(
             array('name'=>__('Deleted'), 'order'=>'deleted','width'=>10),
             array('name'=>__('Date'), 'order'=>'upload_on','width'=>25),
@@ -238,7 +237,6 @@ class Utils_Attachment extends Module {
         $tb->end_tab();
         $tb->start_tab('File access history');
         $gb = $this->init_module(Utils_GenericBrowser::module_name(),null,'hda'.$id);
-        $gb->set_inline_display();
         $gb->set_table_columns(array(
             array('name'=>__('Create date'), 'order'=>'created_on','width'=>15),
             array('name'=>__('Download date'), 'order'=>'download_on','width'=>15),

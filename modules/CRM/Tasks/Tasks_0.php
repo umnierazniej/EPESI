@@ -85,7 +85,6 @@ class CRM_Tasks extends Module {
 			}
 
 		$mes = $this->init_module('Utils/Messenger',array('CRM_Tasks:'.$arg['id'],array('CRM_TasksCommon','get_alarm'),array($arg['id']),strtotime($arg['deadline']),$emp));
-//		$mes->set_inline_display();
 		$this->display_module($mes);
 	}
 

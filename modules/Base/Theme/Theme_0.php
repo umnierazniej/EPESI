@@ -27,8 +27,6 @@ class Base_Theme extends Module {
 	 * For internal use only.
 	 */
 	public function construct() {
-		$this->set_inline_display();
-
 		if(!isset(self::$theme))
 			self::$theme = Base_ThemeCommon::get_default_template();
 
@@ -50,12 +48,6 @@ class Base_Theme extends Module {
 		$module_name = $this->parent->get_type();
 
 		Base_ThemeCommon::display_smarty($this->smarty,$module_name,$user_template,$fullname);
-	}
-	
-	public function get_html($user_template=null,$fullname=false) {
-		ob_start();
-		$this->display($user_template,$fullname);
-		return ob_get_clean();
 	}
 
 	/**

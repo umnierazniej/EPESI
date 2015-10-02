@@ -182,7 +182,6 @@ class Base_Menu extends Module {
 
 		$theme = $this->init_module(Base_Theme::module_name());
 
-		$menu_mod->set_inline_display();
 		$theme->assign('menu', $this->get_html_of_module($menu_mod));
 
 		$theme->display();
@@ -190,7 +189,6 @@ class Base_Menu extends Module {
 	}
 	
 	public function quick_access_menu() {
-		$this->set_inline_display(true);
 		// preparing quick access menu
 		if (ModuleManager::is_installed(Base_Menu_QuickAccessCommon::module_name())>=0){
 			$qaccess_menu = Base_Menu_QuickAccessCommon::quick_access_menu();
@@ -206,7 +204,6 @@ class Base_Menu extends Module {
 
 		$theme = $this->init_module(Base_Theme::module_name());
 
-		$menu_mod->set_inline_display();
 		$theme->assign('menu', $this->get_html_of_module($menu_mod));
 
 		$theme->display();
