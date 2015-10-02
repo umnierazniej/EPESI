@@ -150,6 +150,37 @@ var Epesi = {
 		Epesi.client_id=cl_id;
 		Epesi.process_file=path;
 
+		jQuery.ajaxSetup({
+					'headers': {
+						'X-Client-ID': Epesi.client_id
+					}
+				}
+		);
+
+		jQuery(document).ajaxStart(function(){
+			Epesi.procOn++;
+			Epesi.updateIndicator();
+			var keep_focus_field = null;
+		});
+
+		jQuery(document).ajaxSuccess(function(){
+			Event.fire(document,'e:loading');
+		});
+
+		jQuery(document).ajaxError(function(event, request, settings){
+			alert('Failure (' + request.status + ')' + request.responseText);
+			Epesi.text(request.responseText, 'error_box', 'p');
+		});
+
+		jQuery(document).ajaxStop(function(){
+			Epesi.procOn--;
+			Epesi.append_js('Event.fire(document,\'e:load\');Epesi.updateIndicator();');
+			if(typeof document.activeElement != "undefined") {
+				keep_focus_field = document.activeElement.getAttribute("id");
+				Epesi.append_js('jQuery("#'+keep_focus_field+':visible").focus();');
+			}
+		});
+
 		Epesi.history_add(0);
 		if(typeof params == 'undefined')
 			params = '';
@@ -163,34 +194,10 @@ var Epesi = {
 		});
 	},
 	request: function(url,history_id) {
-		Epesi.procOn++;
-		Epesi.updateIndicator();
-		var keep_focus_field = null;
-		new Ajax.Request(Epesi.process_file, {
-			method: 'post',
-			parameters: {
-				history: history_id,
-				url: url
-			},
-			onComplete: function(t) {
-				Epesi.procOn--;
-				Epesi.append_js('Event.fire(document,\'e:load\');Epesi.updateIndicator();');
-				if(keep_focus_field!=null) {
-                    Epesi.append_js('jQuery("#'+keep_focus_field+':visible").focus();');
-                }
-			},
-			onSuccess: function(t) {
-				if(typeof document.activeElement != "undefined") keep_focus_field = document.activeElement.getAttribute("id");
-				Event.fire(document,'e:loading');
-			},
-			onException: function(t,e) {
-				throw(e);
-			},
-			onFailure: function(t) {
-				alert('Failure ('+t.status+')');
-				Epesi.text(t.responseText,'error_box','p');
-			}
-		});
+		if(history_id !== undefined)
+			jQuery('#body_content').load(Epesi.process_file, {url: url, history: history_id});
+		else
+			jQuery('#body_content').load(Epesi.process_file, {url: url});
 	},
 	href: function(url,indicator,mode) {
 		if (!Epesi.confirmLeave.check()) return;
@@ -280,18 +287,7 @@ var Epesi = {
 	}
 };
 _chj=Epesi.href;
-Ajax.Responders.register({
-onCreate: function(x,y) { //hack
-        if (typeof x.options.requestHeaders == 'undefined')
-		x.options.requestHeaders = ['X-Client-ID', Epesi.client_id];
-	else if (typeof x.options.requestHeaders.push == 'function')
-		x.options.requestHeaders.push('X-Client-ID',Epesi.client_id);
-	else
-		x.options.requestHeaders = $H(x.options.requestHeaders).merge({'X-Client-ID': Epesi.client_id});	
-},
-onException: function(req, e){
-	alert(e);
-}});
+
 function getTotalTopOffet(e) {
 	var ret=0;
 	while (e!=null) {

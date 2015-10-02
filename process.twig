@@ -1,0 +1,44 @@
+<div id="main_content">
+    {{ content | raw }}
+</div>
+
+<div id="debug_content" style="padding-top:97px;display:none;">
+    <div class="button" onclick="$('error_box').innerHTML='';$('debug_content').style.display='none';">Hide</div>
+    <div id="debug">
+        {{ debug | raw }}
+    </div>
+    <div id="error_box"></div>
+</div>
+
+<div id="epesiStatus">
+    <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+        <tr>
+            <td><img src="images/logo.png" alt="logo" width="550" height="200" border="0"></td>
+        </tr>
+        <tr>
+            <td style="text-align: center; vertical-align: middle; height: 30px;"><span id="epesiStatusText">{{ starting_message }}</span></td>
+        </tr>
+        <tr>
+            <td style="text-align: center; vertical-align: middle; height: 30px;"><img src="images/loader.gif" alt="loader" width="256" height="10" border="0"></td>
+        </tr>
+    </table>
+</div>
+
+<script type="text/javascript">
+    var load_promises = [];
+    {% for js in load_js %}
+        load_promises.push(jQuery.getScript('{{ js | raw }}'));
+    {% endfor %}
+
+
+    jQuery.when.apply(null, load_promises).done(function(){
+        {{ eval_js | raw }}
+    }).fail(function(reason){
+        console.log(reason);
+    });
+
+
+    {% for css in load_css %}
+        jQuery('head').append( jQuery('<link rel="stylesheet" type="text/css" \/>').attr('href', '{{ css | raw }}') );
+    {% endfor %}
+</script>

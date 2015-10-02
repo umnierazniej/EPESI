@@ -19,8 +19,13 @@
     {% endif %}
 
 
-
-    <link type="text/css" href="{{ csses_src | raw }}" rel="stylesheet">
+    {% if csses_src is iterable %}
+        {% for css in csses_src %}
+            <link type="text/css" href="{{ css | raw }}" rel="stylesheet">
+        {% endfor %}
+    {% else %}
+        <link type="text/css" href="{{ csses_src | raw }}" rel="stylesheet">
+    {% endif %}
 
 
     <style type="text/css">
