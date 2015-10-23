@@ -112,12 +112,12 @@ var Epesi = {
         }
 	},
 	updateIndicator: function() {
-		var s = $(Epesi.indicator);
-		if(s) s.style.visibility = Epesi.procOn ? 'visible' : 'hidden';
-		if (!Epesi.procOn) $('main_content').style.display = '';
+		var s = jQuery('#'+Epesi.indicator);
+		if(s) s.css('visibility', Epesi.procOn ? 'visible' : 'hidden');
+		if (!Epesi.procOn) jQuery('#main_content').css('display', '');
 	},
 	updateIndicatorText: function(text) {
-		$(Epesi.indicator_text).innerHTML = text;
+		jQuery('#'+Epesi.indicator_text).html(text);
 	},
 	history_on:1,
 	history_add:function(id){
@@ -201,14 +201,14 @@ var Epesi = {
 			setTimeout('Epesi.href("'+url+'", "'+indicator+'", "'+mode+'")',500);
 	},
 	text: function(txt,idt,type) {
-		var t=$(idt);
+		var t=jQuery('#'+idt);
 		if(!t) return;
 		if(type=='i')//instead
-			t.innerHTML = txt;
+			t.html(txt);
 		else if(type=='p')//prepend
-			t.innerHTML = txt+t.innerHTML;
+			t.html(txt+t.html());
 		else if(type=='a')//append
-			t.innerHTML += txt;
+			t.html(t.html()+txt);
 	},
 	//js loader
 	loaded_jss:new Array(),
