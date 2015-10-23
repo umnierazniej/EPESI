@@ -19,14 +19,14 @@ ChainedSelect.prototype = {
 		var prev_obj = prev_ids[prev_ids.length-1];
 		this.request_f = this.request.bindAsEventListener(this);
 		this.clear_f = this.clear.bindAsEventListener(this);
-		Event.observe(prev_obj,'change',this.request_f);
+		jQuery('#' + prev_obj).change(this.request_f);
 		Event.observe(prev_obj,'e_cs:load',this.request_f);
 		Event.observe(prev_obj,'e_cs:clear',this.clear_f);
 		this.stop_f = this.stop.bindAsEventListener(this);
-		Event.observe(document,'e:load',this.stop_f);
+		jQuery(document).on('e:load',this.stop_f);
 		if(prev_ids.length==1) {
 			this.load_def_f = this.load_def.bindAsEventListener(this);
-			Event.observe(document,'e:load',this.load_def_f);
+			jQuery(document).on('e:load',this.load_def_f);
 		}
 	},
 	load_def:function() {
@@ -41,13 +41,13 @@ ChainedSelect.prototype = {
 		if(this.loads==2) {
 			var prev_obj = this.prev_ids[this.prev_ids.length-1];
 			if($(prev_obj)!=null) {
-				Event.stopObserving(prev_obj,'change',this.request_f);
+				jQuery('#'+prev_obj).off('change',this.request_f)
 				Event.stopObserving(prev_obj,'e_cs:load',this.request_f);
 				Event.stopObserving(prev_obj,'e_cs:clear',this.clear_f);
 			}
 			if(this.prev_ids.length==1)
-				Event.stopObserving(document,'e:load',this.load_def_f);
-			Event.stopObserving(document,'e:load',this.stop_f);
+				jQuery(document).off('e:load',this.load_def_f);
+			jQuery(document).off('e:load',this.stop_f);
 		}
 	},
 	request:function() {

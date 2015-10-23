@@ -237,4 +237,4 @@ function leightbox_reload() {
     }
 }
 
-document.observe("e:load", leightbox_reload);
+jQuery(document).on("e:load", leightbox_reload);

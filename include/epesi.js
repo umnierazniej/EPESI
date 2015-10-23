@@ -113,12 +113,12 @@ var Epesi = {
         }
 	},
 	updateIndicator: function() {
-		var s = $(Epesi.indicator);
-		if(s) s.style.visibility = Epesi.procOn ? 'visible' : 'hidden';
-		if (!Epesi.procOn) $('main_content').style.display = '';
+		var s = jQuery('#'+Epesi.indicator);
+		if(s) s.css('visibility', Epesi.procOn ? 'visible' : 'hidden');
+		if (!Epesi.procOn) jQuery('#main_content').css('display', '');
 	},
 	updateIndicatorText: function(text) {
-		$(Epesi.indicator_text).innerHTML = text;
+		jQuery('#'+Epesi.indicator_text).html(text);
 	},
 	history_on:1,
 	history_add:function(id){
@@ -164,7 +164,7 @@ var Epesi = {
 		});
 
 		jQuery(document).ajaxSuccess(function(){
-			Event.fire(document,'e:loading');
+			jQuery(document).trigger('e:loading');
 		});
 
 		jQuery(document).ajaxError(function(event, request, settings){
@@ -174,7 +174,7 @@ var Epesi = {
 
 		jQuery(document).ajaxStop(function(){
 			Epesi.procOn--;
-			Epesi.append_js('Event.fire(document,\'e:load\');Epesi.updateIndicator();');
+			Epesi.append_js('jQuery(document).trigger(\'e:load\');Epesi.updateIndicator();');
 			if(typeof document.activeElement != "undefined") {
 				keep_focus_field = document.activeElement.getAttribute("id");
 				Epesi.append_js('jQuery("#'+keep_focus_field+':visible").focus();');
@@ -216,14 +216,14 @@ var Epesi = {
 		jQuery('form[name="' + formName + '"] input[name="submited"]').val(0);
 	},
 	text: function(txt,idt,type) {
-		var t=$(idt);
+		var t=jQuery('#'+idt);
 		if(!t) return;
 		if(type=='i')//instead
-			t.innerHTML = txt;
+			t.html(txt);
 		else if(type=='p')//prepend
-			t.innerHTML = txt+t.innerHTML;
+			t.html(txt+t.html());
 		else if(type=='a')//append
-			t.innerHTML += txt;
+			t.html(t.html()+txt);
 	},
 	//js loader
 	loaded_jss:new Array(),

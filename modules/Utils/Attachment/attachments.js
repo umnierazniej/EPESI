@@ -143,12 +143,12 @@ function utils_attachment_submit_password(id,reload) {
             if(reload) {
                 _chj("","","queue");
             } else {
-                Event.fire(document,'e:loading');
+                jQuery(document).trigger('e:loading');
                 if(typeof result.js != "undefined") {
                     eval(result.js);
                 }
                 $("note_value_"+id).innerHTML = result.note;
-                Event.fire(document,'e:load');
+				jQuery(document).trigger('e:load');
             }
         }
       });

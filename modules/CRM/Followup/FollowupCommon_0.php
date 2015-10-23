@@ -70,21 +70,21 @@ class CRM_FollowupCommon extends ModuleCommon {
 	
 			if ($meetings) {
 				$theme->assign('new_meeting',array('open'=>'<a id="'.$prefix.'_new_meeting_button" onclick="'.$prefix.'_set_action(\'new_meeting\');'.$prefix.'_submit_form();">','text'=>__( 'New Meeting'),'close'=>'</a>'));
-				eval_js('Event.observe(\''.$prefix.'_new_meeting_button\',\'click\', '.$prefix.'_followups_deactivate)');
+				eval_js('jQuery(\'#'.$prefix.'_new_meeting_button\').on(\'click\', '.$prefix.'_followups_deactivate)');
 			}
 
 			if ($tasks) {
 				$theme->assign('new_task',array('open'=>'<a id="'.$prefix.'_new_task_button" onclick="'.$prefix.'_set_action(\'new_task\');'.$prefix.'_submit_form();">','text'=>__( 'New Task'),'close'=>'</a>'));
-				eval_js('Event.observe(\''.$prefix.'_new_task_button\',\'click\', '.$prefix.'_followups_deactivate)');
+				eval_js('jQuery(\'#'.$prefix.'_new_task_button\').on(\'click\', '.$prefix.'_followups_deactivate)');
 			}
 
 			if ($phonecall) {
 				$theme->assign('new_phonecall',array('open'=>'<a id="'.$prefix.'_new_phonecall_button" onclick="'.$prefix.'_set_action(\'new_phonecall\');'.$prefix.'_submit_form();">','text'=>__( 'New Phonecall'),'close'=>'</a>'));
-				eval_js('Event.observe(\''.$prefix.'_new_phonecall_button\',\'click\', '.$prefix.'_followups_deactivate)');
+				eval_js('jQuery(\'#'.$prefix.'_new_phonecall_button\').on(\'click\', '.$prefix.'_followups_deactivate)');
 			}
 
 			$theme->assign('just_close',array('open'=>'<a id="'.$prefix.'_just_close_button" onclick="'.$prefix.'_set_action(\'none\');'.$prefix.'_submit_form();">','text'=>__( 'Save'),'close'=>'</a>'));
-			eval_js('Event.observe(\''.$prefix.'_just_close_button\',\'click\', '.$prefix.'_followups_deactivate)');
+			eval_js('jQuery(\'#'.$prefix.'_just_close_button\').on(\'click\', '.$prefix.'_followups_deactivate)');
 
 			eval_js($prefix.'_submit_form = function () {'.
 						'$(\''.$prefix.'_follow_up_form\').submited.value=1;Epesi.href($(\''.$prefix.'_follow_up_form\').serialize(), \'processing...\');$(\''.$prefix.'_follow_up_form\').submited.value=0;'.

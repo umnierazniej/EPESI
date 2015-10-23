@@ -105,7 +105,7 @@ class CRM_PhoneCallCommon extends ModuleCommon {
 	public static function QFfield_other_phone(&$form, $field, $label, $mode, $default, $desc) {
 		if ($mode=='add' || $mode=='edit') {
 			$js =
-					'Event.observe(\'other_phone\',\'change\', onchange_other_phone);'.
+					'jQuery(\'#other_phone\').on(\'change\', onchange_other_phone);'.
 					'function enable_disable_phone(arg) {'.
 					'phone = document.forms[\''.$form->getAttribute('name').'\'].phone;'.
 					'o_phone = document.forms[\''.$form->getAttribute('name').'\'].other_phone_number;'.
@@ -128,7 +128,7 @@ class CRM_PhoneCallCommon extends ModuleCommon {
 	public static function QFfield_other_contact(&$form, $field, $label, $mode, $default, $desc) {
 		if ($mode=='add' || $mode=='edit') {
 			$js =
-					'Event.observe(\'other_customer\',\'change\', onchange_other_customer);'.
+					'jQuery(\'#other_customer\').on(\'change\', onchange_other_customer);'.
 					'function enable_disable_customer(arg) {'.
 					'customer = document.forms[\''.$form->getAttribute('name').'\'].customer;'.
 					'customer_s = document.forms[\''.$form->getAttribute('name').'\'].customer__search;'.

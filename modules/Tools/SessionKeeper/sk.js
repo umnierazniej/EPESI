@@ -18,6 +18,6 @@ var SessionKeeper = {
         SessionKeeper.id = new PeriodicalExecuter(SessionKeeper.func,SessionKeeper.interval);
     }
 };
-document.observe("e:load", function() {
+jQuery(document).on("e:load", function() {
     SessionKeeper.load();
 });

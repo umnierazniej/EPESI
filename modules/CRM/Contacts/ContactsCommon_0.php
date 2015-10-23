@@ -601,8 +601,8 @@ class CRM_ContactsCommon extends ModuleCommon {
 					$form->addElement('text', 'create_company_name', __('New company name'), array('disabled'=>1));
 					$form->addFormRule(array('CRM_ContactsCommon', 'check_new_company_name'));
 					if (isset($rb) && isset($rb->record['last_name']) && isset($rb->record['first_name'])) $form->setDefaults(array('create_company_name'=>$rb->record['last_name'].' '.$rb->record['first_name']));
-					eval_js('Event.observe(\'last_name\',\'change\', update_create_company_name_field);'.
-							'Event.observe(\'first_name\',\'change\', update_create_company_name_field);'.
+					eval_js('jQuery(\'#last_name\').on(\'change\', update_create_company_name_field);'.
+							'jQuery(\'#first_name\').on(\'change\', update_create_company_name_field);'.
 							'function update_create_company_name_field() {'.
 								'document.forms[\''.$form->getAttribute('name').'\'].create_company_name.value = document.forms[\''.$form->getAttribute('name').'\'].last_name.value+" "+document.forms[\''.$form->getAttribute('name').'\'].first_name.value;'.
 							'}');
@@ -865,7 +865,7 @@ class CRM_ContactsCommon extends ModuleCommon {
 					'if ($("contact_admin")) $("contact_admin").up("tr").style.display = ($("crm_contacts_select_user").value==""?"none":"");'.
 					'}');
 			eval_js('new_user_textfield();');
-			eval_js('Event.observe("crm_contacts_select_user","change",function(){new_user_textfield();});');
+			eval_js('jQuery("#crm_contacts_select_user").on("change",function(){new_user_textfield();});');
 		}
 		if ($default)
 			eval_js('$("_login__data").up("tr").style.display = "none";');
