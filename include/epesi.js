@@ -173,7 +173,7 @@ var Epesi = {
 			},
 			onComplete: function(t) {
 				Epesi.procOn--;
-				Epesi.append_js('Event.fire(document,\'e:load\');Epesi.updateIndicator();');
+				Epesi.append_js('jQuery(document).trigger(\'e:load\');Epesi.updateIndicator();');
 				if(keep_focus_field!=null) {
                     Epesi.append_js('jQuery("#'+keep_focus_field+':visible").focus();');
                 }

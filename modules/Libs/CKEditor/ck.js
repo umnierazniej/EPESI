@@ -26,7 +26,7 @@ Event.observe(document,'e:loading', function() {
 	}
 });
 
-Event.observe(document,'e:load', function() {
+jQuery(document).on('e:load', function() {
     for(key in ckeditors_hib) {
 //      alert('unhib '+key);
         value = ckeditors_hib[key];

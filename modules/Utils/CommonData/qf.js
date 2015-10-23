@@ -18,11 +18,11 @@ Utils_CommonData.prototype = {
 
 		this.first_request_bind = this.first_request.bindAsEventListener(this);
 		if(this.path.length==2)
-			Event.observe(document,'e:load',this.first_request_bind);
+			jQuery(document).on('e:load',this.first_request_bind);
 	},
 
 	first_request: function(e) {
-		Event.stopObserving(document,'e:load',this.first_request_bind);
+		jQuery(document).off('e:load',this.first_request_bind);
 //		alert('first');
 		this.request(null);
 	},
@@ -90,11 +90,11 @@ Utils_CommonData_freeze.prototype = {
 
 		this.first_request_bind = this.first_request.bindAsEventListener(this);
 		if(this.path.length==2)
-			Event.observe(document,'e:load',this.first_request_bind);
+			jQuery(document).on('e:load',this.first_request_bind);
 	},
 
 	first_request: function(e) {
-		Event.stopObserving(document,'e:load',this.first_request_bind);
+		jQuery(document).off('e:load',this.first_request_bind);
 		//alert('first');
 		this.request(null);
 	},

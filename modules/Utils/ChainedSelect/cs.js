@@ -23,10 +23,10 @@ ChainedSelect.prototype = {
 		Event.observe(prev_obj,'e_cs:load',this.request_f);
 		Event.observe(prev_obj,'e_cs:clear',this.clear_f);
 		this.stop_f = this.stop.bindAsEventListener(this);
-		Event.observe(document,'e:load',this.stop_f);
+		jQuery(document).on('e:load',this.stop_f);
 		if(prev_ids.length==1) {
 			this.load_def_f = this.load_def.bindAsEventListener(this);
-			Event.observe(document,'e:load',this.load_def_f);
+			jQuery(document).on('e:load',this.load_def_f);
 		}
 	},
 	load_def:function() {
@@ -46,8 +46,8 @@ ChainedSelect.prototype = {
 				Event.stopObserving(prev_obj,'e_cs:clear',this.clear_f);
 			}
 			if(this.prev_ids.length==1)
-				Event.stopObserving(document,'e:load',this.load_def_f);
-			Event.stopObserving(document,'e:load',this.stop_f);
+				jQuery(document).off('e:load',this.load_def_f);
+			jQuery(document).off('e:load',this.stop_f);
 		}
 	},
 	request:function() {

@@ -148,7 +148,7 @@ function utils_attachment_submit_password(id,reload) {
                     eval(result.js);
                 }
                 $("note_value_"+id).innerHTML = result.note;
-                Event.fire(document,'e:load');
+				jQuery(document).trigger('e:load');
             }
         }
       });
