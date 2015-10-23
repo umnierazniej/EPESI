@@ -143,7 +143,7 @@ function utils_attachment_submit_password(id,reload) {
             if(reload) {
                 _chj("","","queue");
             } else {
-                Event.fire(document,'e:loading');
+                jQuery(document).trigger('e:loading');
                 if(typeof result.js != "undefined") {
                     eval(result.js);
                 }

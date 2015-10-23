@@ -180,7 +180,7 @@ var Epesi = {
 			},
 			onSuccess: function(t) {
 				if(typeof document.activeElement != "undefined") keep_focus_field = document.activeElement.getAttribute("id");
-				Event.fire(document,'e:loading');
+				jQuery(document).trigger('e:loading');
 			},
 			onException: function(t,e) {
 				throw(e);

@@ -15,7 +15,7 @@ Event.observe(document,'e:submit_form', function(e) {
 	}
 });
 
-Event.observe(document,'e:loading', function() {
+jQuery(document).on('e:loading', function() {
     for(key in ckeditors) {
 //        alert('hib '+key);
         value = ckeditors[key];

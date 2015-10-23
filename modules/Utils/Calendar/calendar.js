@@ -349,4 +349,4 @@ destroy:function() {
 //	Droppables.remove('UCtrash');
 }
 };
-document.observe('e:loading', Utils_Calendar.destroy);
+jQuery(document).on('e:loading', Utils_Calendar.destroy);

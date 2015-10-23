@@ -525,4 +525,4 @@ destroy:function() {
 	Utils_Calendar.jq_cache = {};
 }
 };
-document.observe('e:loading', Utils_Calendar.destroy);
+jQuery(document).on('e:loading', Utils_Calendar.destroy);
