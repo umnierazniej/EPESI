@@ -301,7 +301,6 @@ class Utils_RecordBrowser_Reports extends Module {
 	public function new_table_page() {
 		if (!$this->pdf) {
 			$this->gb->set_table_columns($this->gb_captions);
-			$this->gb->set_inline_display();
 		}
 	}
 

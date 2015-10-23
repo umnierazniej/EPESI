@@ -37,7 +37,6 @@ set_time_limit(0);
 
 $rb = ModuleManager::new_instance('Utils_RecordBrowser', null, 'print_rb');
 $rb->construct($tab);
-$rb->set_inline_display();
 $rb->set_header_properties($more_table_properties);
 $rb->disable_pagination();
 

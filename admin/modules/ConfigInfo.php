@@ -64,12 +64,10 @@ class ConfigInfo extends AdminModule {
         $this->printTD('Debug:', (DEBUG ? 'YES' : 'NO'));
         $this->printTD('Module Times:', (MODULE_TIMES ? 'YES' : 'NO'));
         $this->printTD('Display sql queries processing times: ', (SQL_TIMES ? 'YES' : 'NO'));
-        $this->printTD('Strip output html from comments: ', (STRIP_OUTPUT ? 'YES' : 'NO'));
         $this->printTD('Display additional error info: ', (DISPLAY_ERRORS ? 'YES' : 'NO'));
         $this->printTD('Report all errors (E_ALL): ', (REPORT_ALL_ERRORS ? 'YES' : 'NO'));
         $this->printTD('GZIP client web browser history: ', (GZIP_HISTORY ? 'YES' : 'NO'));
 
-        $this->printTD('Reducing Transfer: ', (REDUCING_TRANSFER ? 'YES' : 'NO'));
         $this->printTD('Minify Encode: ', (MINIFY_ENCODE ? 'YES' : 'NO'));
         $this->printTD('Minify sources: ', (MINIFY_SOURCES ? 'YES' : 'NO'));
         $this->printTD('Suggest Donation: ', (SUGGEST_DONATION ? 'YES' : 'NO'));

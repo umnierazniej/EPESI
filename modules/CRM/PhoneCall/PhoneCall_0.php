@@ -73,7 +73,6 @@ class CRM_PhoneCall extends Module {
 				$emp[$data['login']] = CRM_ContactsCommon::contact_format_no_company($data);
 			}
 		$mes = $this->init_module('Utils/Messenger',array('CRM_PhoneCall:'.$arg['id'],array('CRM_PhoneCallCommon','get_alarm'),array($arg['id']),strtotime($arg['date_and_time']),$emp));
-//		$mes->set_inline_display();
 		$this->display_module($mes);
 	}
 

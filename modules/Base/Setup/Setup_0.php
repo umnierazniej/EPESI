@@ -171,7 +171,6 @@ class Base_Setup extends Module {
 
 		$tree = $this->init_module(Utils_Tree::module_name());
 		$tree->set_structure($structure);
-		$tree->set_inline_display();
 		//$form->addElement('html', '<tr><td colspan=2>'.$tree->toHtml().'</td></tr>');
 		$form->addElement('html', '<tr><td colspan=2>'.$this->get_html_of_module($tree).'</td></tr>');
 

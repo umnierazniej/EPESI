@@ -69,7 +69,6 @@ class CRM_Meeting extends Module {
 				$emp[$data['login']] = CRM_ContactsCommon::contact_format_no_company($data);
 			}
 		$mes = $this->init_module('Utils/Messenger',array('CRM_Calendar_Event:'.$arg['id'],array('CRM_MeetingCommon','get_alarm'),array($arg['id']),strtotime($arg['date'].' '.date('H:i:s',strtotime($arg['time']))),$emp,'CRM_Meeting'));
-//		$mes->set_inline_display();
 		$this->display_module($mes);
 	}
 
