@@ -25,17 +25,11 @@
 </div>
 
 <script type="text/javascript">
-    var load_promises = [];
     {% for js in load_js %}
-        load_promises.push(jQuery.getScript('{{ js | raw }}'));
+        Epesi.load_js('{{ js | e('js') }}');
     {% endfor %}
 
-
-    jQuery.when.apply(null, load_promises).done(function(){
-        {{ eval_js | raw }}
-    }).fail(function(reason){
-        console.log(reason);
-    });
+    Epesi.append_js('{{ eval_js | e('js')}}');
 
 
     {% for css in load_css %}
