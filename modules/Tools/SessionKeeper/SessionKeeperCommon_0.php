@@ -34,7 +34,7 @@ class Tools_SessionKeeperCommon extends ModuleCommon {
 
 load_js('modules/Tools/SessionKeeper/sk.js');
 $sys_time = ini_get("session.gc_maxlifetime");
-$interval = $sys_time/3;
+$interval = $sys_time*1000/3;
 
 if(Acl::is_user()) {
     $time = Base_User_SettingsCommon::get('Tools/SessionKeeper','time');
