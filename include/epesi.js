@@ -251,7 +251,7 @@ var Epesi = {
 		document.getElementsByTagName("head").item(0).appendChild(fileref);
 	},
 	js_loader:function() {
-		file = Epesi.to_load_jss.first();
+		file = Epesi.to_load_jss[0];
 		if(typeof file != 'undefined') {
 			fileref=document.createElement("script")
 			fileref.setAttribute("type", "text/javascript");
@@ -263,7 +263,7 @@ var Epesi = {
 				Epesi.js_loader();
 			}
 			document.getElementsByTagName("head").item(0).appendChild(fileref);
-			Epesi.to_load_jss = Epesi.to_load_jss.without(file);
+			Epesi.to_load_jss = _.without(Epesi.to_load_jss, file);
 		} else {
 			for(var i=0; i<Epesi.to_append_jss.length; i++) {
 				var texti = Epesi.to_append_jss[i];
