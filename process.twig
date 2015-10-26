@@ -2,13 +2,13 @@
     {{ content | raw }}
 </div>
 
-<div id="debug_content" style="padding-top:97px;display:none;">
-    <div class="button" onclick="$('error_box').innerHTML='';$('debug_content').style.display='none';">Hide</div>
-    <div id="debug">
-        {{ debug | raw }}
+{% if debug is not null %}
+    <div id="debug_content">
+        <div id="debug">
+            {{ debug | raw }}
+        </div>
     </div>
-    <div id="error_box"></div>
-</div>
+{% endif %}
 
 <script type="text/javascript">
     {% for js in load_js %}

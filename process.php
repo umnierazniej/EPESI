@@ -47,7 +47,7 @@ $twig = ModuleManager::get_container()['twig'];
 /** @var Twig_Environment $twig */
 $content = $twig->render('process.twig', array(
     'content' => Epesi::$content,
-    'debug' => Epesi::$debug,
+    'debug' => Epesi::get_debug(),
     'eval_js' => Epesi::get_eval_jses(),
     'load_js' => Epesi::get_jses(),
     'load_css' => Epesi::get_csses()

@@ -72,6 +72,10 @@ class Epesi {
 		return self::$txts;
 	}
 
+	public final static function get_debug() {
+		return self::$debug;
+	}
+
 	/**
 	 * @deprecated
 	 * @throws Exception
