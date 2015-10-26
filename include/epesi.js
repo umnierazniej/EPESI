@@ -25,8 +25,6 @@ var Epesi = {
 	procOn:0,
 	client_id:0,
 	process_file:'process.php',
-	indicator:'epesiStatus',
-	indicator_text:'epesiStatusText',
 	confirmLeave: {
 		// object of form ids which require confirmation for leaving the page
         // store changed fields to pass through submit state
@@ -113,12 +111,16 @@ var Epesi = {
         }
 	},
 	updateIndicator: function() {
-		var s = jQuery('#'+Epesi.indicator);
-		if(s) s.css('visibility', Epesi.procOn ? 'visible' : 'hidden');
-		if (!Epesi.procOn) jQuery('#main_content').css('display', '');
+		if (Epesi.procOn) {
+			jQuery('#epesi_status').fadeIn();
+			jQuery('#main_content').fadeOut();
+		} else {
+			jQuery('#epesi_status').fadeOut();
+			jQuery('#main_content').fadeIn();
+		}
 	},
 	updateIndicatorText: function(text) {
-		jQuery('#'+Epesi.indicator_text).html(text);
+		jQuery('#epesi_status .text').html(text);
 	},
 	history_on:1,
 	history_add:function(id){

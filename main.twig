@@ -33,13 +33,12 @@
             body { direction: rtl; }
         {% endif %}
 
-        #epesiStatus {
+        #epesi_status {
             background-color: white;
             position: fixed;
             left: 50%;
             top: 30%;
             margin-left: -280px;
-            visibility: hidden;
             width: 560px;
             text-align: center;
             vertical-align: middle;
@@ -55,17 +54,17 @@
             border-radius: 40px;
         }
 
-        #epesiStatus .text {
+        #epesi_status .text {
             margin-bottom: 50px;
             font-size: 22px;
         }
 
-        #epesiStatus .spinner {
+        #epesi_status .spinner {
             margin: 0 auto 50px;
             text-align: center;
         }
 
-        #epesiStatus .spinner > div {
+        #epesi_status .spinner > div {
             width: 18px;
             height: 18px;
             background-color: #333;
@@ -76,12 +75,12 @@
             animation: sk-bouncedelay 1.4s infinite ease-in-out both;
         }
 
-        #epesiStatus .spinner .bounce1 {
+        #epesi_status .spinner .bounce1 {
             -webkit-animation-delay: -0.32s;
             animation-delay: -0.32s;
         }
 
-        #epesiStatus .spinner .bounce2 {
+        #epesi_status .spinner .bounce2 {
             -webkit-animation-delay: -0.16s;
             animation-delay: -0.16s;
         }
@@ -118,7 +117,7 @@
 
 </div>
 
-<div id="epesiStatus">
+<div id="epesi_status" style="display: none">
     <img src="images/epesi_logo_RGB_Gradient.png" width="100%">
     <div class="text" style="display: none">{{ starting_message }}</div>
     <div class="spinner">
