@@ -15,15 +15,11 @@ class Epesi {
 	private static $txts = '';
 
 	/**
-	 * Returns ajax temporary session.
-	 *
-	 * @return mixed ajax temporary session
-	 */
-	/**
-	 * Executes list of javascrpit commands gathered with js() function.
-	 */
+	 * @deprecated
+	 * @throws Exception
+     */
 	public final static function send_output() {
-		print(self::get_output());
+		throw new Exception('This method is deprecated.');
 	}
 	
 	public final static function prepare_minified_files($arr) {
@@ -76,22 +72,12 @@ class Epesi {
 		return self::$txts;
 	}
 
+	/**
+	 * @deprecated
+	 * @throws Exception
+     */
 	public final static function get_output() {
-		$ret = '';
-		$out_css = self::get_csses();
-		foreach($out_css as $css) {
-			$ret .= 'Epesi.load_css(\''.self::escapeJS($css,false).'\');';
-		}
-		$out_js = self::get_jses();
-		foreach($out_js as $js) {
-			$ret .= 'Epesi.load_js(\''.self::escapeJS($js,false).'\');';
-		}
-		$ret .= self::$txts;
-		$jjj = self::get_eval_jses();
-		if($jjj!=='')
-			$ret .= 'Epesi.append_js(\''.self::escapeJS($jjj,false).'\');';
-		self::clean();
-		return $ret;
+		throw new Exception('This method is deprecated');
 	}
 
 	public final static function clean() {
