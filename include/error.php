@@ -19,21 +19,7 @@ class ErrorObserver
 
 class ErrorHandler {
 	private static $observers = array();
-	
-	private static function notify_client($buffer) {
-		if(JS_OUTPUT && class_exists('Epesi')) {
-			chdir(dirname(dirname(__FILE__)));
-			Epesi::clean();
-			if(DISPLAY_ERRORS) {
-				Epesi::js("$('debug_content').style.display='block';");
-				Epesi::text($buffer.'<hr>','error_box','prepend');
-			}
-			Epesi::alert('There was an error in one of epesi modules.'.((DISPLAY_ERRORS)?' Details are displayed at the bottom of the page, please send this information to system administrator.':''));
-			return Epesi::get_output();
-		}
-		return $buffer;
-	}
-	
+
 	public static function handle_error($type, $message,$errfile,$errline,$errcontext) {
     	if (($type & error_reporting()) > 0) {
 				$backtrace = self::debug_backtrace();
@@ -45,7 +31,7 @@ class ErrorHandler {
 				}
 				
 				while(@ob_end_clean());
-				echo self::notify_client('Type: ' . self::error_code_to_string($type) . ' (' . $type . ')<br>Message: '.$message.'<br>File: '.$errfile.'<br>Line='.$errline.$backtrace.'<hr>');
+				echo 'Type: ' . self::error_code_to_string($type) . ' (' . $type . ')<br>Message: '.$message.'<br>File: '.$errfile.'<br>Line='.$errline.$backtrace.'<hr>';
 				exit();
 		}
 
@@ -60,7 +46,7 @@ class ErrorHandler {
                . $exception->getMessage() . '<br>File: ' .
                $exception->getFile() . '<br>Line=' . $exception->getLine() .
                $backtrace . '<hr>';
-        echo self::notify_client($msg);
+        echo $msg;
     }
     
     public static function error_code_to_string($type) {
