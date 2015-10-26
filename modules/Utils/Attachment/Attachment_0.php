@@ -79,9 +79,9 @@ class Utils_Attachment extends Module {
 				Variable::set('utils_attachments_google_user', $vals['google_user']);
 				Variable::set('utils_attachments_google_pass', $vals['google_pass']);
 
-				Base_StatusBarCommon::message(__('Settings saved'));
+				Base_StatusBarCommon::message(__('Settings saved'), 'success');
 			} else {
-				Base_StatusBarCommon::message(__('Unable to authenticate'), 'error');
+				Base_StatusBarCommon::message(__('Unable to authenticate'), 'danger');
 			}
 			location(array());
 			return;

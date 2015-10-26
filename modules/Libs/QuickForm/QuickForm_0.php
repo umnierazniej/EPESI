@@ -53,7 +53,7 @@ class Libs_QuickForm extends Module {
 		$ret = $this->qf->validate();
 		if ($this->qf->isSubmitted()) {
 			if ($ret)
-				Base_StatusBarCommon::message($success);
+				Base_StatusBarCommon::message($success, 'success');
 			else
 				Base_StatusBarCommon::message($failure,'warning');
 		}

@@ -81,7 +81,7 @@ class Base_Mail extends Module implements Base_AdminInterface {
 		}
 		
 		if($form->getSubmitValue('submited') && $form->validate() && $form->process(array(&$this,'submit_admin'))) {
-			Base_StatusBarCommon::message(__('Settings saved'));
+			Base_StatusBarCommon::message(__('Settings saved'), 'success');
 		}
 		$form->display();					
 		
@@ -92,8 +92,8 @@ class Base_Mail extends Module implements Base_AdminInterface {
 		$ret = Base_MailCommon::send($email, __('E-mail configuration test'), __('If you are reading this, it means that your e-mail server configuration at %s is working properly.', array(get_epesi_url())));
 		$msg = ob_get_clean();
 		if ($msg) print('<span class="important_notice">'.$msg.'</span>');
-		if ($ret) Base_StatusBarCommon::message(__('E-mail was sent successfully'));
-		else Base_StatusBarCommon::message(__('An error has occured'), 'error');
+		if ($ret) Base_StatusBarCommon::message(__('E-mail was sent successfully'), 'success');
+		else Base_StatusBarCommon::message(__('An error has occured'), 'danger');
 		return false;
 	}
 	

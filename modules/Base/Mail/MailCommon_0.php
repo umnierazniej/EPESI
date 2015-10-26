@@ -43,7 +43,7 @@ class Base_MailCommon extends Base_AdminModuleCommon {
 		if (Variable::get('mail_method') != 'smtp' && HOSTING_MODE) {
 			$msg = __('Mail server configuration error');
 		}
-		if ($msg) Base_StatusBarCommon::message($msg,'error');
+		if ($msg) Base_StatusBarCommon::message($msg,'danger');
 	}
 
 	/**

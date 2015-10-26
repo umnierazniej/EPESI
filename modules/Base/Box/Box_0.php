@@ -160,6 +160,7 @@ class Base_Box extends Module {
         $options['menu'] = $this->init_module(Base_Menu::module_name())->body();
         $options['login'] = $this->init_module(Base_User_Login::module_name())->indicator();
         $options['launchpad_modal'] = $theme->init_module(Base_Menu_Launchpad::module_name())->modal();
+        $options['status_bar'] = $this->init_module(Base_StatusBar::module_name())->body();
 
 
         $this->display('default.twig', $options);

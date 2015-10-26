@@ -377,7 +377,7 @@ class Base_Setup extends Module {
 		if ($ret!==true) {
 			$msg = __( 'Error');
 			if (is_string($ret) && $ret) $msg .= ': '.$ret;
-			Base_StatusBarCommon::message($msg, 'error');
+			Base_StatusBarCommon::message($msg, 'danger');
 		} else {
             $msg = __('Action successful');
 			switch ($action) {
@@ -577,13 +577,13 @@ class Base_Setup extends Module {
                 print $content;
                 $msg = __('Couldn\'t install the package.') . '<br>'
                        . __('Review error at the top of the page');
-                Base_StatusBarCommon::message($msg,'error');
+                Base_StatusBarCommon::message($msg,'danger');
 				return false;
 			} else {
                 ob_end_clean();
             }
 		}
-		Base_StatusBarCommon::message('Package installed.');
+		Base_StatusBarCommon::message('Package installed.', 'success');
 		
 		$processed = ModuleManager::get_processed_modules();
 		$this->set_module_variable('post-install',$processed['install']);

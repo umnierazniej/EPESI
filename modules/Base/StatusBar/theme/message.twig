@@ -1,0 +1,6 @@
+{% if message is not null%}
+    <div class="alert {% if message.type is not null%}alert-{{ message.type }}{% endif %} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{ message.text }}
+    </div>
+{% endif %}

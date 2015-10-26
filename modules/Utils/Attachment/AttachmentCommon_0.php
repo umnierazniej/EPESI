@@ -909,7 +909,7 @@ class Utils_AttachmentCommon extends ModuleCommon {
         curl_setopt($curl, CURLOPT_POST, false);
         $response = curl_exec($curl);
 
-        Base_StatusBarCommon::message(__('Changes saved'));
+        Base_StatusBarCommon::message(__('Changes saved'), 'success');
     }
 
     public static function discard_google_docs($note_id) {

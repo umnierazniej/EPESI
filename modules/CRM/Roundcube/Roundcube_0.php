@@ -83,7 +83,7 @@ class CRM_Roundcube extends Module {
 			$ret = $f->exportValues();
 			$content = $ret['content'];
 			Variable::set('crm_roundcube_global_signature',$content);
-			Base_StatusBarCommon::message(__('Signature saved'));
+			Base_StatusBarCommon::message(__('Signature saved'), 'success');
 			$this->parent->reset();
 			return;
 		}

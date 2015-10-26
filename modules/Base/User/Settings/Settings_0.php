@@ -119,7 +119,7 @@ class Base_User_Settings extends Module {
             }
         }
 
-        Base_StatusBarCommon::message($reload?__('Setting saved - reloading page'):__('Setting saved'));
+        Base_StatusBarCommon::message($reload?__('Setting saved - reloading page'):__('Setting saved'), 'success');
         if ($reload) eval_js('setTimeout(\'document.location=\\\'index.php\\\'\',\'1500\')',false);
         return true;
     }

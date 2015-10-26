@@ -57,10 +57,10 @@ class Base_Theme_Administrator extends Module implements Base_AdminInterface{
 		$zip = new ZipArchive;
 		if ($zip->open($file) == 1) {
     			$zip->extractTo(DATA_DIR.'/Base_Theme/templates/');
-			Base_StatusBarCommon::message(__('Template installed'));
+			Base_StatusBarCommon::message(__('Template installed'),'success');
     			return true;
 		}
-		Base_StatusBarCommon::message(__('Invalid template file'),'error');
+		Base_StatusBarCommon::message(__('Invalid template file'),'danger');
 		return true;
 	}
 	
