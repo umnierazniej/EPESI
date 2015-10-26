@@ -139,8 +139,6 @@ abstract class Module extends ModulePrimitive {
 		if(!isset($this->children[$type]))
 			$this->children[$type] = array();
 		$this->children[$type][$instance] = & $ch;
-		if(DEBUG)
-			Epesi::debug('registering '.$this->get_path().'/'.$ch->get_node_id());
 	}
 
 	private final function get_new_child_instance_id($type) {

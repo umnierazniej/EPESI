@@ -210,13 +210,6 @@ class Epesi {
 		ob_end_clean();
 	}
 
-	public static function debug($msg=null) {
-		static $msgs = '';
-		if($msg) $msgs .= $msg.'<br>';
-		return $msgs;
-	}
-
-
 	public static function process($url, $history_call=false,$refresh=false) {
 		if(MODULE_TIMES)
 			$time = microtime(true);
@@ -279,7 +272,6 @@ class Epesi {
 			if(isset($_REQUEST['__action_module__']))
 				self::$debug .= 'action module='.$_REQUEST['__action_module__'].'<br>';
 		}
-		self::$debug .= self::debug();
 
 		if(MODULE_TIMES) {
 			foreach (self::$times as $k => $v) {
