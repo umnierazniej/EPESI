@@ -825,8 +825,9 @@ JS;
 	{
 		//todo-pj: Create service for Validator
 		$formFactory = Forms::createFormFactoryBuilder()
-			->addExtension(new \Symfony\Component\Form\Extension\Validator\ValidatorExtension(\Symfony\Component\Validator\Validation::createValidator()))
-			->getFormFactory();
+				->addExtension(new \Symfony\Component\Form\Extension\Validator\ValidatorExtension(\Symfony\Component\Validator\Validation::createValidator()))
+				->addType(new Epesi\Form\AutocompleteType())
+				->getFormFactory();
 		return $formFactory->createNamedBuilder($this->reserve_form_name(),'form',null, $options);
 	}
 	//endregion

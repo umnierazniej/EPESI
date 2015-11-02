@@ -46,7 +46,7 @@ class ModuleManager {
 
 				$twig = new Twig_Environment($loader, array('translation_domain' => false));
 
-				$formEngine = new TwigRendererEngine(array('bootstrap_3_layout.html.twig'));
+				$formEngine = new TwigRendererEngine(array('select2.html.twig','bootstrap_3_layout.html.twig'));
 				$formEngine->setEnvironment($twig);
 
 				$twig->addExtension(new FormExtension(new TwigRenderer($formEngine)));

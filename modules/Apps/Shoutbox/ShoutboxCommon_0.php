@@ -7,6 +7,10 @@
  * @package epesi-apps
  * @subpackage shoutbox
  */
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Underscore\Types\Arrays;
+
 defined("_VALID_ACCESS") || die('Direct access forbidden');
 
 class Apps_ShoutboxCommon extends ModuleCommon {
@@ -28,7 +32,8 @@ class Apps_ShoutboxCommon extends ModuleCommon {
         return '';
 	}
 	
-	public static function user_search($search=null) {
+	public static function user_search(Request $request, array $args = null) {
+		$search = $request->get('q');
         $myid = Base_AclCommon::get_user();
       	if(Base_User_SettingsCommon::get('Apps_Shoutbox','enable_im')) {
        	    $adm = Base_User_SettingsCommon::get_admin('Apps_Shoutbox','enable_im');
@@ -44,7 +49,13 @@ class Apps_ShoutboxCommon extends ModuleCommon {
     	            $emps[$id] = '* '.$emps[$id] ;
     	    }
     	}
-	    return $emps;
+
+		$ret = array();
+		foreach($emps as $id => $name)
+			$ret[] = array('id' => $id, 'text' => $name);
+
+		$ret = Arrays::prepend($ret, array('id'=> 'all', 'text'=> __('All')));
+		return new JsonResponse($ret);
 	}
 
 	public static function user_format($search=null) {
