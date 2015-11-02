@@ -802,7 +802,14 @@ abstract class Module extends ModulePrimitive {
 		$path = $this->get_path();
 		$processing = __('Processing...');
 		$form_name = 'form_' . md5($path . $counter);
-		eval_js("jQuery(\"form[name='$form_name']\").submit(function(){Epesi.submit_form('$form_name','$path','$processing'); return false;});");
+		$js = <<<JS
+jQuery("form[name='$form_name']").submit(function () {
+    Epesi.submit_form('$form_name', '$path', '$processing');
+    return false;
+});
+JS;
+
+		eval_js($js);
 		$counter++;
 		return $form_name;
 	}
