@@ -31,7 +31,7 @@ for(i=0; i<e.length; i++){e[i].checked=false;if(e[i].value==value)e[i].checked=t
 }};
 
 seterror=function(err_id, error){
-t=$(err_id);
+t=jQuery('#'+err_id).get(0);
 if(t) {
 if (error!="") t.innerHTML = error+"<br>";
 else t.innerHTML = error;
