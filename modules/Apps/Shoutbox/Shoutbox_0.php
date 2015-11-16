@@ -150,23 +150,22 @@ class Apps_Shoutbox extends Module {
 					'url' => $this->create_ajax_callback_url(array($this->get_type() . 'Common', 'user_search')),
 			));
 
+			$form_builder->get('shoutbox_to')->addViewTransformer(new \Symfony\Component\Form\CallbackTransformer(function ($value) {
+						$result = array();
+						if(!$value)
+							return $result;
+
+						$result[] = $value;
+						$result['_labels'][] = $value;
+						return $result;
+					}, function ($value) {
+						return $value;
+					})
+			);
+
 			$form_builder->add('post','textarea', array(
 
 			));
-
-//			$form_builder->addEventListener(\Symfony\Component\Form\FormEvents::PRE_SUBMIT, function (\Symfony\Component\Form\FormEvent $event) {
-//				$form = $event->getForm();
-//				$form->get('shoutbox_to')->getConfig()->getOption('choices');
-//				$field = $form->get('shoutbox_to');         // get the field
-//				$options = $field->getConfig()->getOptions();            // get the options
-//				$type = $field->getConfig()->getType()->getName();       // get the name of the type
-//				$value = (int)$event->getData()['shoutbox_to'];
-//				$options['choices'] = array($value=>'4');           // change the label
-//				$form->add('shoutbox_to', $type, $options); // replace the field
-//				$data = $event->getData();
-//				return $event;
-//			});
-
 
 			$form = $form_builder->getForm();
 
