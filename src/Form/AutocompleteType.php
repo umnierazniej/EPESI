@@ -113,8 +113,6 @@ class AutocompleteType extends AbstractType
             'minimum_input_length'          => 3, //minimum 3 chars should be typed to load ajax data
             'items_per_page'                => 10, //number of items per page
 
-            'to_string_callback'            => null,
-
             // ajax parameters
             'url'                           => '',
             'req_params'                    => array(),
