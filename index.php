@@ -71,7 +71,8 @@ require_once('Minify/Build.php');
 $jquery = DEBUG_JS ? 'libs/jquery-1.11.3.js' : 'libs/jquery-1.11.3.min.js';
 $jquery_migrate = DEBUG_JS ? 'libs/jquery-migrate-1.2.1.js' : 'libs/jquery-migrate-1.2.1.min.js';
 $bootstrap = DEBUG_JS ? 'libs/bootstrap/js/bootstrap.js' : 'libs/bootstrap/js/bootstrap.min.js';
-$jses = array('libs/prototype.js', $jquery, $jquery_migrate, 'libs/lodash.js', $bootstrap, 'libs/jquery-ui-1.10.1.custom.min.js', 'libs/HistoryKeeper.js', 'include/epesi.js');
+$perfect_scrollbar = DEBUG_JS ? 'libs/perfect-scrollbar/js/perfect-scrollbar.jquery.js' : 'libs/perfect-scrollbar/js/min/perfect-scrollbar.jquery.min.js';
+$jses = array('libs/prototype.js', $jquery, $jquery_migrate, 'libs/lodash.js', $bootstrap, 'libs/jquery-ui-1.10.1.custom.min.js', 'libs/HistoryKeeper.js', 'include/epesi.js', $perfect_scrollbar);
 
 if (!DEBUG_JS) {
     $jsses_build = new Minify_Build($jses);
@@ -80,7 +81,7 @@ if (!DEBUG_JS) {
     $options['jsses_src'] = $jses;
 }
 
-$csses = array('libs/jquery-ui-1.10.1.custom.min.css','libs/bootstrap/css/bootstrap.css','libs/font-awesome/css/font-awesome.css');
+$csses = array('libs/jquery-ui-1.10.1.custom.min.css','libs/bootstrap/css/bootstrap.css','libs/font-awesome/css/font-awesome.css','libs/perfect-scrollbar/css/perfect-scrollbar.css');
 $options['csses_src'] = $csses;
 
 
