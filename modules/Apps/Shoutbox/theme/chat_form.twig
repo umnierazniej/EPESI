@@ -12,8 +12,18 @@
             </div>
         {% endfor %}
     </div>
+
+    <script>
+        jQuery('#shoutbox_board').perfectScrollbar()
+    </script>
 </div>
 <style type="text/css">
+    #shoutbox_board {
+        max-height: 420px;
+        overflow: hidden;
+        margin-top: 20px;
+        position: relative;
+    }
     .bs-callout {
         padding: 20px;
         margin: 20px 0;
