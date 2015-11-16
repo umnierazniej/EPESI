@@ -7,7 +7,7 @@
     <div id='shoutbox_board{% if big %}_big{% endif %}'>
         {% for message in messages %}
             <div class="bs-callout bs-callout-{{ message.color }}">
-                <h4>{{ message.user_label }}<span class="label label-default pull-right">{{ message.time }}</span></h4>
+                <h4>{{ message.user_label | raw}}<span class="label label-default pull-right">{{ message.time }}</span></h4>
                 <p>{{ message.message }}</p>
             </div>
         {% endfor %}
