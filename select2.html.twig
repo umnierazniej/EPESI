@@ -140,7 +140,7 @@ file that was distributed with this source code.
                 data = {%- if multiple -%}[{%- endif -%}
                     {%- for idx, val  in value if idx~'' != '_labels' -%}
                     {%- if not loop.first -%}, {% endif -%}
-                    {id: '{{ val|e('js') }}', label: '{{ value['_labels'][idx]|e('js') }}'}
+                    {id: '{{ val|e('js') }}', text: '{{ value['_labels'][idx]|e('js') }}'}
                     {%- endfor -%}
                     {%- if multiple -%}] {%- endif -%};
                 {% endif -%}
