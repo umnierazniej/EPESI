@@ -1,0 +1,8 @@
+    <div class="panel panel-default">
+        <div class="panel-heading">{{ header }}</div>
+        <div class="panel-body">
+            {% for button in buttons %}
+                <a {{ button.action | raw }} class="btn btn-default"><i class="fa fa-3x fa-{{ button.icon }}"></i><div>{{ button.caption }}</div></a>
+            {% endfor %}
+        </div>
+    </div>

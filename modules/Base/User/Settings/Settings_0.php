@@ -209,16 +209,14 @@ class Base_User_Settings extends Module {
                 }
             }
             if(!$icon)
-                foreach($arg['module_names'] as $m) {
-                    $new = Base_ThemeCommon::get_template_file($m,'icon.png');
-					if ($new) $icon = $new;
-				}
-            $buttons[]= array('link'=>'<a '.$arg['action'].'>'.$caption.'</a>','module'=>$arg['module_names'],'icon'=>$icon);
+                $icon = 'cogs';
+            $buttons[]= array('action'=>$arg['action'], 'caption' => $caption, 'module'=>$arg['module_names'], 'icon'=>$icon);
         }
-        $theme = $this->pack_module(Base_Theme::module_name());
-        $theme->assign('header', __('User Settings'));
-        $theme->assign('buttons', $buttons);
-        $theme->display();
+
+        $this->display('panel.twig', array(
+            'header' => __('User Settings'),
+            'buttons' => $buttons
+        ));
     }
 
     public function caption() {
