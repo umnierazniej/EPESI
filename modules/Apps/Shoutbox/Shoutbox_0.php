@@ -185,6 +185,7 @@ class Apps_Shoutbox extends Module {
 				//insert to db
 				DB::Execute('INSERT INTO apps_shoutbox_messages(message,base_user_login_id,to_user_login_id) VALUES(%s,%d,%d)',array(htmlspecialchars($msg,ENT_QUOTES,'UTF-8'),$user_id,is_numeric($to)?$to:null));
 
+				location();
 			}
 		} else {
 			print(__('Please log in to post message').'<br>');
