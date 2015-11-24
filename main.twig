@@ -10,13 +10,24 @@
     <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
     <meta name="robots" content="NOINDEX, NOARCHIVE">
 
-    {% if jsses_src is iterable %}
-        {% for js in jsses_src %}
-            <script type='text/javascript' src='{{ js | raw }}'></script>
-        {% endfor %}
+    <script type='text/javascript' src='libs/prototype.js'></script>
+
+    {% if debug_js %}
+        <script type='text/javascript' src='libs/jquery-1.11.3.js'></script>
+        <script type='text/javascript' src='libs/jquery-migrate-1.2.1.js'></script>
+        <script type='text/javascript' src='libs/bootstrap/js/bootstrap.js'></script>
+        <script type='text/javascript' src='libs/perfect-scrollbar/js/perfect-scrollbar.jquery.js'></script>
     {% else %}
-        <script type='text/javascript' src='{{ jsses_src | raw }}'></script>
+        <script type='text/javascript' src='libs/jquery-1.11.3.min.js'></script>
+        <script type='text/javascript' src='libs/jquery-migrate-1.2.1.min.js'></script>
+        <script type='text/javascript' src='libs/bootstrap/js/bootstrap.min.js'></script>
+        <script type='text/javascript' src='libs/perfect-scrollbar/js/min/perfect-scrollbar.jquery.min.js'></script>
     {% endif %}
+
+    <script type='text/javascript' src='libs/lodash.js'></script>
+    <script type='text/javascript' src='libs/jquery-ui-1.10.1.custom.min.js'></script>
+    <script type='text/javascript' src='libs/HistoryKeeper.js'></script>
+    <script type='text/javascript' src='include/epesi.js'></script>
 
     <link href="libs/jquery-ui-1.10.1.custom.min.css" rel="stylesheet" />
     <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet" />
