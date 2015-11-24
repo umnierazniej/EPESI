@@ -81,10 +81,6 @@ if (!DEBUG_JS) {
     $options['jsses_src'] = $jses;
 }
 
-$csses = array('libs/jquery-ui-1.10.1.custom.min.css','libs/bootstrap/css/bootstrap.css','libs/font-awesome/css/font-awesome.css','libs/perfect-scrollbar/css/perfect-scrollbar.css');
-$options['csses_src'] = $csses;
-
-
 $options['rtl'] = DIRECTION_RTL;
 $options['tracking_code'] = TRACKING_CODE;
 $options['starting_message'] = STARTING_MESSAGE;
