@@ -17,11 +17,23 @@
                     </ul>
                 </li>
             {% else %}
-                <li role="presentation" {% if tab.selected %}class="active"{% endif %}>
-                    <a id="{{ tab.id }}" {{ tab.href | raw }}>{{ tab.caption }}</a>
+                <li role="presentation" {% if tab.selected %}class="active"{% endif %} {% if tab.js %}data-toggle="tab"{% endif %}>
+                    {% if tab.js %}
+                        <a id="{{ tab.id }}" href="#{{ tab.body_id }}">{{ tab.caption }}</a>
+                        <script>
+                            jQuery('#{{ tab.id }}').click(function (e) {
+                                e.preventDefault();
+                                jQuery(this).tab('show')
+                            })
+                        </script>
+                    {% else %}
+                        <a id="{{ tab.id }}" {{ tab.href | raw }}>{{ tab.caption }}</a>
+                    {% endif %}
                 </li>
             {% endif %}
         {% endfor %}
     </ul>
-    {{ body | raw }}
+    <div class="tab-content">
+        {{ body | raw }}
+    </div>
 </div>

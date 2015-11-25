@@ -109,7 +109,7 @@ class Utils_TabbedBrowser extends Module {
 	
 	private function display_contents($val, $i) {
 		$options = array();
-		$options['id'] = escapeJS($this->get_path(), true, false) . '_d' . $i;
+		$options['id'] = $this->get_tab_body_id($i);
 		$options['current'] = $this->page == $i;
 		$options['body'] = $this->get_body($val);
 		return $this->render('body.twig',$options);
@@ -117,24 +117,22 @@ class Utils_TabbedBrowser extends Module {
 
 	public function get_tab_id($caption) {
 		if (!isset($this->tabs[$caption])) return null;
-		return escapeJS($this->get_path(),true,false).'_c'.$this->tabs[$caption]['id'];
+		return md5(escapeJS($this->get_path(),true,false).'_c'.$this->tabs[$caption]['id']);
 	}
 	
 	private function get_link($i, $val, $caption) {
-		$path = escapeJS($this->get_path());
-
 		if (isset($val['href']) && $val['href'])
 			$href = $val['href'];
-		elseif ($val['js'])
-			$href = 'href="javascript:void(0)" onClick="tabbed_browser_switch('.$i.','.$this->max.',this,\''.$path.'\')"';
 		else
 			$href = $this->create_unique_href(array('page'=>$i));
 
 		return array(
-			'id' => $this->get_tab_id($caption),
-			'selected' => ($this->page == $i),
-			'caption' => $caption,
-			'href' => $href
+				'id' => $this->get_tab_id($caption),
+				'selected' => ($this->page == $i),
+				'caption' => $caption,
+				'href' => $href,
+				'js' => $val['js'],
+				'body_id' => $this->get_tab_body_id($i)
 		);
 	}
 	
@@ -227,6 +225,15 @@ class Utils_TabbedBrowser extends Module {
 			$body .= $val['body'];
 		}
 		return $body;
+	}
+
+	/**
+	 * @param $i
+	 * @return string
+	 */
+	private function get_tab_body_id($i)
+	{
+		return 'tab_'.md5(escapeJS($this->get_path(), true, false) . '_d' . $i);
 	}
 
 }

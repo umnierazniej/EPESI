@@ -1,3 +1,3 @@
-<div id="{{ id }}" {% if current == false %}style="display: none"{% endif %}>
+<div id="{{ id }}" role="tabpanel" class="tab-pane {% if current %}active{% endif %}">
     {{ body | raw }}
 </div>
