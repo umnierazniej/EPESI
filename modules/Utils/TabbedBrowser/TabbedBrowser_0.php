@@ -15,11 +15,9 @@ defined("_VALID_ACCESS") || die('Direct access forbidden');
 
 class Utils_TabbedBrowser extends Module {
 	private $tabs = array();
-	private $c_caption;
 	private $tag;
 	private $page;
-	private $max;
-	
+
 	public function construct() {
 		if ($this->isset_unique_href_variable('page') || !$this->get_module_variable('force'))
 			$this->page = $this->get_module_variable_or_unique_href_variable('page', 0);
@@ -27,8 +25,6 @@ class Utils_TabbedBrowser extends Module {
 			$this->page = $this->get_module_variable('page', 0);
 			$this->unset_module_variable('force');
 		}
-	
-		$lpage = $this->get_module_variable('last_page', -1);
 	}
 	
 	/**
@@ -41,11 +37,8 @@ class Utils_TabbedBrowser extends Module {
 	public function body() {
 		if (empty($this->tabs)) return;
 
-		load_js($this->get_module_dir().'tb_.js');
-				
 		$i = 0;
 		if($this->page>=count($this->tabs)) $this->page=0;
-		$this->max = count($this->tabs);
 		$tabs_body = array();
 		$submenus = array();
 		foreach($this->tabs as $caption=>$val) {
@@ -81,8 +74,6 @@ class Utils_TabbedBrowser extends Module {
 			$i++;
 		}
 
-		//todo-pj: Review all submenus (how it works?)
-		$captions_subs = array();
 		foreach ($submenus as $group=>$captions) {
 			$selected = false;
 			$subs = array();
