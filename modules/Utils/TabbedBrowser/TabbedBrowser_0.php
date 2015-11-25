@@ -108,7 +108,7 @@ class Utils_TabbedBrowser extends Module {
 
 	public function get_tab_id($caption) {
 		if (!isset($this->tabs[$caption])) return null;
-		return md5(escapeJS($this->get_path(),true,false).'_c'.$this->tabs[$caption]['id']);
+		return md5($this->get_path().'_tab_'.$this->tabs[$caption]['id']);
 	}
 	
 	private function get_link($i, $val, $caption) {
@@ -224,7 +224,7 @@ class Utils_TabbedBrowser extends Module {
 	 */
 	private function get_tab_body_id($i)
 	{
-		return 'tab_'.md5(escapeJS($this->get_path(), true, false) . '_d' . $i);
+		return 'tab_'.md5($this->get_path() . '_body_' . $i);
 	}
 
 }
