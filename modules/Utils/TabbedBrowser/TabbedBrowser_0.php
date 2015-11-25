@@ -93,7 +93,7 @@ class Utils_TabbedBrowser extends Module {
 				}
 				if($this->page==$i || $val['js'])
 					$body .= $this->display_contents($val, $i);
-				$subs[] = $this->get_link($i, $val, $caption, $group);
+				$subs[] = $this->get_link($i, $val, $caption);
 				$i++;
 			}
 			$final_captions[$group] = array('__submenu__' => true, 'label' => $group, 'entries' => $subs, 'selected' => $selected);
