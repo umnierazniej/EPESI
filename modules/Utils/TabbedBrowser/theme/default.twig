@@ -34,6 +34,8 @@
         {% endfor %}
     </ul>
     <div class="tab-content">
-        {{ body | raw }}
+        {% for body in tabs_body %}
+            {{ body | raw }}
+        {% endfor %}
     </div>
 </div>

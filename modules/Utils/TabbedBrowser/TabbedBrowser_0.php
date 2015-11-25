@@ -46,7 +46,7 @@ class Utils_TabbedBrowser extends Module {
 		$i = 0;
 		if($this->page>=count($this->tabs)) $this->page=0;
 		$this->max = count($this->tabs);
-		$body = '';
+		$tabs_body = array();
 		$submenus = array();
 		foreach($this->tabs as $caption=>$val) {
 			if (substr_count($caption, '#')==1) {
@@ -77,7 +77,7 @@ class Utils_TabbedBrowser extends Module {
 		foreach($this->tabs as $caption=>$val) {
 			$final_captions[$caption] = $this->get_link($i, $val, $caption);
 			if($this->page==$i || $val['js'])
-				$body .= $this->display_contents($val, $i);
+				$tabs_body[] = $this->display_contents($val, $i);
 			$i++;
 		}
 
@@ -92,18 +92,18 @@ class Utils_TabbedBrowser extends Module {
 					$group = $group.': '.$caption;
 				}
 				if($this->page==$i || $val['js'])
-					$body .= $this->display_contents($val, $i);
+					$tabs_body[] = $this->display_contents($val, $i);
 				$subs[] = $this->get_link($i, $val, $caption);
 				$i++;
 			}
 			$final_captions[$group] = array('__submenu__' => true, 'label' => $group, 'entries' => $subs, 'selected' => $selected);
 		}
-		$this->tag = md5($body.$this->page); 
+		$this->tag = md5($tabs_body.$this->page);
 
 		$this->display('default.twig', array(
 			'selected' => $this->page,
 			'captions' => $final_captions,
-			'body' => $body
+			'tabs_body' => $tabs_body
 		));
 	}
 	
