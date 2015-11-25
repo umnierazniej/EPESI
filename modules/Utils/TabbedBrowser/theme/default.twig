@@ -1,9 +1,26 @@
 <div>
     <ul class="nav nav-tabs">
         {% for tab in captions %}
-            <li role="presentation" {% if tab.selected %}class="active"{% endif %}>
-                <a id="{{ id }}" {{ tab.parent |raw }} {{ tab.href | raw }}>{{ tab.caption }}</a>
-            </li>
+            {% if tab.__submenu__ == true %}
+                <li role="presentation" class="dropdown {% if tab.selected %}active{% endif %}">
+                    <a href="#" id="{{ tab.id }}" class="dropdown-toggle" data-toggle="dropdown">
+                        {{ tab.label }} <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="{{ tab.id }}-contents">
+                        {% for sub in tab.entries %}
+                            <li class="{% if sub.selected %}active{% endif %}">
+                                <a {{ sub.parent |raw }} {{ sub.href | raw }} id="{{ sub.id }}">
+                                    {{ sub.caption }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% else %}
+                <li role="presentation" {% if tab.selected %}class="active"{% endif %}>
+                    <a id="{{ tab.id }}" {{ tab.parent |raw }} {{ tab.href | raw }}>{{ tab.caption }}</a>
+                </li>
+            {% endif %}
         {% endfor %}
     </ul>
     {{ body | raw }}

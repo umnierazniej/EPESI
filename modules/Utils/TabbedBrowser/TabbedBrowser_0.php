@@ -96,15 +96,13 @@ class Utils_TabbedBrowser extends Module {
 				$subs[] = $this->get_link($i, $val, $caption, $group);
 				$i++;
 			}
-			$final_captions[$group] = '<span id="tabbed_browser_submenu_'.$group.'"'.$selected.'>'.$group.'&nbsp;'.'<img src="'.Base_ThemeCommon::get_template_file('Utils_TabbedBrowser','submenu.png').'">'.'</span>';
-			$captions_subs[$group] = $subs;
+			$final_captions[$group] = array('__submenu__' => true, 'label' => $group, 'entries' => $subs, 'selected' => $selected);
 		}
 		$this->tag = md5($body.$this->page); 
 
 		$this->display('default.twig', array(
 			'selected' => $this->page,
 			'captions' => $final_captions,
-			'captions_submenus' => $captions_subs,
 			'body' => $body
 		));
 	}
