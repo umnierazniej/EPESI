@@ -120,9 +120,7 @@ class Utils_TabbedBrowser extends Module {
 		return escapeJS($this->get_path(),true,false).'_c'.$this->tabs[$caption]['id'];
 	}
 	
-	private function get_link($i, $val, $caption, $parent=null) {
-		if ($parent===null) $parent = '';
-		else $parent = ' parent_menu="'.$parent.'"';
+	private function get_link($i, $val, $caption) {
 		$path = escapeJS($this->get_path());
 
 		if (isset($val['href']) && $val['href'])
@@ -136,7 +134,6 @@ class Utils_TabbedBrowser extends Module {
 			'id' => $this->get_tab_id($caption),
 			'selected' => ($this->page == $i),
 			'caption' => $caption,
-			'parent' => $parent,
 			'href' => $href
 		);
 	}

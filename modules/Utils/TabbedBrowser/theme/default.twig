@@ -9,7 +9,7 @@
                     <ul class="dropdown-menu" id="{{ tab.id }}-contents">
                         {% for sub in tab.entries %}
                             <li class="{% if sub.selected %}active{% endif %}">
-                                <a {{ sub.parent |raw }} {{ sub.href | raw }} id="{{ sub.id }}">
+                                <a {{ sub.href | raw }} id="{{ sub.id }}">
                                     {{ sub.caption }}
                                 </a>
                             </li>
@@ -18,7 +18,7 @@
                 </li>
             {% else %}
                 <li role="presentation" {% if tab.selected %}class="active"{% endif %}>
-                    <a id="{{ tab.id }}" {{ tab.parent |raw }} {{ tab.href | raw }}>{{ tab.caption }}</a>
+                    <a id="{{ tab.id }}" {{ tab.href | raw }}>{{ tab.caption }}</a>
                 </li>
             {% endif %}
         {% endfor %}
