@@ -139,7 +139,7 @@ class Utils_TabbedBrowser extends Module {
 		elseif ($val['js'])
 			$href = 'href="javascript:void(0)" onClick="tabbed_browser_switch('.$i.','.$this->max.',this,\''.$path.'\')"';
 		else
-			$href = 'href="javascript:void(0)" onClick="tabbed_browser_switch('.$i.','.$this->max.',this,\''.$path.'\')" original_action="'.$this->create_unique_href_js(array('page'=>$i)).'"';
+			$href = $this->create_unique_href(array('page'=>$i));
 
 		return array(
 			'id' => $this->get_tab_id($caption),
