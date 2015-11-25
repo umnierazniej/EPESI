@@ -77,7 +77,7 @@ class Utils_TabbedBrowser extends Module {
 		foreach($this->tabs as $caption=>$val) {
 			$final_captions[$caption] = $this->get_link($i, $val, $caption);
 			if($this->page==$i || $val['js'])
-				$tabs_body[] = $this->display_contents($val, $i);
+				$tabs_body[] = $this->get_contents_array($val, $i);
 			$i++;
 		}
 
@@ -92,7 +92,7 @@ class Utils_TabbedBrowser extends Module {
 					$group = $group.': '.$caption;
 				}
 				if($this->page==$i || $val['js'])
-					$tabs_body[] = $this->display_contents($val, $i);
+					$tabs_body[] = $this->get_contents_array($val, $i);
 				$subs[] = $this->get_link($i, $val, $caption);
 				$i++;
 			}
@@ -107,12 +107,12 @@ class Utils_TabbedBrowser extends Module {
 		));
 	}
 	
-	private function display_contents($val, $i) {
+	private function get_contents_array($val, $i) {
 		$options = array();
 		$options['id'] = $this->get_tab_body_id($i);
 		$options['current'] = $this->page == $i;
 		$options['body'] = $this->get_body($val);
-		return $this->render('body.twig',$options);
+		return $options;
 	}
 
 	public function get_tab_id($caption) {
