@@ -131,6 +131,8 @@ class Utils_TabbedBrowser extends Module {
 	 * Perform operation that guarantee module reloading.
 	 * You need to call this function from within your module
 	 * to make Tabbed Browser work properly.
+	 *
+	 * @deprecated Since full-page-refresh tag is no longer needed
 	 */
 	public function tag() {
 		print('<span style="display:none">'.$this->tag.'</span>');
