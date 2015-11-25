@@ -110,23 +110,10 @@ class Utils_TabbedBrowser extends Module {
 	}
 	
 	private function display_contents($val, $i) {
-		$id = escapeJS($this->get_path(), true, false) . '_d' . $i;
-		$current = $this->page == $i;
-		$body = '';
-		if (isset($val['func'])){
-			ob_start();
-			if (!is_array($val['args'])) $val['args'] = array($val['args']);
-			call_user_func_array($val['func'],$val['args']);
-			$body .= ob_get_contents();
-			ob_end_clean();
-		} else {
-			$body .= $val['body'];
-		}
-
 		$options = array();
-		$options['id'] = $id;
-		$options['current'] = $current;
-		$options['body'] = $body;
+		$options['id'] = escapeJS($this->get_path(), true, false) . '_d' . $i;
+		$options['current'] = $this->page == $i;
+		$options['body'] = $this->get_body($val);
 		return $this->render('body.twig',$options);
 	}
 
@@ -226,6 +213,25 @@ class Utils_TabbedBrowser extends Module {
 		$this->tabs[$this->caption]['body'] = ob_get_contents();
 		ob_end_clean();		
 		$this->tabs[$this->caption]['js'] = true;
+	}
+
+	/**
+	 * @param $val
+	 * @return string
+	 */
+	private function get_body($val)
+	{
+		$body = '';
+		if (isset($val['func'])) {
+			ob_start();
+			if (!is_array($val['args'])) $val['args'] = array($val['args']);
+			call_user_func_array($val['func'], $val['args']);
+			$body .= ob_get_contents();
+			ob_end_clean();
+		} else {
+			$body .= $val['body'];
+		}
+		return $body;
 	}
 
 }
