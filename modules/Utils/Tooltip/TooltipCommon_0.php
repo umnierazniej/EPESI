@@ -47,11 +47,19 @@ class Utils_TooltipCommon extends ModuleCommon {
 	 * @param boolean help tooltip? (you can turn off help tooltips)
 	 * @return string HTML tag attributes
 	 */
-	public static function open_tag_attrs( $tip, $help=true, $max_width=500 ) {
+	public static function open_tag_attrs( $tip, $help=true ) {
 		if(MOBILE_DEVICE) return '';
 		self::show_help();
 		if($help && !self::$help_tooltips) return '';
-		return ' onMouseMove="if(typeof(Utils_Tooltip__showTip)!=\'undefined\')Utils_Tooltip__showTip(this,event,'.$max_width.')" tip="'.htmlspecialchars($tip).'" onMouseOut="if(typeof(Utils_Tooltip__hideTip)!=\'undefined\')Utils_Tooltip__hideTip()" onMouseUp="if(typeof(Utils_Tooltip__hideTip)!=\'undefined\')Utils_Tooltip__hideTip()" ';
+
+		//TODO: It runs everytime function is called - fix it
+		$js = <<<'JS'
+			jQuery(function () {
+  				jQuery('[data-toggle="tooltip"]').tooltip()
+			});
+JS;
+		eval_js($js);
+		return "data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"$tip\"";
 	}
 
 	/**
