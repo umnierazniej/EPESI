@@ -88,7 +88,7 @@ class Base_DashboardCommon extends ModuleCommon {
 			$th->assign('handle_class','handle');
 
 			$th->assign('caption',$cap);
-			$th->assign('color',$colors[0]['class']);
+			$th->assign('color','default');
 
 			$remove_button = Base_DashboardCommon::get_remove_applet_button($id, false);
 			$th->assign('remove', $remove_button);
