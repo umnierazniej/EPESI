@@ -4,13 +4,13 @@
             {% if tab.__submenu__ == true %}
                 <li role="presentation" class="dropdown {% if tab.selected %}active{% endif %}">
                     <a href="#" id="{{ tab.id }}" class="dropdown-toggle" data-toggle="dropdown">
-                        {{ tab.label }} <span class="caret"></span>
+                        {{ tab.label | raw }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" id="{{ tab.id }}-contents">
                         {% for sub in tab.entries %}
                             <li class="{% if sub.selected %}active{% endif %}">
                                 <a {{ sub.href | raw }} id="{{ sub.id }}">
-                                    {{ sub.caption }}
+                                    {{ sub.caption | raw }}
                                 </a>
                             </li>
                         {% endfor %}
@@ -19,7 +19,7 @@
             {% else %}
                 <li role="presentation" {% if tab.selected %}class="active"{% endif %} {% if tab.js %}data-toggle="tab"{% endif %}>
                     {% if tab.js %}
-                        <a id="{{ tab.id }}" href="#{{ tab.body_id }}">{{ tab.caption }}</a>
+                        <a id="{{ tab.id }}" href="#{{ tab.body_id }}">{{ tab.caption | raw }}</a>
                         <script>
                             jQuery('#{{ tab.id }}').click(function (e) {
                                 e.preventDefault();
@@ -27,7 +27,7 @@
                             })
                         </script>
                     {% else %}
-                        <a id="{{ tab.id }}" {{ tab.href | raw }}>{{ tab.caption }}</a>
+                        <a id="{{ tab.id }}" {{ tab.href | raw }}>{{ tab.caption | raw }}</a>
                     {% endif %}
                 </li>
             {% endif %}
