@@ -124,10 +124,10 @@ JS;
 	*/
 	public static function format_info_tooltip( $arg) {
 		if(!is_array($arg) || empty($arg)) return '';
-		$table='<TABLE WIDTH="280" cellpadding="2">';
+		$table='<TABLE class="table">';
 		foreach ($arg as $k=>$v){
-			$table.='<TR><TD WIDTH="90"><STRONG>';
-			$table.=$k.'</STRONG></TD><TD bgcolor="white" style="word-wrap: break-word;">';
+			$table.='<TR><TD><STRONG>';
+			$table.=$k.'</STRONG></TD><TD style="word-wrap: break-word;">';
 			$table.= $v; // Value
 			$table.='</TD></TR>';
 		}
