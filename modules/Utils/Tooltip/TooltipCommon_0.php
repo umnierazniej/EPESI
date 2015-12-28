@@ -79,9 +79,28 @@ JS;
 			$tooltip_id = 0;
 		}
 		$tooltip_id++;
+		$js = <<<JS
+		jQuery('[data-tooltip-id=tooltip_$tooltip_id]').popover({
+			html: true,
+			trigger: 'hover',
+			content: function() {
+			return jQuery.ajax({
+                		type: 'POST',
+                		url: 'modules/Utils/Tooltip/req.php',
+                		data:{
+                		    tooltip_id: $tooltip_id,
+                		    cid: Epesi.client_id
+                		},
+                		dataType: 'html',
+                		async: false
+            		}).responseText;
+			}
+		})
+JS;
+
+		eval_js($js);
 		$_SESSION['client']['utils_tooltip']['callbacks'][$tooltip_id] = array('callback'=>$callback, 'args'=>$args);
-		$loading_message = '<center><img src='.Base_ThemeCommon::get_template_file('Utils_Tooltip','loader.gif').' /><br/>'.__('Loading...').'</center>';
-		return ' onMouseMove="if(typeof(Utils_Tooltip__showTip)!=\'undefined\')Utils_Tooltip__load_ajax_Tip(this,event,'.$max_width.')" tip="'.$loading_message.'" tooltip_id="'.$tooltip_id.'" onMouseOut="if(typeof(Utils_Tooltip__hideTip)!=\'undefined\')Utils_Tooltip__hideTip()" onMouseUp="if(typeof(Utils_Tooltip__hideTip)!=\'undefined\')Utils_Tooltip__hideTip()" ';
+		return "data-tooltip-id='tooltip_$tooltip_id'";
 	}
 
 	/**
