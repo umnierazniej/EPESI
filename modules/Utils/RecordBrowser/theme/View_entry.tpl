@@ -77,26 +77,25 @@
 
 					{if $y==1}
 					<div class="col-xs-12 col-md-6">
-						<table cellpadding="0" cellspacing="0" border="0" class="{if $action == 'view'}view{else}edit{/if}">
+						<div class="{if $action == 'view'}view{else}edit{/if}">
 					{/if}
-							<tr>
-								<td class="label">{$f.label}{if $f.required}*{/if}</td>
-								<td class="data {$f.style}" id="_{$f.element}__data">
-									<div style="position:relative;">
-										{if $f.error}{$f.error}{/if}{$f.html}{if $action == 'view'}&nbsp;{/if}
-									</div>
-								</td>
-							</tr>
+						<dl class="dl-horizontal">
+							<dt>{$f.label}{if $f.required}*{/if}</dt>
+							<dd class="data {$f.style}" id="_{$f.element}__data" style="position:relative;">
+								{if $f.error}{$f.error}{/if}{$f.html}{if $action == 'view'}&nbsp;{/if}
+							</dd>
+						</dl>
+
 					{if $y==$rows or ($y==$rows-1 and $x>$no_empty)}
 						{if $x>$no_empty}
-							<tr style="display:none;">
-								<td class="label">&nbsp;</td>
-								<td class="data">&nbsp;</td>
-							</tr>
+							<dl style="display:none;">
+								<dt class="label">&nbsp;</dt>
+								<dd class="data">&nbsp;</dd>
+							</dl>
 						{/if}
 						{assign var=y value=1}
 						{assign var=x value=$x+1}
-						</table>
+						</div>
 					</div>
 					{else}
 						{assign var=y value=$y+1}
@@ -109,28 +108,28 @@
 				{assign var=y value=1}
 				{foreach key=k item=f from=$multiselects name=fields}
 					{if $y==1}
-					<td class="column" style="width: {$cols_percent}%;">
-						<table cellpadding="0" cellspacing="0" border="0" class="multiselects {if $action == 'view'}view{else}edit{/if}" style="border-top: none;">
+					<div class="column" style="width: {$cols_percent}%;">
+						<div class="multiselects {if $action == 'view'}view{else}edit{/if}" style="border-top: none;">
 					{/if}
-							<tr>
-								<td class="label">{$f.label}{if $f.required}*{/if}{$f.advanced}</td>
-								<td class="data {$f.style}" id="_{$f.element}__data">
+							<dl class="dl-horizontal">
+								<dt>{$f.label}{if $f.required}*{/if}{$f.advanced}</dt>
+								<dd class="data {$f.style}" id="_{$f.element}__data">
 									<div style="position:relative;">
 										{if isset($f.error)}{$f.error}{/if}{$f.html}{if $action == 'view'}&nbsp;{/if}
 									</div>
-								</td>
-							</tr>
+								</dd>
+							</dl>
 					{if $y==$mss_rows or ($y==$mss_rows-1 and $x>$mss_no_empty)}
 						{if $x>$mss_no_empty}
-							<tr style="display:none;">
-								<td class="label">&nbsp;</td>
-								<td class="data">&nbsp;</td>
-							</tr>
+							<dl style="display:none;">
+								<dt class="label">&nbsp;</dt>
+								<dd class="data">&nbsp;</dd>
+							</dl>
 						{/if}
 						{assign var=y value=1}
 						{assign var=x value=$x+1}
-						</table>
-					</td>
+						</div>
+					</div>
 					{else}
 						{assign var=y value=$y+1}
 					{/if}
@@ -139,18 +138,18 @@
 		{/if}
 
 <div class="col-xs-12">
-	<table cellpadding="0" cellspacing="0" border="0" class="longfields {if $action == 'view'}view{else}edit{/if}" style="border-top: none;">
+	<div class="longfields {if $action == 'view'}view{else}edit{/if}">
 				{foreach key=k item=f from=$longfields name=fields}
-					<tr>
-						<td class="label long_label">{$f.label}{if $f.required}*{/if}</td>
-						<td class="data long_data {if $f.type == 'currency'}currency{/if}" id="_{$f.element}__data">
+					<dl class="dl-horizontal">
+						<dt class="label long_label">{$f.label}{if $f.required}*{/if}</dt>
+						<dd class="data long_data {if $f.type == 'currency'}currency{/if}" id="_{$f.element}__data">
 							<div style="position:relative;">
 								{if $f.error}{$f.error}{/if}{$f.html}{if $action == 'view'}&nbsp;{/if}
 							</div>
-						</td>
-					</tr>
+						</dd>
+					</dl>
 				{/foreach}
-			</table></div>
+			</div></div>
 
 	</tbody>
 </table>
