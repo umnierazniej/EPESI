@@ -151,7 +151,11 @@ class HTML_QuickForm_input extends HTML_QuickForm_element
         if ($this->_flagFrozen) {
             return $this->getFrozenHtml();
         } else {
-            return $this->_getTabs() . '<input' . $this->_getAttrString($this->_attributes) . ' />';
+            $input = new \AdamWathan\Form\Elements\Input($this->getName());
+            foreach ($this->_attributes as $name => $value) {
+                $input->attribute($name, $value);
+            }
+            return $input;
         }
     } //end func toHtml
 
