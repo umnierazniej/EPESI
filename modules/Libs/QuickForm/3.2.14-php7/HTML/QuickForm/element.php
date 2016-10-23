@@ -334,7 +334,13 @@ class HTML_QuickForm_element extends HTML_Common
      */
     function getLabel()
     {
-        return $this->_label;
+        if ($this->_flagFrozen) {
+            return $this->_label;
+        } else {
+            $label = new \AdamWathan\Form\Elements\Label($this->_label);
+            $label->forId($this->getAttribute('id'));
+            return $label;
+        }
     } //end func getLabel
 
     // }}}
