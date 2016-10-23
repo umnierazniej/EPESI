@@ -1,4 +1,10 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Telaxus/form.git"
+        }
+    ],
     "require": {
         "pimple/pimple": "^3.0",
         "twig/twig": "^1.24",
@@ -7,7 +13,8 @@
         "phpdocumentor/reflection-docblock": "^2.0.4",
         "fzaninotto/faker": "^1.6",
         "phpFastCache/phpFastCache": "^5.0",
-        "ifsnop/mysqldump-php": "dev-master"
+        "ifsnop/mysqldump-php": "dev-master",
+        "adamwathan/form": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

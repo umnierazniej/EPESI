@@ -4,9 +4,58 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "90a273e5b7e38b3c03e6f19fb8a2ba06",
-    "content-hash": "7d266e3c2825ce497566a133753c4a5d",
+    "hash": "25bc7bd99be8c699910547a069a36bec",
+    "content-hash": "9f99493120d7731cb7b56592da661355",
     "packages": [
+        {
+            "name": "adamwathan/form",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Telaxus/form.git",
+                "reference": "87436b2ebc817f4b1594ad5a4e0fec75ad4f11e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Telaxus/form/zipball/87436b2ebc817f4b1594ad5a4e0fec75ad4f11e4",
+                "reference": "87436b2ebc817f4b1594ad5a4e0fec75ad4f11e4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "illuminate/support": "4.*",
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "3.7.*",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "AdamWathan\\Form": "src/"
+                }
+            },
+            "autoload-dev": {
+                "classmap": [
+                    "tests/"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adam Wathan",
+                    "email": "adam.wathan@gmail.com"
+                }
+            ],
+            "description": "A basic framework agnostic form building package with a few extra niceties like remembering old input and retrieving error messages.",
+            "support": {
+                "source": "https://github.com/Telaxus/form/tree/master"
+            },
+            "time": "2016-10-23 16:58:11"
+        },
         {
             "name": "fzaninotto/faker",
             "version": "v1.6.0",
@@ -2734,7 +2783,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ifsnop/mysqldump-php": 20
+        "ifsnop/mysqldump-php": 20,
+        "adamwathan/form": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
