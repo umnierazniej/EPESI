@@ -66,6 +66,18 @@ class Utils_RecordBrowserInstall extends ModuleInstall {
 		DB::CreateTable('recordbrowser_search_index', 'tab_id I2 NOTNULL, record_id I NOTNULL, field_id I2 NOTNULL, text X', array('constraints' => ', PRIMARY KEY(tab_id, record_id, field_id)'));
 
 		Base_PrintCommon::register_printer(new Utils_RecordBrowser_RecordPrinter());
+
+		DB::CreateTable('recordbrowser_files','
+			id I4 AUTO KEY,
+			recordset C(255) NOTNULL,
+			record_id I4 NOTNULL,
+			field_name C(255) NOTNULL,
+			filestorage_id I4 NOTNULL,
+            created_on TS NOTNULL,
+            created_by I4 NOTNULL,
+            deleted I4'
+		);
+
 		return true;
 	}
 	
@@ -78,6 +90,7 @@ class Utils_RecordBrowserInstall extends ModuleInstall {
 		DB::DropTable('recordbrowser_table_properties');
 		DB::DropTable('recordbrowser_datatype');
 		DB::DropTable('recordbrowser_access_methods');
+		DB::DropTable('recordbrowser_files');
         Base_PrintCommon::unregister_printer('Utils_RecordBrowser_RecordPrinter');
 		Base_ThemeCommon::uninstall_default_theme(Utils_RecordBrowserInstall::module_name());
 		return true;
