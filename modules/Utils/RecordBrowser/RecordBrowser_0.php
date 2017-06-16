@@ -1376,11 +1376,14 @@ class Utils_RecordBrowser extends Module {
                         $lk_c = -strlen($lk);
                         foreach ($ml as $k=>$v){
                             if(strtolower(substr($k,$lk_c)) == $lk) {
-                                if(class_exists($k.'Common')) {
-                                    $menu = call_user_func([$k . 'Common', 'menu']);
-                                    foreach ($menu as $key => $value) {
-                                        foreach ($value as $kk => $vv) {
-                                            if ($kk != '__submenu__' && $kk != '__icon__' && isset($vv['__icon__'])) $this->icon = $vv['__icon__'];
+                                $class = $k.'Common';
+                                if(class_exists($class)) {
+                                    if(method_exists($class,'menu')){
+                                        $menu = call_user_func([$k . 'Common', 'menu']);
+                                        foreach ($menu as $key => $value) {
+                                            foreach ($value as $kk => $vv) {
+                                                if ($kk != '__submenu__' && $kk != '__icon__' && isset($vv['__icon__'])) $this->icon = $vv['__icon__'];
+                                            }
                                         }
                                     }
                                 }
