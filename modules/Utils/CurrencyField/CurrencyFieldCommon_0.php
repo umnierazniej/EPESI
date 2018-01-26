@@ -9,33 +9,32 @@
  */
 defined("_VALID_ACCESS") || die('Direct access forbidden');
 
+use Money\Currency;
+use Money\Money;
+use Money\Formatter\IntlMoneyFormatter;
+use Money\Currencies\ISOCurrencies;
+use peterkahl\locale\locale;
+
 class Utils_CurrencyFieldCommon extends ModuleCommon {
 	public static function format($val, $currency=null) {
-		if (!isset($currency) || !$currency) {
-			$val = self::get_values($val);
-			$currency = $val[1];
-			if(!$currency) return '';
-			$val = $val[0];
-		}
-		$params = self::$cache[$currency];
-		$dec_delimiter = $params['decimal_sign'];
-		if(!$dec_delimiter) trigger_error(print_r(self::$cache,true));
-		$thou_delimiter = $params['thousand_sign'];
-		$dec_digits = $params['decimals'];
-		$currency = $params['symbol'];
-		$pos_before = $params['pos_before'];
-		
-		if (!$val) $val = '0';
-		$val = str_replace(array('.',','),$dec_delimiter,$val);
-		if (!strrchr($val,$dec_delimiter)) $val .= $dec_delimiter; 
-		$cur = explode($dec_delimiter, $val);
-		if (!isset($cur[1])) $cur[1] = ''; 
-		$cur[1] = str_pad($cur[1], $dec_digits, '0');
-		$val = $cur[0].'.'.$cur[1];
-		$ret = number_format($val, $dec_digits, $dec_delimiter, $thou_delimiter);
-		if ($pos_before) $ret = $currency.'&nbsp;'.$ret;
-		else $ret = $ret.'&nbsp;'.$currency;
-		return $ret;
+        if (!isset($currency) || !$currency) {
+            $val = self::get_values($val);
+            $currency = $val[1];
+            if (!$currency) return '';
+            $val = $val[0];
+        }
+        $code = Utils_CurrencyFieldCommon::get_code((int)$currency);
+        $val = (int)(floatval($val) * 100);
+        $locale = locale::country2locale(Base_RegionalSettingsCommon::get_default_location()['country']);
+        // here condition for taking the first argument, because
+        // e.g. for US is returns en_US and es_US
+        if (strpos($locale, ',') !== false) {
+            $locale = explode(',', $locale)[0];
+        }
+        $money = new Money($val, new Currency($code));
+        $number_formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
+        $money_formatter = new IntlMoneyFormatter($number_formatter, new ISOCurrencies());
+        return $money_formatter->format($money);
 	}
 
     public static function is_empty($p) {
@@ -200,6 +199,18 @@ class Utils_CurrencyFieldCommon extends ModuleCommon {
                 '"regex":'.json_encode($curr_format).'};';
         }
         eval_js_once($js);
+    }
+
+    public static function get_all_cryptocurrencies(){
+        return DB::GetAssoc('SELECT id, code FROM utils_cryptocurrencies');
+    }
+
+    public static function get_cryptocurrencies(){
+        return DB::GetAssoc('SELECT id, code FROM utils_cryptocurrencies WHERE active=1');
+    }
+
+    public static function get_cryptocurrency_by_id($id) {
+        return DB::GetRow('SELECT code FROM utils_cryptocurrencies WHERE id=%d', [$id])['code'];
     }
 }
 
