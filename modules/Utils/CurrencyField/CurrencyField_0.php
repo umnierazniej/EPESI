@@ -302,7 +302,14 @@ class Utils_CurrencyField extends Module {
             }
         }
         else $form->display();
+
+        $href = $this->create_callback_href([__CLASS__, 'update_currencies_list']);
+        Base_ActionBarCommon::add('settings', __('Synchronize'), $href);
 		return true;
+	}
+
+	public function update_currencies_list() {
+		Utils_CurrencyFieldInstall::create_currency_array();
 	}
 
 }

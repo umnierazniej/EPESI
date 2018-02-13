@@ -148,7 +148,7 @@ class Utils_CurrencyFieldInstall extends ModuleInstall {
         return true;
     }
 
-    public static function create_currency_array() {
+    public function get_currencies_with_prices_only() {
         foreach(new ISOCurrencies() as $crypto) {
             $iso[$crypto->getCode()] = "";
         }
@@ -157,7 +157,24 @@ class Utils_CurrencyFieldInstall extends ModuleInstall {
         foreach($currencies as $k => $v) {
             if(key_exists($k, $iso)) $ret[$k] = $v;
         }
-        Utils_CommonDataCommon::new_array('Currencies_Codes', $ret);
+        return $ret;
+    }
+
+    public static function create_currency_array() {
+        if(Utils_CommonDataCommon::get_array('Currencies_Codes','value',false,true) !== null ) {
+            $ret = self::get_currencies_with_prices_only();
+            $local = Utils_CommonDataCommon::get_array('Currencies_Codes');
+            foreach($ret as $k => $v) {
+                if(!key_exists($k, $local)) {
+                    $local[$k] = $v;
+                }
+            }
+            Utils_CommonDataCommon::extend_array('Currencies_Codes', $local);
+        }
+        else {
+            $ret = self::get_currencies_with_prices_only();
+            Utils_CommonDataCommon::new_array('Currencies_Codes', $ret);
+        }
         return true;
     }
 
