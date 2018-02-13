@@ -164,12 +164,14 @@ class Utils_CurrencyFieldInstall extends ModuleInstall {
         if(Utils_CommonDataCommon::get_array('Currencies_Codes','value',false,true) !== null ) {
             $ret = self::get_currencies_with_prices_only();
             $local = Utils_CommonDataCommon::get_array('Currencies_Codes');
+            $change = false;
             foreach($ret as $k => $v) {
                 if(!key_exists($k, $local)) {
                     $local[$k] = $v;
+                    $change = true;
                 }
             }
-            Utils_CommonDataCommon::extend_array('Currencies_Codes', $local);
+            if($change) Utils_CommonDataCommon::extend_array('Currencies_Codes', $local);
         }
         else {
             $ret = self::get_currencies_with_prices_only();
