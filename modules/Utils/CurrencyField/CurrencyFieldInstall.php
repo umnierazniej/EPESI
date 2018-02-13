@@ -46,6 +46,12 @@ class Utils_CurrencyFieldInstall extends ModuleInstall {
         Utils_CommonDataCommon::new_array('Countries_Currencies', self::get_all_countries_currencies());
         self::create_currency_array();
         self::create_crypto_array();
+
+        Variable::set('curr_subscribe', false);
+        Variable::set('curr_exchange_rates', false);
+        Variable::set('curr_crypto_rates', false);
+        Variable::set('curr_display_crypto', false);
+
         return true;
 	}
 	
@@ -56,7 +62,11 @@ class Utils_CurrencyFieldInstall extends ModuleInstall {
         Utils_CommonDataCommon::remove('Cryptocurrencies_Codes');
         Utils_CommonDataCommon::remove('Currencies_Codes');
 		Base_ThemeCommon::uninstall_default_theme($this->get_type());
-		return true;
+        Variable::delete('curr_subscribe', false);
+        Variable::delete('curr_exchange_rates', false);
+        Variable::delete('curr_crypto_rates', false);
+        Variable::delete('curr_display_crypto', false);
+        return true;
 	}
 	
 	public function requires($v) {
@@ -89,7 +99,7 @@ class Utils_CurrencyFieldInstall extends ModuleInstall {
     }
 
     public static function get_crypto_list() {
-        return (array) json_decode(file_get_contents('https://bittrex.com/api/v1.1/public/getcurrencies'));
+	    return $crypto = ((array) json_decode(file_get_contents('https://www.cryptocompare.com/api/data/coinlist/'))->Data);
     }
 
     public function get_all_countries_currencies() {
@@ -97,13 +107,44 @@ class Utils_CurrencyFieldInstall extends ModuleInstall {
         return (array) json_decode(file_get_contents('http://country.io/currency.json'));
     }
 
-    public function create_crypto_array() {
-        $list = self::get_crypto_list()['result'];
+    public static function get_crypto_with_prices_only() {
+        $all = Utils_CurrencyFieldInstall::get_crypto_list();
+        $keys = array_keys($all);
+        unset($all);
+        $part = [];
+        $index = 0;
+        $count = 1;
+        foreach($keys as $k => $v) {
+            if($count % 50 === 0) {
+                $index++;
+                $part[$index][] = $v;
+                $count++;
+            } else {
+                $part[$index][] = $v;
+                $count++;
+            }
+        }
+        unset($keys);
+
+        foreach($part as $k => $v) {
+            $ticker[$k] = self::get_ticker_cryptocurrencies($v,['USD', 'BTC']);
+            foreach(array_keys($ticker[$k]) as $key => $value) {
+                $final[] = $value;
+            }
+        }
+        unset($array_keys);
+        return $final;
+    }
+
+    public static function create_crypto_array() {
+        $list = self::get_crypto_list();
+        $prices_list = self::get_crypto_with_prices_only();
         $result = [];
         foreach($list as $k => $v) {
-            $result[$v->Currency] = $v->CurrencyLong;
+            if(in_array($k, $prices_list))
+                $result[$k] = $v->CoinName;
         }
-        Utils_CommonDataCommon::new_array('Cryptocurrencies_Codes',$result);
+        Utils_CommonDataCommon::new_array('Cryptocurrencies_Codes',$result, true, true);
         return true;
     }
 
@@ -118,6 +159,14 @@ class Utils_CurrencyFieldInstall extends ModuleInstall {
         }
         Utils_CommonDataCommon::new_array('Currencies_Codes', $ret);
         return true;
+    }
+
+    public static function get_ticker_cryptocurrencies($crypto, $fiat) {
+        $cryptos = implode(',', $crypto);
+        $fiats = implode(',', $fiat);
+        $string = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms='.$cryptos.'&tsyms='.$fiats;
+        $ret = (array)json_decode(file_get_contents($string));
+        return $ret;
     }
 }
 

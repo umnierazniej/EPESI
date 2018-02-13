@@ -228,6 +228,16 @@ class Utils_RecordBrowserCommon extends ModuleCommon {
     		$val = Utils_CurrencyFieldCommon::get_values($record[$desc['id']]);
             $ret = Utils_CurrencyFieldCommon::format($val[0], $val[1]);
     	}
+        if(Variable::get('curr_display_crypto') === true) {
+            $def_crypto = Utils_CurrencyFieldCommon::get_default_cryptocurrency()['code'];
+            $vals = Utils_CurrencyFieldCommon::get_values($record[$desc['id']]);
+            $ret .= ' / '.Utils_CryptoFormatterCommon::format_cryptocurrency(0.002,'BTC');
+            $cr_r = Variable::get('curr_crypto_rates');
+            $ex_r = Variable::get('curr_exchange_rates');
+            if($cr_r || $ex_r) {
+                $ret .= ' / '.'<a onmouseover=\"\">'.__('Exchange Rates').'</a>';
+            }
+        }
     	 
     	return $ret;
     }
@@ -3333,8 +3343,9 @@ class Utils_RecordBrowserCommon extends ModuleCommon {
 
         $label = Utils_RecordBrowserCommon::get_field_tooltip($label, $desc['type']);
         $form->addElement('currency', $field, $label, (isset($desc['param']) && is_array($desc['param']))?$desc['param']:array(), array('id' => $field));
-        if ($mode !== 'add')
+        if ($mode !== 'add') {
             $form->setDefaults(array($field => $default));
+        }
         // set element value to persist currency over soft submit
         if ($form->isSubmitted() && $form->exportValue('submited') == false) {
             $default = $form->exportValue($field);

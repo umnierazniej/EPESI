@@ -26,7 +26,6 @@ class Utils_CurrencyField extends Module {
 				location(array());
 			return;
 		}
-
 		$fiat_gb = $this->init_module('Utils_GenericBrowser',null,'currencies');
 		$fiat_gb->set_table_columns([
             ['name'=>__('ID')],
@@ -47,8 +46,9 @@ class Utils_CurrencyField extends Module {
 				));
 			$fiat_gb_row->add_action($this->create_callback_href(array($this, 'edit_currency'),array($row['id'])),'edit');
 		}
-		Base_ActionBarCommon::add('add', __('New Currency'), $this->create_callback_href(array($this, 'add_currency'), array(null)));
+		Base_ActionBarCommon::add('add', __('Add Currency'), $this->create_callback_href(array($this, 'add_currency'), array(null)));
 		Base_ActionBarCommon::add('add', __('Add Cryptocurrency'), $this->create_callback_href(array($this, 'add_cryptocurrency'), array(null)));
+		Base_ActionBarCommon::add('settings', __('Currencies Settings'), $this->create_callback_href([$this, 'currencies_settings']));
 		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
 		$this->display_module($fiat_gb);
 
@@ -99,16 +99,26 @@ class Utils_CurrencyField extends Module {
             $sql = 'INSERT INTO utils_currency (symbol, code, decimal_sign, thousand_sign, decimals, pos_before, active, default_currency) VALUES (%s, %s, %s, %s, %d, %d, %d, %d)';
             DB::Execute($sql, $vals);
         }
-        $form->display();
         Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
         Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
+        if($form->validate_with_message('Currency saved',__('Problem encountered'))) {
+            if ($form->process(function () {
+            	return true;
+			})) {
+				Base_BoxCommon::location('Utils_CurrencyField','admin');
+            }
+        }
+        else $form->display();
         return true;
 	}
-	
+
 	public function edit_currency($id) {
 		if ($this->is_back()) return false;
 		$form = $this->init_module('Libs_QuickForm');
-		$form->addElement('static', null, Utils_CurrencyFieldCommon::get_code($id));
+        $code = Utils_CurrencyFieldCommon::get_code($id);
+        $name = $code.' - '.Utils_CommonDataCommon::get_value('Currencies_Codes/'.$code);
+        $form->addElement('header', null, '<h4>'.$name.'</h4>');
+        $form->addElement('static', null, '');
 		$form->addElement('select', 'default_currency', __('Default'), self::$active);
 		$form->addElement('select', 'active', __('Active'), self::$active);
 
@@ -130,10 +140,17 @@ class Utils_CurrencyField extends Module {
 							' WHERE id=%d';
 			DB::Execute($sql, $vals);
 		}
-		$form->display();
-		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
-		Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
-		return true;
+        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
+        if($form->validate_with_message(__('Currency saved'),__('Problem encountered'))) {
+            if ($form->process(function () {
+                return true;
+            })) {
+                Base_BoxCommon::location('Utils_CurrencyField','admin');
+            }
+        }
+        else $form->display();
+        return true;
 	}
 
 	public function edit_cryptocurrency($id) {
@@ -143,7 +160,7 @@ class Utils_CurrencyField extends Module {
         $curr = Utils_CurrencyFieldCommon::get_cryptocurrency_by_id($id);
         $name = $curr.' - '.Utils_CommonDataCommon::get_value('Cryptocurrencies_Codes/'.$curr);
 
-		$form->addElement('static', null, '<h3>'.$name.'</h3>');
+		$form->addElement('header', null, '<h4>'.$name.'</h4>');
         $form->addElement('select', 'default_currency', __('Default Cryptocurrency'), self::$active);
         $form->addElement('select', 'active', __('Active'), self::$active);
 
@@ -164,9 +181,16 @@ class Utils_CurrencyField extends Module {
                 ' WHERE id=%d';
             DB::Execute($sql, $vals);
         }
-        $form->display();
         Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
         Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
+        if($form->validate_with_message('Currency saved',__('Problem encountered'))) {
+            if ($form->process(function () {
+                return true;
+            })) {
+                Base_BoxCommon::location('Utils_CurrencyField','admin');
+            }
+        }
+        else $form->display();
         return true;
 	}
 
@@ -197,10 +221,17 @@ class Utils_CurrencyField extends Module {
 							')';
             DB::Execute($sql, $vals);
 		}
-		$form->display();
         Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
         Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
-		return true;
+        if($form->validate_with_message('Currency saved',__('Problem encountered'))) {
+            if ($form->process(function () {
+                return true;
+            })) {
+                Base_BoxCommon::location('Utils_CurrencyField','admin');
+            }
+        }
+        else $form->display();
+        return true;
 	}
 
 	public function get_crypto_options() {
@@ -208,25 +239,70 @@ class Utils_CurrencyField extends Module {
         $local_crypto = array_values(Utils_CurrencyFieldCommon::get_all_cryptocurrencies());
 
         foreach($local_crypto as $k => $v) {
-            if(array_search($v, $options) !== false) unset($options[$v]);
+            if(array_search($v, array_keys($options)) !== false) unset($options[$v]);
         }
 
         foreach($options as $k => $v) $options[$k] = $k.' - '.$v;
-        return $options;
+        ksort($options);
+		return $options;
 	}
 
-	public static function get_currency_options() {
+	public function get_currency_options() {
         $options = Utils_CommonDataCommon::get_array('Currencies_Codes');
         $local_currencies = array_values(Utils_CurrencyFieldCommon::get_all_currencies());
-//
         foreach($local_currencies as $k => $v) {
             if(key_exists($v, $options)) {
             	unset($options[$v]);
             }
         }
-
         foreach($options as $k => $v) $options[$k] = $k.' - '.$v;
+		ksort($options);
 		return $options;
+	}
+
+	public function currencies_settings() {
+        if ($this->is_back()) return false;
+		load_js('modules/Utils/CurrencyField/js/settings.js');
+        eval_js('currency_settings();');
+        Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+
+        $form = $this->init_module(Libs_QuickForm::module_name());
+        $form->addElement('header', null, '<h4>'.__('Currencies Settings').'</h4>');
+        $form->addElement('static', null, '<br/>');
+        $form->addElement('checkbox', 'subscribe', '', __('Enable exchange rates subscription'));
+        $form->addElement('static', null, '<br/>');
+        $form->addElement('header', null, '<b>'.__('Exchange Rate Tooltip').'</b>');
+        $form->addElement('checkbox', 'exchange_rates', '', __('Display fiduciary money rates'));
+        $form->addElement('checkbox', 'crypto_rates', '', __('Display cryptocurrencies rates'));
+        $form->addElement('static', null, '<br/>');
+        $form->addElement('header', null, '<b>'.__('Cryptocurrencies').'</b>');
+        $form->addElement('checkbox', 'display_crypto', '', __('Display field value in default cryptocurrency'));
+
+
+        $current['subscribe'] = Variable::get('curr_subscribe', false);;
+        $current['exchange_rates'] = Variable::get('curr_exchange_rates', false);
+        $current['crypto_rates'] = Variable::get('curr_crypto_rates', false);
+        $current['display_crypto'] = Variable::get('curr_display_crypto', false);
+
+        $form->setDefaults($current);
+        Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
+        if($form->validate_with_message('Settings saved',__('Problem encountered'))) {
+        	$values = $form->exportValues();
+			foreach($current as $k => $v) {
+				if(key_exists($k, $values) && $values[$k] === "1" && $v !==$values[$k]) {
+					Variable::set('curr_'.$k, true);
+				} else if($current[$k] == "1") {
+					Variable::set('curr_'.$k, false);
+				}
+			}
+			if ($form->process(function () {
+            	return true;
+            })) {
+                Base_BoxCommon::location('Utils_CurrencyField','admin');
+            }
+        }
+        else $form->display();
+		return true;
 	}
 
 }

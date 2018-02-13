@@ -115,6 +115,12 @@ class Utils_CurrencyFieldCommon extends ModuleCommon {
 		if ($cache===null) $cache = DB::GetRow('SELECT * FROM utils_currency WHERE default_currency=1');
 		return $cache;
 	}
+
+    public static function get_default_cryptocurrency() {
+        static $cache=null;
+        if ($cache===null) $cache = DB::GetRow('SELECT * FROM utils_cryptocurrencies WHERE default_currency=1');
+        return $cache;
+    }
 	
 	public static function admin_caption() {
 		return array('label'=>__('Currencies'), 'section'=>__('Regional Settings'));
@@ -189,6 +195,7 @@ class Utils_CurrencyFieldCommon extends ModuleCommon {
     public static function load_js() {
         self::load_cache();
         load_js('modules/Utils/CurrencyField/currency.js');
+//        load_js('modules/Utils/CurrencyField/js/settings.js');
         $currencies = Utils_CurrencyFieldCommon::get_all_currencies();
         $js = 'Utils_CurrencyField.currencies=new Array();';
         foreach ($currencies as $k => $v) {
@@ -212,6 +219,62 @@ class Utils_CurrencyFieldCommon extends ModuleCommon {
     public static function get_cryptocurrency_by_id($id) {
         return DB::GetRow('SELECT code FROM utils_cryptocurrencies WHERE id=%d', [$id])['code'];
     }
+
+    public static function cron() {
+        if(Variable::get('curr_subscribe' === true)) {
+            return [
+                'cron_update_cryptocurrencies_rates' => 1,
+                'cron_update_exchange_rates' => 1
+            ];
+        } else {
+            return [];
+        }
+    }
+
+    public static function cron_update_cryptocurrencies_rates () {
+
+        $cryptos = self::get_all_cryptocurrencies();
+        $fiats = Utils_CurrencyFieldCommon::get_all_currencies();
+        $ticker = Utils_CurrencyFieldInstall::get_ticker_cryptocurrencies($cryptos, $fiats);
+
+        $missed = ['crypto' => [], 'fiats' => []];
+        foreach($fiats as $k => $v) {
+            if(!key_exists($v, $ticker[$cryptos[1]])) {
+                $missed['crypto'][] = $v;
+            }
+        }
+
+        foreach($cryptos as $k => $v) {
+            if(!key_exists($v, $ticker)) {
+                $missed['fiats'][] = $v;
+            }
+        }
+
+        if(empty($missed['crypto']) && empty($missed['fiats'])) {
+            foreach($ticker as $k => $v) {
+                Cache::init();
+                Cache::set('crypto_'.$v, $ticker[$v]);
+            }
+        } else {
+            if(empty($missed['fiats'])) {
+
+            }
+        }
+        return $ticker;
+    }
+
+    public static function cron_update_exchange_rates () {
+
+    }
+
+
+
+
+//    public static function cron_exchange_rates () {
+//        $d_curr = self::get_default_currency()['id'];
+//        $d_crypto = self::get_default_cryptocurrency()['id'];
+//        todo: cryptocompare obrazki
+//    }
 }
 
 $GLOBALS['HTML_QUICKFORM_ELEMENT_TYPES']['currency'] = array('modules/Utils/CurrencyField/currency.php','HTML_QuickForm_currency');
