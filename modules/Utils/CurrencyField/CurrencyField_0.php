@@ -26,6 +26,7 @@ class Utils_CurrencyField extends Module {
 				location(array());
 			return;
 		}
+		print('<h1>'.__('Currencies').'</h1>');
 		$fiat_gb = $this->init_module('Utils_GenericBrowser',null,'currencies');
 		$fiat_gb->set_table_columns([
             ['name'=>__('ID')],
@@ -46,12 +47,13 @@ class Utils_CurrencyField extends Module {
 				));
 			$fiat_gb_row->add_action($this->create_callback_href(array($this, 'edit_currency'),array($row['id'])),'edit');
 		}
-		Base_ActionBarCommon::add('add', __('Add Currency'), $this->create_callback_href(array($this, 'add_currency'), array(null)));
-		Base_ActionBarCommon::add('add', __('Add Cryptocurrency'), $this->create_callback_href(array($this, 'add_cryptocurrency'), array(null)));
+		Base_ActionBarCommon::add('add', __('Add New Currency'), $this->create_callback_href([$this,'add_currency']));
 		Base_ActionBarCommon::add('settings', __('Currencies Settings'), $this->create_callback_href([$this, 'currencies_settings']));
 		Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
+        Base_ActionBarCommon::add('settings', __('Synchronize'), $this->create_callback_href([__CLASS__, 'update_currencies_list']));
 		$this->display_module($fiat_gb);
 
+        print('<h1>'.__('Cryptocurrencies').'</h1>');
 		$cr_gb = $this->init_module('Utils_GenericBrowser', null, 'cryptocurrencies');
         $cr_gb->set_table_columns([
             ['name'=>__('ID')],
@@ -76,7 +78,14 @@ class Utils_CurrencyField extends Module {
 	}
 
 	public function add_currency() {
+
         if ($this->is_back()) return false;
+
+        $crypto_href = $this->create_callback_href(array($this, 'add_cryptocurrency'), array(null));
+        print('<h1>'.__('Currency'));
+        print(' | ');
+        print('<a '.$crypto_href.'>'.__('Cryptocurrency').'</a></h1>');
+
         $form = $this->init_module('Libs_QuickForm');
         $options = self::get_currency_options();
         $form->addElement('select', 'currency', __('Currency'), $options);
@@ -181,6 +190,7 @@ class Utils_CurrencyField extends Module {
                 ' WHERE id=%d';
             DB::Execute($sql, $vals);
         }
+
         Base_ActionBarCommon::add('back', __('Back'), $this->create_back_href());
         Base_ActionBarCommon::add('save', __('Save'), $form->get_submit_form_href());
         if($form->validate_with_message('Currency saved',__('Problem encountered'))) {
@@ -195,7 +205,14 @@ class Utils_CurrencyField extends Module {
 	}
 
 	public function add_cryptocurrency() {
+
         if ($this->is_back()) return false;
+
+        $curr_href = $this->create_callback_href(array($this, 'add_currency'), array(null));
+        print('<h1><a '.$curr_href.'>'.__('Currency').'</a>');
+        print(' | ');
+        print(__('Cryptocurrency').'</h1>');
+
         $options = self::get_crypto_options();
 		$form = $this->init_module(Libs_QuickForm::module_name());
 		$form->addElement('select', 'cryptocurrencies', __('Add Cryptocurrency').': ', $options);
@@ -302,9 +319,6 @@ class Utils_CurrencyField extends Module {
             }
         }
         else $form->display();
-
-        $href = $this->create_callback_href([__CLASS__, 'update_currencies_list']);
-        Base_ActionBarCommon::add('settings', __('Synchronize'), $href);
 		return true;
 	}
 
