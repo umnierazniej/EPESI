@@ -158,11 +158,21 @@ class Base_Dashboard extends Module {
 		$applets = array(0=>array(),1=>array(),2=>array());
 		$config_mode = $this->get_module_variable('config_mode', false);
 		if($default_dash || !Base_DashboardCommon::has_permission_to_manage_applets())
-			$ret = DB::Execute('SELECT col,id,module_name,color FROM base_dashboard_default_applets WHERE tab=%d ORDER BY col,pos',array($tab_id));
+			$ret = Illuminate\Database\Capsule\Manager::table('base_dashboard_default_applets')
+				->select(['col','id','module_name','color'])
+				->where('tab', '=', $tab_id)
+				->orderBy('col')
+				->orderBy('pos');
 		else
-			$ret = DB::Execute('SELECT col,id,module_name,color FROM base_dashboard_applets WHERE user_login_id=%d AND tab=%d ORDER BY pos',array(Base_AclCommon::get_user(),$tab_id));
-		while($row = $ret->FetchRow())
-			$applets[$row['col']][] = $row;
+            $ret = Illuminate\Database\Capsule\Manager::table('base_dashboard_applets')
+				->select(['col','id','module_name','color'])
+				->where('user_login_id',  Base_AclCommon::get_user())
+				->where('tab',  $tab_id)
+				->orderBy('pos')
+				->get(['col','id','module_name','color']);
+		foreach ($ret as $row) {
+			$applets[$row->col][] = (array) $row;
+		}
 
 		print('<div id="dashboard" style="width: 100%;">');
 		for($j=0; $j<3; $j++) {
